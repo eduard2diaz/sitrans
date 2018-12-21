@@ -1,0 +1,55 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del chofer
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <th style="width: 10%">Nombre</th>
+                        <td>{{chofer.nombre}}</td>
+                    </tr>
+                    <tr>
+                        <th>Apellidos</th>
+                        <td>{{chofer.apellido}}</td>
+                    </tr>
+                    <tr>
+                        <th>Carnet de identidad</th>
+                        <td>{{chofer.ci}}</td>
+                    </tr>
+                    <tr>
+                        <th>Licencia</th>
+                        <td>
+                            <ul class="m-nav m-nav--inline">
+                                {% for aux in chofer.idlicencia %}
+                                    <li class="m-nav__item">{{ aux.nombre }}</li>
+                                {% endfor %}
+                            </ul>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th>Activo</th>
+                        <td>{{chofer.activo | colorear}}</td>
+                    </tr>
+                    <tr>
+                        <th>Dirección particular</th>
+                        <td>{{chofer.direccion}}</td>
+                    </tr>
+
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

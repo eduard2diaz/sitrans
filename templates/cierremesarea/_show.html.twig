@@ -1,0 +1,45 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del cierre
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <th>Área</th>
+                        <td>{{cierre.area.nombre}}</td>
+                        <th>Fecha</th>
+                        <td>{{cierre.fecha | date('d-m-Y H:i')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Kilowatts consumidos</th>
+                        <td>{{cierre.consumido}}</td>
+                        <th>Kilowatts restantes</th>
+                        <td>{{cierre.restante}}</td>
+                    </tr>
+                    <tr>
+                        <th>Efectivo consumido</th>
+                        <td>{{cierre.efectivoconsumido}}</td>
+                        <th>Efectivo restante</th>
+                        <td>{{cierre.efectivorestante}}</td>
+                    </tr>
+                    <tr>
+                        <th>Usuario</th>
+                        <td colspan="3">{{cierre.usuario}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

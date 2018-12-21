@@ -1,0 +1,6 @@
+{% extends 'bundles/TwigBundle/Exception/error.html.twig' %}
+ {% block error_picture %}
+     <img src="{{ asset('assets/sitrans/img/http_error/error-500.png')}}" style="width: 100%"/>
+ {% endblock error_picture %}
+{% block error_title %}Error interno del servidor{% endblock error_title %}
+{% block error_details %}El servidor encontró un error interno o desconfiguración y fue incapaz de completar su solicitud, ante cualquier duda o dificultad contacte con el/los administrador(es), estaremos encantados de ayudarle.{% endblock error_details %}

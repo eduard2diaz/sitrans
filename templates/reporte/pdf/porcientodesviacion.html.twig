@@ -1,0 +1,24 @@
+
+            <h5 >
+                Porciento de desviación
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Porciento</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.porciento }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Porciento</th>
+                    </tr>
+                    </tfoot>
+                </table>

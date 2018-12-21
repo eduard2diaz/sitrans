@@ -1,0 +1,71 @@
+{% extends 'layout/autenticado.html.twig' %}
+ {% block page_title %}Tipo de vehículo{% endblock page_title %}
+{% block body %}
+
+        <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon"><i class="flaticon-list-3"></i></span>
+                    <h3 class="m-portlet__head-text">
+                        Listado
+                    </h3>
+                </div>
+            </div>
+
+            <div class="m-portlet__head-tools">
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a data-href="{{ path('tipovehiculo_new') }}" class="m-link edicion" title="Nuevo tipo de vehículo">
+                            <span><i class="flaticon-add"></i></span> Nuevo
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="m-portlet__body">
+                       <!--begin: Datatable -->
+            <div class="" id="local_data">
+            </div>
+            <table class="table table-hover m-table m-table--head-separator-brand" id="tipovehiculo_table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                    </th>
+
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+                </tfoot>
+            </table>
+            <!--end: Datatable -->
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+<script src="{{ asset('script/entity/tipovehiculo.js','sitrans') }}"></script>
+    <script>
+        tipovehiculo.init();
+    </script>
+{% endblock javascripts %}

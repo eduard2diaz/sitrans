@@ -1,0 +1,26 @@
+<!--Personalizando el * para campos requeridos-->
+{% use 'form_div_layout.html.twig' with form_label as base_form_label %}
+{% block form_label %}
+    {{ block('base_form_label') }}
+    {% if required %}
+     <!--   <span class="required" title="This field is required">*</span>-->
+    {% endif %}
+{% endblock %}
+<!--Fin de la personalizacion-->
+
+
+<!--Personalizando de los mensajes de error-->
+{% block form_errors %}
+
+    {% spaceless %}
+        {% if errors|length > 0 %}
+
+            <ul style="list-style: none;" class="margin-bottom-10">
+                {% for error in errors %}
+                    <li><span class="badge badge-danger">Error</span> {{ error.message |trans}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+<!--Fin de la personalizacion-->

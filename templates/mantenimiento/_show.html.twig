@@ -1,0 +1,39 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del mantenimiento
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Vehiculo</th>
+                        <td>{{mantenimiento.vehiculo}}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de inicio</th>
+                        <td>{{mantenimiento.fechainicio | date('d-m-Y H:i')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de fin</th>
+                        <td>{{mantenimiento.fechafin | date('d-m-Y H:i')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td><p>{{mantenimiento.descripcion}}</p></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

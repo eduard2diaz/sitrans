@@ -1,0 +1,39 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block body %}
+    <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                    <h3 class="m-portlet__head-text">
+                        Accesibilidad
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-md-7">
+                    <h4></h4>
+                    <p class="text-justify">
+                        SITRANS fue diseñada para que pueda ser explotada al máximo por todos, por tal motivo tiene un diseño sencillo
+                        y amigable. Su principal objetivo es permitir que personas con o sin algún tipo de discapacidad puedan percibir,
+                        entender, navegar e interactuar con la Web, aportando a su vez contenidos.
+                    </p>
+                    <p>
+                        Además este diseño también beneficia a otras personas, incluyendo personas de edad avanzada
+                        que han visto mermadas sus habilidad a consecuencia de la edad.
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <ul class="list-unstyled text-center uppercase bold">
+                        <li>Perceptible</li>
+                        <li style="font-size: 200%">Operable</li>
+                        <li style="font-size: 200%">Comprensible</li>
+                        <li>Robusto</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

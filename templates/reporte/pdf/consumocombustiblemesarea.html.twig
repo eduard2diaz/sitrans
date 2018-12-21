@@ -1,0 +1,38 @@
+            <h5>
+                Resumen de consumo de combustible {{mes~', '~anno }}
+            </h5>
+<table class="table table-bordered">
+    <tr>
+        <th>Unidad Administrativa Central</th>
+        <th>Cantidad de litros</th>
+        <th>Km recorridos</th>
+    </tr>
+    {% set totalkms=0 %}
+    {% set totallitros=0 %}
+    {% for obj in data %}
+
+   <tr>
+       <th>{{ obj.tipocombustible }}</th>
+   </tr>
+    {% for area in obj.areas %}
+        <tr>
+            <th>{{ area.area_nombre }}</th>
+        </tr>
+        {% for vehiculo in area.vehiculos %}
+            <td>{{ vehiculo.responsable }}</td>
+            <td>{{ vehiculo.totalkms }}</td>
+            <td>{{ vehiculo.totallitros }}</td>
+            {% set totalkms=totalkms+vehiculo.totalkms %}
+
+            {% set totallitros=totallitros+vehiculo.totallitros %}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
+    {% if totalkms>0 %}
+        <tr>
+            <th>TOTAL</th>
+            <th>{{ totalkms }}</th>
+            <th>{{ totallitros }}</th>
+        </tr>
+    {% endif %}
+</table>

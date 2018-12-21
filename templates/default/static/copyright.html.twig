@@ -1,0 +1,35 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block body %}
+    <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                    <h3 class="m-portlet__head-text">
+                        Políticas de Copyright
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>Condiciones de uso</h4>
+                    <p class="text-justify">
+                        SITRANS es una aplicación libre, gratuita y al alcance de todos; cuyo único objetivo es servir como herramienta
+                        para el control de los portadores energéticos de nuestras instituciones y centros de trabajo.
+                        SITRANS fue desarrollada sobre la licencia MIT, por lo que puede y debe de ser posible compartida con otras empresas e instituciones
+                        sin ánimos de lucro siempre y cuando se destaque quienes son los principales desarrolladores.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-unstyled text-center uppercase bold">
+                        <li>Libre</li>
+                        <li style="font-size: 200%">Gratuito</li>
+                        <li>Social</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

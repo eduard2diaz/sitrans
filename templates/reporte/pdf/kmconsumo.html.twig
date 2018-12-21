@@ -1,0 +1,26 @@
+            <h5>
+                Kilómetros y litros consumidos
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros</th>
+                        <th>Litros</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data.data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.kms }}</td>
+                            <td>{{ obj.litros }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros</th>
+                        <th>Litros</th>
+                    </tr>
+                    </tfoot>
+                </table>

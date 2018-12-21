@@ -1,0 +1,41 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block body %}
+    <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                    <h3 class="m-portlet__head-text">
+                        Escalabilidad
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <h4>Sistema operativo</h4>
+            <p class="text-justify">
+                SITRANS es un sistema multiplataforma, por lo cual lo puede desplegar en cualquier sistema operativo, Windows, MAC y Linux siempre y cuando tenga instalado un servidor web.
+                Y aunque está optimizado para linux los tiempos de procesamiento y respuesta son extraordinarios en cualquier otro.
+                Aunque muchos parámetros y servidores son configurables existen puntos determinantes para su despliegue.
+            <ul class="list-inline text-muted text-center">
+                <li>PHP v7.1 o superior</li>
+                <li>NodeJS v10</li>
+                <li>Gulp</li>
+            </ul>
+            </p>
+            <h4>Base de datos</h4>
+            <p>Symfony 4 en su versión 4.1 fue el Framework PHP sobre el cual se desarrolló esta aplicación, por tal motivo puede emplear el servidor de base de datos relacional de su preferencia, solamente con el pequeño detalle de ajustar la estrategia de generación base de datos; un proceso sumamente sencillo para nuestros especialistas pero que en caso de no poseer los concimientos necesarios puede ser sumamente engorroso.
+                El código fuente original de SITRANS está orientado para el empleo de Postgresql como sistema de base de datos.</p>
+            <h4>Servidor web</h4>
+            <p>
+                Se recomienda la utilización de nginx como servidor web, pues los tiempos de respuesta son superiores en comparación con cualquier otro.
+                Pero en caso de desearlo puede usar xampp, lampp o utilizar composer para instalar un servidor local en la propia aplicación.
+            </p>
+            <h4>Actualización</h4>
+            <p>Las actualizaciones del código fuente de SITRANS solo serán notificadas a los clientes que previamente hallan contratado a la universidad para la adquisición, despliegue y soporte de la aplicación.
+                Por tal motivo cualquier no conformidad que identifique durante la explotación del software no serán resueltas por el equipo de desarrollo del software a menos que sea interés del mismo o proceda de un cliente.
+            </p>
+            <p>Todo desarrollador ajeno a la institución podra contribuir con el desarrollo del sistema y sus recomendaciones seran evaluadas por el equipo de desarrollo, pero es una violación de los términos del servicio cualquier mejora que se realice al software original que no sea compartida con el equipo de desarrollo y socializada con la comunidad.</p>
+        </div>
+    </div>
+{% endblock %}

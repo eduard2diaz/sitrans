@@ -1,0 +1,24 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block body %}
+<div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                <h3 class="m-portlet__head-text">
+                    Soporte
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <p>
+            SITRANS puede ser desplegado por cualquier persona con conocimientos básicos en informática, pero la Universidad Agraria de la Habana
+            te brinda la posibilidad de contratar sus servicios para adquirir el software, recibir notificaciones de soportes planificados y nuevas actualizaciones
+            del sistema. Además cualquier no conformidad, inquietud o personalización a las necesidades de tu empresa que solicites serán realizadas sin coste alguno.
+            Al contratar los servicios de la Universidad Agraria de la Habana podrás solicitar cursos de capacitación para tus trabajadores y tener una comunicación
+            directa con el equipo de desarrollo para mantenerte actualizado de las novedades y nuevas funcionalidades de SITRANS.
+        </p>
+    </div>
+</div>
+{% endblock %}

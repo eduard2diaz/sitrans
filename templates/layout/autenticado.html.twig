@@ -1,0 +1,86 @@
+{% extends "layout/base.html.twig" %}
+{% block subheader %}
+<div class="m-subheader ">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <h3 class="m-subheader__title ">
+                {% block page_title %}{% endblock page_title %}
+            </h3>
+        </div>
+        <div>
+            {% block rightoptions_block %}{% endblock rightoptions_block %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/custom/datatables/datatables.bundle.css','template') }}"/>
+{% endblock %}
+{% block header %}
+{% embed "layout/recortes/header.html.twig" %}
+{% block top_menu %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('layout/recortes/topmenu/admin_topmenu.html.twig') }}
+    {% endif %}
+    {%if is_granted('ROLE_JEFETRANSPORTE') or is_granted('ROLE_CAJERO')%}
+        {{ include('layout/recortes/topmenu/transporte_topmenu.html.twig') }}
+    {% endif %}
+    {% if is_granted('ROLE_ELECTRICIDAD') %}
+        {{ include('layout/recortes/topmenu/electricidad_topmenu.html.twig') }}
+    {% endif %}
+    {% if is_granted('ROLE_CAJERO') %}
+        {{ include('layout/recortes/topmenu/cajero_topmenu.html.twig') }}
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('layout/recortes/topmenu/reporte_topmenu.html.twig') }}
+    {% endif %}
+{% endblock top_menu %}
+    {% block user_shortcut_menu %}
+    {% if is_granted('ROLE_JEFETRANSPORTE') or is_granted('ROLE_CAJERO') %}
+            {{ include('layout/recortes/topmenu/shortcuts.html.twig') }}
+    {% endif %}
+    {{ include('layout/recortes/topmenu/user_topmenu.html.twig') }}
+    {% endblock %}
+
+{% endembed %}
+{% endblock header %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-bottom-left",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
+    <script type="text/javascript" src="{{ asset('vendors/custom/datatables/datatables.bundle.js','template') }}"></script>
+    <script type="text/javascript" src="{{ asset('plugins/jsPDF/dist/jspdf.min.js','sitrans') }}"></script>
+    <script type="text/javascript" src="{{ asset('plugins/bootbox/bootbox.min.js','sitrans') }}"></script>
+    <!--IMPORTANDO LAS LIBRERIAS DE AMCHART-->
+    <script src="{{ asset('assets/sitrans/plugins/amcharts4/core.js') }}"></script>
+    <script src="{{ asset('assets/sitrans/plugins/amcharts4/charts.js') }}"></script>
+    <script src="{{ asset('assets/sitrans/plugins/amcharts4/themes/animated.js') }}"></script>
+    <!--FIN DE IMPORTANDO LAS LIBRERIAS DE AMCHART-->
+    <script src="{{ asset('script/base/authenticated.js','sitrans') }}"></script>
+    <script src="{{ asset('script/base/reporte.js','sitrans') }}"></script>
+    <script>
+        authenticated.init();
+        reporte.init();
+        var datatable_translation='{{ asset('assets/sitrans/plugins/datatable/es.json') }}';
+    </script>
+{% endblock %}

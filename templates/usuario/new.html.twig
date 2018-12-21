@@ -1,0 +1,14 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                {{ title| default('Nuevo usuario') }}
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            {%include 'usuario/_form.html.twig'%}
+        </div>
+    </div>
+</div>
+

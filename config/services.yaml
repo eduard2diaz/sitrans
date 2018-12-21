@@ -1,0 +1,162 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'es'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+#DEFINIENDO MIS PROPIOS SERVICIOS
+    usuario_subscriber:
+        class: App\EventSubscriber\UsuarioSubscriber
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: doctrine.event_subscriber,  connection: default }
+
+
+    recargatarjeta_subscriber:
+        class: App\EventSubscriber\RecargaTarjetaSubscriber
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: doctrine.event_subscriber,  connection: default }
+        arguments: ['@service_container']
+
+    chip_subscriber:
+        class: App\EventSubscriber\ChipSubscriber
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: doctrine.event_subscriber,  connection: default }
+        arguments: ['@service_container']
+
+    hojaruta_subscriber:
+        class: App\EventSubscriber\HojarutaSubscriber
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: doctrine.event_subscriber,  connection: default }
+        arguments: ['@service_container']
+
+    ajustetarjeta_subscriber:
+        class: App\EventSubscriber\AjusteTarjetaSubscriber
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: doctrine.event_subscriber,  connection: default }
+        arguments: ['@service_container']
+
+    planportadoresarea.validator:
+        class: App\Validator\PlanportadoresAreaValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: planportadoresarea.validator }
+        arguments: ['@doctrine']
+
+    reloj.validator:
+        class: App\Validator\RelojValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: reloj.validator }
+        arguments: ['@doctrine']
+
+    importe.validator:
+        class: App\Validator\ImporteValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: importe.validator }
+        arguments: ['@energia.service']
+
+    responsable.validator:
+        class: App\Validator\ResponsableValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: responsable.validator }
+        arguments: ['@doctrine']
+
+    planefectivocuenta.validator:
+        class: App\Validator\PlanefectivoCuentaValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: planefectivocuenta.validator }
+        arguments: ['@doctrine']
+
+    vehiculo.validator:
+        class: App\Validator\VehiculoValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: vehiculo.validator }
+        arguments: ['@doctrine']
+
+    entity.validator.period:
+        class: App\Validator\PeriodValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: entity.validator.period }
+        arguments: ['@doctrine']
+
+    tarifakw.validator:
+        class: App\Validator\TarifaKwValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: tarifakw.validator }
+        arguments: ['@doctrine']
+
+    energia.service:
+        class: App\Tools\EnergiaService
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments: ['@doctrine']
+
+    traza.service:
+        class: App\Tools\TrazaService
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments: ['@doctrine']
+
+

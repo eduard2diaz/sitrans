@@ -1,0 +1,51 @@
+{{form_start(form,{'attr':{
+    'id': form_id|default('recargakw_new'),
+    'class': 'm-form m-form--state'
+}})}}
+
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.reloj)}}
+            {{ form_errors(form) }}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.fecha)}}
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row margin-top-10">
+        <div class="col-md-6">
+            {{form_row(form.codigoSTS)}}
+        </div>
+    </div>
+    <div class="row margin-top-10">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label for="_username">
+                    {{form_label(form.folio00)}}
+                </label>
+                <div>
+                    {{form_widget(form.folio00)}}
+                    {{form_errors(form.folio00)}}
+                    {% if form.folio00.vars.help ?? false %}
+                        <div><p><i class="flaticon-information"></i> {{ form.folio00.vars.help }}</p></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.asignacion)}}
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+        <i class="flaticon-edit-1 ladda-label"></i> {{ action |default('Guardar')}}
+        <span class="ladda-spinner"></span>
+    </button>
+</div>
+{{form_end(form)}}
+

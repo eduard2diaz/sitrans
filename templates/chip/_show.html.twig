@@ -1,0 +1,60 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del chip
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Tarjeta</th>
+                        <td>{{ chip.tarjeta }}</td>
+                        <th>Litros extraídos</th>
+                        <td>{{ chip.litrosextraidos }}</td>
+                    </tr>
+                    <tr>
+                        <th>Número de comprobante</th>
+                        <td>{{ chip.numerocomprobante }}</td>
+                        <th>Fecha</th>
+                        <td>{{ chip.fecha | date ('d-m-Y H:i') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Identificador físico</th>
+                        <td>{{ chip.idfisico }}</td>
+                        <th>Identificador lógico</th>
+                        <td>{{ chip.idlogico }}</td>
+                    </tr>
+                    <tr>
+                        <th>Importe</th>
+                        <td>{{ chip.importe }}</td>
+                        <th>Moneda</th>
+                        <td>{{ chip.getMonedaToString() }}</td>
+                    </tr>
+                    <tr>
+                        <th>Servicio</th>
+                        <td>{{ chip.servicio }}</td>
+                        <th>Saldo inicial</th>
+                        <td>{{ chip.saldoinicial }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cupet</th>
+                        <td colspan="3">{{ chip.cupet }}</td>
+                    </tr>
+                    <tr>
+                        <th>Usuario</th>
+                        <td colspan="3">{{ chip.usuario }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+    </div>
+</div>
+
+
+
+

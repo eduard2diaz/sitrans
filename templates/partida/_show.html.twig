@@ -1,0 +1,38 @@
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles de la partida
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+
+            <div class="modal-body" id="modal-body">
+               <table class="table">
+                   <tr>
+                       <th>Nombre</th>
+                       <td>{{ partida.nombre }}</td>
+                   </tr>
+                   <tr>
+                       <th>Tipo de partida</th>
+                       <td>{{ partida.tipopartida }}</td>
+                   </tr>
+                   <tr>
+                       <th>Código</th>
+                       <td>{{ partida.codigo }}</td>
+                   </tr>
+                   <tr>
+                       <th>Cuenta</th>
+                       <td>{{ partida.cuenta }}</td>
+                   </tr>
+               </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,48 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del plan de portadores
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Áreas</th>
+                        <td>
+                            <ul>
+                                {% for area in  plan.areas%}
+                                    <li>{{ area.nombre }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Categoría</th>
+                        <td>{{ plan.getCategoriaToString() }}</td>
+                    </tr>
+                    <tr>
+                        <th>Valor</th>
+                        <td>{{ plan.valor }}</td>
+                    </tr>
+                    <tr>
+                        <th>Usuario</th>
+                        <td>{{ plan.usuario }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

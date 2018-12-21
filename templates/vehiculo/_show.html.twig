@@ -1,0 +1,62 @@
+<div class="modal-dialog modal-full">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del vehículo
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <th>Matrícula</th>
+                        <td colspan="3">{{vehiculo.matricula}}</td>
+                    </tr>
+                    <tr>
+                        <th>Chofer</th>
+                        <td>{{vehiculo.chofer}}</td>
+                        <th>Responsable</th>
+                        <td>{{vehiculo.responsable}}</td>
+                    </tr>
+                    <tr>
+                        <th>Marca</th>
+                        <td>{{vehiculo.marca}}</td>
+                        <th>Modelo</th>
+                        <td>{{vehiculo.modelo}}</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo de combustible</th>
+                        <td>{{vehiculo.tipocombustible}}</td>
+                        <th>Tipo de vehículo</th>
+                        <td>{{vehiculo.tipovehiculo}}</td>
+                    </tr>
+                    <tr>
+                        <th>Índice de consumo</th>
+                        <td>{{vehiculo.indconsumo}}</td>
+                        <th>Kms por mantenimiento</th>
+                        <td>{{vehiculo.kmsxmantenimiento}}</td>
+                    </tr>
+                    <tr>
+                        <th>Litros en tanque</th>
+                        <td>{{vehiculo.litrosentanque}}</td>
+                        <th>Estado</th>
+                        <td>
+                            {% set status=['success','primary','info','warning','danger'] %}
+                            <span class="m-badge m-badge--{{ status[vehiculo.estado] }} m--font-boldest m-badge--wide text-uppercase">
+                                {{vehiculo.getEstadoToString()}}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,23 @@
+            <h5>
+               Remanente actual
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Litros en tanque</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.litrosentanque }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Litros en tanque</th>
+                    </tr>
+                    </tfoot>
+                </table>

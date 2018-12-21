@@ -1,0 +1,9 @@
+{% for tipo, mensajes in app.session.flashbag.all() %}
+    {% for mensaje in mensajes %}
+       <script>
+           toastr.success('{{ mensaje }}');
+       </script>
+    {% endfor %}
+{% endfor %}
+                                            
+                                            

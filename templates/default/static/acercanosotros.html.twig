@@ -1,0 +1,27 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block body %}
+<div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                <h3 class="m-portlet__head-text">
+                    Acerca de nosotros
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <h4>¿Qué es SITRANS?</h4>
+        <p class="text-justify">
+            SITRANS es una aplicación web desarrollada por La Universidad Agraria de La Habana en aras de permitir a las instituciones y centros de trabajo controlar sus portadores energéticos. Es una aplicación colaborativa y libre por tal motivo otros desarrolladores pueden colaborar con mejoras y actualizaciones del software, siempre y cuando se realicen sin fines lucrativos.
+        </p>
+
+        <h4>¿Cuál es su licencia?</h4>
+        <p>
+        Este sistema utliza la licencia MIT, por tal motivo su código fuente es libre y gratuito, sin ánimos de lucro.
+        Además cualquier persona que utilice este software en su empresa o centro de trabajo al igual que cualquier desarrollador que lo tome como base para la confección de otro software similar solo basta con que destaque en su nueva propuesta de quien tomó la idea original, etc.
+        </p>
+    </div>
+</div>
+{% endblock %}

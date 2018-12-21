@@ -1,0 +1,55 @@
+{{form_start(form,{'attr':{
+    'id': form_id|default('vehiculo_new')
+}})}}
+<div class="modal-body" id="modal-body">
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-4">
+            {{form_row(form.matricula)}}
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row margin-top-10">
+        <div class="col-md-4">
+            {{form_row(form.tipovehiculo)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.marca)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.modelo)}}
+        </div>
+    </div>
+    <div class="row margin-top-10">
+        <div class="col-md-4">
+            {{form_row(form.responsable)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.chofer)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.estado)}}
+        </div>
+    </div>
+    <div class="row margin-top-10">
+        <div class="col-md-4">
+            {{form_row(form.tipocombustible)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.indconsumo)}}
+        </div>
+        <div class="col-md-4">
+            {{form_row(form.kmsxmantenimiento)}}
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+        <i class="flaticon-edit-1 ladda-label"></i> {{ action |default('Guardar')}}
+        <span class="ladda-spinner"></span>
+    </button>
+</div>
+{{form_end(form)}}
+

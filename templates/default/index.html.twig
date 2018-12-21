@@ -1,0 +1,67 @@
+{% extends 'layout/anonimo.html.twig' %}
+ {% block stylesheets %}
+     <link rel="stylesheet" type="text/css"  href="{{ asset('assets/sitrans/css/page/index.css')}}" />
+ {% endblock stylesheets %}
+{% block body %}
+    <div id="wall">
+        <div class="col-md-5" id="login-form">
+            <h3 class="text-center">Bienvenido a SITRANS</h3>
+            {% if error is defined and error is not empty %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    {{ error.message |trans }}
+                </div>
+
+            {% endif %}
+            <form action="{{ path('check') }}"  method="POST" class="m-form">
+                <div class="m-portlet__body">
+                    <div class="m-form__section">
+                        <div class="form-group m-form__group">
+                            <label for="_username">
+                                Usuario o correo electrónico:
+                            </label>
+                            <div class="m-input-icon m-input-icon--left">
+                                <input class="form-control m-input" placeholder="Escriba su usuario" id="_username" name="_username"
+                                       required="required" type="text" value="{{ last_username }}">
+                                <span class="m-input-icon__icon m-input-icon__icon--left">
+													<span><i class="la la-user"></i></span>
+												</span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group">
+                            <label for="_password">
+                                Contraseña:
+                            </label>
+                            <div class="m-input-icon m-input-icon--left">
+                                <input class="form-control m-input" placeholder="Escriba su contraseña" id="_password" name="_password"
+                                       required="required" type="password">
+                                <span class="m-input-icon__icon m-input-icon__icon--left">
+													<span><i class="la la-key"></i></span>
+												</span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group">
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="remember" value="1"/>Recuérdame<span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                        <button type="submit" class="btn btn-success">
+                            Acceder
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            Cancelar
+                        </button>
+            </form>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/sitrans/script/page/login.js') }}"></script>
+    <script>
+        login.init();
+    </script>
+{% endblock javascripts %}

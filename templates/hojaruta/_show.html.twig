@@ -1,0 +1,61 @@
+<div class="modal-dialog modal-full">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles de la hoja de ruta
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Vehículo</th>
+                        <td>{{hojaruta.vehiculo}}</td>
+                        <th>Código</th>
+                        <td>{{hojaruta.codigo}}</td>
+                    </tr>
+                    <tr>
+                        <th>Origen</th>
+                        <td>{{hojaruta.origen}}</td>
+                        <th>Destino</th>
+                        <td>{{hojaruta.destino}}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de salida</th>
+                        <td>{{hojaruta.fechasalida | date('d-m-Y H:i')}}</td>
+                        <th>Fecha de llegada</th>
+                        <td>{{hojaruta.fechallegada | date('d-m-Y H:i')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo de actividad</th>
+                        <td>{{hojaruta.tipoactividad}}</td>
+                        <th>Litros consumidos</th>
+                        <td>{{hojaruta.litrosconsumidos}}</td>
+                    </tr>
+                    <tr>
+                        <th>Kilómetros recorridos</th>
+                        <td>{{hojaruta.kmrecorrido}}</td>
+                        <th>Importe</th>
+                        <td>{{hojaruta.importe}}</td>
+                    </tr>
+                    <tr>
+                        <th>Usuario</th>
+                        <td colspan="3"><p>{{hojaruta.usuario}}</p></td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td colspan="3"><p>{{hojaruta.descripcion}}</p></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

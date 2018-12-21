@@ -1,0 +1,12 @@
+{% extends "layout/base.html.twig" %}
+
+{% block header %}
+{% embed "layout/recortes/header.html.twig" %}
+{% endembed %}
+{% endblock header %}
+
+{% block page_container %}
+    <div class="page-content">
+        {% block body %}{% endblock %}
+    </div>
+{% endblock page_container %}

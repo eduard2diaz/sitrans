@@ -1,0 +1,63 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+ {% block stylesheets %}
+     <style>
+         div.m-portlet p{
+             text-align: justify;
+         }
+     </style>
+ {% endblock stylesheets %}
+{% block body %}
+<div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                <h3 class="m-portlet__head-text">
+                    Políticas de cookies
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <p>
+            En SITRANS, creemos que hay que ser claros y abiertos sobre el modo en que recabamos y utilizamos tus datos.
+            Para ofrecer un mayor nivel de transparencia, esta política proporciona información detallada sobre cómo y cuándo utilizamos cookies.
+            Esta Política de cookies se aplica a cualquier producto o servicio de SITRANS asociado a esta política o que la incorpore por referencia.
+        </p>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>¿Qué es una cookie?</h4>
+                <p>
+                    Una cookie es un pequeño archivo colocado en tu dispositivo electrónico que habilita las funcionalidades de SITRANS.
+                    Por ejemplo, las cookies nos permiten identificar tu dispositivo, asegurar tu acceso a SITRANS y a nuestros sitios en general.
+                </p>
+            </div>
+        </div>
+        <div class="row margin-top-10">
+            <div class="col-md-6">
+                <h4>¿Utiliza SITRANS cookies?</h4>
+                <p>
+                    Sí. Como se describe en la Política de privacidad, utilizamos cookies y otras tecnologías para garantizar que todos los usuarios
+                    que usan SITRANS tengan la mejor experiencia posible.
+                </p>
+                <p>
+                    Las cookies también nos ayudan a mantener la seguridad de las cuentas.
+                    Cuando continúas visitando o utilizando nuestros servicios, estás aceptando el uso de cookies y de tecnologías similares
+                    para los fines descritos en esta política.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h4>¿Qué tipo de cookies utiliza SITRANS?</h4>
+                <p>Utilizamos dos tipos: las cookies permanentes y las cookies de sesión:</p>
+                    <ul>
+                        <li>Una cookie permanente nos ayuda a reconocerte como usuario, de modo que te resultará más sencillo regresar o interactuar con nuestros servicios sin necesidad de volver a iniciar sesión.
+                            <p>Una vez que hayas iniciado sesión, una cookie permanente permanecerá en tu navegador y SITRANS la leerá cuando regreses a alguno de nuestros sitios web.</p>
+                        </li>
+                        <li>Las cookies de sesión solo duran una sesión (normalmente la visita a un sitio web o una sesión del navegador).</li>
+                    </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

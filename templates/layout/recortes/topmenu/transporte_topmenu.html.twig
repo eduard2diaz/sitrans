@@ -1,0 +1,150 @@
+<li class="m-menu__item  m-menu__item--submenu m-menu__item--rel"  m-menu-submenu-toggle="click" m-menu-link-redirect="1" aria-haspopup="true">
+    <a  href="javascript:;" class="m-menu__link m-menu__toggle header">
+        <span class="m-menu__item-here"></span>
+        <i class="m-menu__link-icon flaticon-transport"></i>
+        <span class="m-menu__link-text">
+														Transporte
+													</span>
+        <i class="m-menu__hor-arrow la la-angle-down"></i>
+        <i class="m-menu__ver-arrow la la-angle-right"></i>
+    </a>
+    <div class="m-menu__submenu  m-menu__submenu--fixed m-menu__submenu--left" style="width:600px">
+        <span class="m-menu__arrow m-menu__arrow--adjust"></span>
+        <div class="m-menu__subnav">
+            <ul class="m-menu__content">
+                <li class="m-menu__item">
+                    <h3 class="m-menu__heading m-menu__toggle">
+																	<span class="m-menu__link-text">
+																		Entidades
+																	</span>
+                        <i class="m-menu__ver-arrow la la-angle-right"></i>
+                    </h3>
+                    <ul class="m-menu__inner">
+                        {%if is_granted('ROLE_JEFETRANSPORTE')%}
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('chofer_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-icon flaticon-user"></i>
+                                    <span class="m-menu__link-text">
+																				Chofer
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('responsable_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-icon flaticon-user"></i>
+                                    <span class="m-menu__link-text">
+																				Responsable
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('vehiculo_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-icon flaticon-car"></i>
+                                    <span class="m-menu__link-text">
+																				Vehículo
+																			</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {%if is_granted('ROLE_CAJERO')%}
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('tarjeta_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-icon flaticon-file"></i>
+                                    <span class="m-menu__link-text">
+																				Tarjeta
+																			</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+
+                <li class="m-menu__item">
+                    <h3 class="m-menu__heading m-menu__toggle">
+																	<span class="m-menu__link-text">
+																		Operaciones
+																	</span>
+                        <i class="m-menu__ver-arrow la la-angle-right"></i>
+                    </h3>
+                    <ul class="m-menu__inner">
+                        {%if is_granted('ROLE_CAJERO')%}
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('ajustetarjeta_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Ajuste de tarjeta
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('chip_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Chip
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('cierremescombustible_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Cierre de mes
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('recargatarjeta_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Recarga de tarjeta
+																			</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {%if is_granted('ROLE_JEFETRANSPORTE')%}
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('hojaruta_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Hoja de ruta
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('mantenimiento_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Mantenimiento
+																			</span>
+                                </a>
+                            </li>
+                            <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                                <a  href="{{ path('reparacion_index') }}" class="m-menu__link ">
+                                    <i class="m-menu__link-bullet m-menu__link-bullet--line">
+                                        <span></span>
+                                    </i>
+                                    <span class="m-menu__link-text">
+																				Reparación
+    								</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</li>

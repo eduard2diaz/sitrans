@@ -1,0 +1,52 @@
+            <h5>
+                Resumen de consumo de combustible por vehículos {{mes~', '~anno }}
+            </h5>
+                <table class="table table-bordered">
+    <tr>
+        <td></td>
+        <th colspan="2">DATOS VEHICULO</th>
+        <th>CARGADO</th>
+        <th colspan="2">DATOS TARJETA</th>
+        <th colspan="2">CONSUMO</th>
+    </tr>
+    <tr>
+        <td></td>
+        <th>No. Matricula</th>
+        <th>Chofer, Nombre y Apellidos</th>
+        <th>Cant. Litros</th>
+        <th>NO</th>
+        <th>Responsable, Nombre y Apellidos</th>
+        <th>Km</th>
+        <th>Indices</th>
+    </tr>
+
+    {% for obj in data %}
+        {% set totalkms=0 %}
+        {% set totallitros=0 %}
+        {% for aux in obj.vehiculo %}
+            <tr>
+                <td></td>
+                <td>{{ aux.matricula }}</td>
+                <td>{{ aux.chofer }}</td>
+                <td>{{ aux.litrosentanque }}</td>
+                <td>{{ aux.notarjeta }}</td>
+                <td>{{ aux.responsable }}</td>
+                <td>{{ aux.km }}</td>
+                <td>{{ aux.indice }}</td>
+            </tr>
+            {% set totalkms=totalkms+aux.km %}
+            {% set totallitros=totallitros+aux.litrosentanque %}
+        {% endfor %}
+        <tr>
+            <td></td>
+            <th colspan="2">TOTAL {{ obj.tipocombustible }}</th>
+            <th>{{ totallitros }}</th>
+            <td></td>
+            <td></td>
+            <th>{{ totalkms }}</th>
+            <td></td>
+        </tr>
+    {% endfor %}
+
+</table>
+

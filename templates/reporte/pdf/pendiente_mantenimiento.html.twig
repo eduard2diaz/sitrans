@@ -1,0 +1,27 @@
+
+            <h5>
+                Pendientes a mantenimiento
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros recorridos</th>
+                        <th>Diferencia</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.kmsxrecorridos }}</td>
+                            <td>{{ obj.diferencia }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros recorridos</th>
+                        <th>Diferencia</th>
+                    </tr>
+                    </tfoot>
+                </table>

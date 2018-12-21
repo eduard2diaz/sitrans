@@ -1,0 +1,68 @@
+<div class="modal-dialog modal-full">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Análisis de hoja de ruta
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+<table class="table">
+    <tbody>
+    <tr>
+        <th>Fecha</th>
+        <th>Número de trajeta</th>
+        <th>Kilometraje</th>
+        <th>Combustible consumido</th>
+        <th>Combustible en tanque</th>
+        <th colspan="2">Firma</th>
+    </tr>
+    {% set kilometraje=0 %}
+    {% set combustibleconsumido=0 %}
+    {% for obj in datos %}
+        <tr>
+            <td>{{ obj.fecha |date('d-m-Y H:i')}}</td>
+            <td>{{ obj.tarjeta }}</td>
+            <td>{{ obj.kms }}</td>
+            <td>{{ obj.litros }}</td>
+            <td>{{ obj.entanque }}</td>
+            <td colspan="2"></td>
+        </tr>
+        {% set kilometraje=kilometraje+obj.kms %}
+        {% set combustibleconsumido=combustibleconsumido+obj.litros %}
+    {% endfor %}
+    <tr>
+        <th rowspan="4">Resumen</th>
+        <th colspan="2">Datos del mes</th>
+        <td rowspan="2"><b>Kilometraje total recorrido</b></td>
+        <td rowspan="2">{{ combustibleconsumido }}<br/><b>Combustible total consumido</b></td>
+        <th colspan="2">Indice de consumo real</th>
+    </tr>
+    <tr>
+        <td>{{ kilometraje }} <br/><b>Kilometraje</b></td>
+        <td>{{ vehiculo.litrosentanque }} <br/><b>Combustible en tanque</b></td>
+        <td><b>Real</b> {{ vehiculo.indconsumo }}</td>
+        <td><b>% real del plan</b></td>
+    </tr>
+    <tr>
+        <th colspan="2">Mantenimiento</th>
+        <td></td>
+        <th colspan="3">Observaciones</th>
+    </tr>
+    <tr>
+        <th>Tipo</th>
+        <th>Kilometraje</th>
+        <th>Variación</th>
+        <td colspan="3"></td>
+    </tr>
+
+    </tbody>
+</table></div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-primary exportar" data-dismiss="modal"><i class="flaticon-file"></i> Exportar</a>
+            </div>
+        </div>
+    </div>
+</div>

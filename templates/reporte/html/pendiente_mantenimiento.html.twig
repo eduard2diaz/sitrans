@@ -1,0 +1,42 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Resultados: Pendientes a mantenimiento
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros recorridos</th>
+                        <th>Diferencia</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.kmsxrecorridos }}</td>
+                            <td>{{ obj.diferencia }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Kilómetros recorridos</th>
+                        <th>Diferencia</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-primary exportar" data-dismiss="modal"><i class="flaticon-file"></i> Exportar</a>
+            </div>
+        </div>
+    </div>
+</div>
+

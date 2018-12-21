@@ -1,0 +1,34 @@
+
+
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Detalles del tipo de vehículo
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div>
+                    <div class="modal-body" id="modal-body">
+                        <table class="table">
+                            <tr>
+                                <th style="width: 10%"><b>Tipo de vehículo</b></th>
+                                <td>{{vehiculo.nombre}}</td>
+                            </tr>
+                            <tr>
+                                <th><b>Licencias</b></th>
+                                <td>
+                                    <ul class="m-nav m-nav--inline">
+                                    {% for obj in vehiculo.idlicencia.toArray()%}
+                                        <li class="m-nav__item">{{ obj.nombre }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>

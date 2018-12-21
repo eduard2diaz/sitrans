@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Resultados: Consumo de kilowatts
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th>Consumo</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.area }}</td>
+                            <td>{{ obj.consumo }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Área</th>
+                        <th>Consumo</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-primary exportar" data-dismiss="modal"><i class="flaticon-file"></i> Exportar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

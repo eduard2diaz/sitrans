@@ -1,0 +1,55 @@
+<div class="modal-dialog modal-full">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Resumen de distribución de combustible {{mes~', '~anno }}
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tipo de combustible</th>
+                <th colspan="2">Número de tarjeta</th>
+                <th>Cantidad de litros</th>
+                <th>Importe</th>
+                <th>Total</th>
+                <th>Responsable</th>
+            </tr>
+        </thead>
+        {% set i=1 %}
+
+    {% for obj in data %}
+        {% set sumaimporte=0 %}
+        {% set sumalitros=0 %}
+        {% for tarjeta in obj.tarjetas %}
+        <tr>
+            <td>{{ obj.tipocombustible }}</td>
+                    <td>{{ i }}</td>
+                    <td>{{ tarjeta[0].codigo }}</td>
+                    <td>{{ tarjeta[0].litros  }}</td>
+                    <td>{{ tarjeta[0].importe  }}</td>
+                    <td></td>
+                    <td>{{ tarjeta[0].nombre~' '~tarjeta[0].apellidos  }}</td>
+                    {% set i=1+i %}
+                    {% set sumalitros=sumalitros+tarjeta[0].litros %}
+                    {% set sumaimporte=sumaimporte+tarjeta[0].importe %}
+                    </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="3">TOTAL</th>
+            <th class="text-uppercase" >{{ sumalitros }}</th>
+            <th class="text-uppercase" colspan="3">{{ sumaimporte }}</th>
+        </tr>
+    {% endfor %}
+    </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-primary exportar" data-dismiss="modal"><i class="flaticon-file"></i> Exportar</a>
+            </div>
+        </div>
+    </div>
+</div>

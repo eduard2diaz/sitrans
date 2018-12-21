@@ -1,0 +1,24 @@
+
+            <h5>
+                Consumo de kilowatts
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th>Consumo</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.area }}</td>
+                            <td>{{ obj.consumo }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Área</th>
+                        <th>Consumo</th>
+                    </tr>
+                    </tfoot>
+                </table>

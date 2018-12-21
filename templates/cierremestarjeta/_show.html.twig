@@ -1,0 +1,46 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+               Cierre de tarjeta
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th style="width: 7%">Tarjeta</th>
+                        <td>{{cierre.tarjeta}}</td>
+                        <th>Fecha</th>
+                        <td>{{cierre.fecha | date('d-m-Y H:i')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Combustible consumido</th>
+                        <td>{{cierre.combustibleconsumido}}</td>
+                        <th>Efectivo consumido</th>
+                        <td>{{cierre.efectivoconsumido}}</td>
+                    </tr>
+                    <tr>
+                        <th>Combustible restante</th>
+                        <td>{{cierre.restantecombustible}}</td>
+                        <th>Efectivo restante</th>
+                        <td>{{cierre.restanteefectivo}}</td>
+                    </tr>
+                    <tr>
+                        <th>Usuario</th>
+                        <td colspan="3">{{cierre.usuario}}</td>
+                    </tr>
+                </table>
+        </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+    </div>
+</div>
+</div>
+
+
+
+

@@ -1,0 +1,8 @@
+{% extends 'bundles/TwigBundle/Exception/error.html.twig' %}
+ {% block error_picture %}
+     <img src="{{ asset('assets/sitrans/img/http_error/404.png')}}" style="width: 100%"/>
+ {% endblock error_picture %}
+{% block error_title %}Página no encontrada{% endblock error_title %}
+{% block error_details %}
+    Lo sentimos la página solicitada por usted no existe o fue eliminada, ante cualquier duda o dificultad contacte con el/los administrador(es), estaremos encantados de ayudarle.
+{% endblock error_details %}

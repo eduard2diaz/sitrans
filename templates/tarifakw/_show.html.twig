@@ -1,0 +1,36 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles de la tarifa de kilowatts
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Fecha</th>
+                        <td colspan="2">{{ tarifa.fecha |date('d-m-Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Valor</th>
+                    </tr>
+                    {% for obj in tarifa.rangoTarifaKws%}
+                    <tr>
+                        <td>{{ obj.inicio }}</td>
+                        <td>{{ obj.fin }}</td>
+                        <td>{{ obj.valor }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+

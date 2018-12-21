@@ -1,0 +1,90 @@
+<li class="m-nav__item m-nav__item--danger m-dropdown m-dropdown--skin-light m-dropdown--large m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  m-dropdown-toggle="click">
+    <a href="#" class="m-nav__link m-dropdown__toggle">
+        <span class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>
+        <span class="m-nav__link-icon">
+													<span class="m-nav__link-icon-wrapper">
+														<i class="flaticon-share"></i>
+													</span>
+												</span>
+    </a>
+    <div class="m-dropdown__wrapper">
+        <span class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
+        <div class="m-dropdown__inner">
+            <div class="m-dropdown__header m--align-center">
+														<span class="m-dropdown__header-title">
+															Acciones habituales
+														</span>
+                <span class="m-dropdown__header-subtitle">
+															Acceso directo
+														</span>
+            </div>
+            <div class="m-dropdown__body m-dropdown__body--paddingless">
+                <div class="m-dropdown__content">
+                    <div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">
+                        <div class="m-nav-grid m-nav-grid--skin-light">
+                            {% if is_granted('ROLE_CAJERO') %}
+                            <div class="m-nav-grid__row">
+                                <a href="{{ path('chip_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-file-1"></i>
+                                    <span class="m-nav-grid__text">
+																				Generar Chip
+																			</span>
+                                </a>
+                                <a href="{{ path('ajustetarjeta_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-edit"></i>
+                                    <span class="m-nav-grid__text">
+																				Ajustar tarjeta
+																			</span>
+                                </a>
+                            </div>
+                            <div class="m-nav-grid__row">
+                                <a href="{{ path('cierremescombustible_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-file"></i>
+                                    <span class="m-nav-grid__text">
+																				Generar cierre de mes
+																			</span>
+                                </a>
+                                <a href="{{ path('recargatarjeta_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-list-3"></i>
+                                    <span class="m-nav-grid__text">
+																				Recargar tarjeta
+																			</span>
+                                </a>
+                            </div>
+                            {% elseif is_granted('ROLE_JEFETRANSPORTE')  %}
+                            <div class="m-nav-grid__row">
+                                <a href="{{ path('hojaruta_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-car"></i>
+                                    <span class="m-nav-grid__text">
+																				Registrar vehículo
+																			</span>
+                                </a>
+                                <a href="{{ path('hojaruta_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-time"></i>
+                                    <span class="m-nav-grid__text">
+																				Actualizar Hoja de ruta
+																			</span>
+                                </a>
+                            </div>
+                            <div class="m-nav-grid__row">
+                                <a href="{{ path('mantenimiento_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-cogwheel-2"></i>
+                                    <span class="m-nav-grid__text">
+																				Mantenimiento
+																			</span>
+                                </a>
+                                <a href="{{ path('reparacion_index') }}" class="m-nav-grid__item">
+                                    <i class="m-nav-grid__icon flaticon-cogwheel-2"></i>
+                                    <span class="m-nav-grid__text">
+																				Mantenimiento
+																			</span>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>

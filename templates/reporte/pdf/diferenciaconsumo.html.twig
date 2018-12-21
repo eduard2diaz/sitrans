@@ -1,0 +1,26 @@
+            <h5>
+                Diferencia de consumos
+            </h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Consumo registrado</th>
+                        <th>Consumo real</th>
+                    </tr>
+                    </thead>
+                    {% for obj in data %}
+                        <tr>
+                            <td>{{ obj.matricula }}</td>
+                            <td>{{ obj.consumoregistrado }}</td>
+                            <td>{{ obj.consumoreal }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tfoot>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Consumo registrado</th>
+                        <th>Consumo real</th>
+                    </tr>
+                    </tfoot>
+                </table>

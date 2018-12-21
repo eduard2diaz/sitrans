@@ -1,0 +1,100 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+ {% block stylesheets %}
+     <style>
+         div.m-portlet p{
+             text-align: justify;
+         }
+     </style>
+ {% endblock stylesheets %}
+{% block body %}
+<div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet__head">
+        <div class="m-portlet__head-caption">
+            <div class="m-portlet__head-title">
+                <span class="m-portlet__head-icon"><i class="flaticon-information"></i></span>
+                <h3 class="m-portlet__head-text">
+                    Términos del servicio
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="m-portlet__body">
+        <h3>Introducción</h3>
+        <div class="row margin-top-10">
+            <div class="col-md-6">
+                <h4>Contrato</h4>
+                <p>Los presentes términos (en adelante “Términos del servicio”) tienen carácter vinculante y obligatorio.
+                    Los mismos son aplicados a la utilización de los servicios ofrecidos o puestos a disposición de los
+                    usuarios por SITRANS.
+                </p>
+                <p>La utilización de los servicios implica la aceptación expresa, plena y sin reservas,
+                    de todas y cada una de las cláusulas de los Términos del servicio en la versión publicada en el momento
+                    mismo en que el usuario utilice los servicios y demás información suministrada en el sitio. En caso de
+                    no estar de acuerdo con los Términos del servicio deberá abstenerse de utilizar los servicios.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h4>Cambios</h4>
+                <p>Podemos modificar este Contrato, nuestra Política de privacidad y nuestra Política de cookies de vez
+                    en cuando. Si introducimos algún cambio importante en el Contrato te avisaremos a través de nuestros Servicios,
+                    o por otros medios, para darte la oportunidad de revisar los cambios antes de que se hagan efectivos.
+                </p>
+                <p>Si no estás de acuerdo con cualquiera de los cambios, puedes cerrar tu cuenta.
+                    Tu uso continuado de nuestros Servicios después de publicar o de enviar un aviso sobre los cambios
+                    en estos términos significará que estás de acuerdo con los términos actualizados.
+                </p>
+            </div>
+        </div>
+
+        <div class="row margin-top-10">
+            <div class="col-md-6">
+                <h4>Tu cuenta</h4>
+                <p>Los Miembros son los titulares de las cuentas. Acuerdas:</p>
+                    <ol>
+                        <li>Intentar escoger una contraseña difícil y segura</li>
+                        <li>Proteger y mantener la confidencialidad de la contraseña</li>
+                        <li>No transferir ninguna parte de tu cuenta (por ejemplo, los contactos)</li>
+                        <li>Cumplir la legislación pertinente y nuestra lista de lo que se debe y no se debe hacer</li>
+                    </ol>
+                <p>Eres responsable de todo lo que suceda en tu cuenta salvo que la cierres o que nos notifiques que se está
+                    haciendo un uso indebido de la misma. Entre los demás y tú (incluida tu empresa), tu cuenta te pertenece.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h4>Avisos y mensajes sobre los Servicios</h4>
+                <p>Aceptas que nos comuniquemos contigo de los siguientes modos:</p>
+                <ul>
+                    <li>Un aviso en el Servicio</li>
+                    <li>Un mensaje enviado a la información de contacto que nos proporcionaste (por ejemplo, correo electrónico, teléfono móvil, dirección postal)</li>
+                    <li>Acuerdas mantener actualizada tu información de contacto.</li>
+                    <li>Revisa tu configuración para controlar y limitar los mensajes que te enviamos.</li>
+                </ul>
+            </div>
+        </div>
+        <hr/>
+
+        <h3>Derechos y limitaciones</h3>
+        <div class="row margin-top-20">
+            <div class="col-md-6">
+                <h4>Limitaciones</h4>
+                <p>SITRANS se reserva el derecho a limitar tu uso de los Servicios, incluidos tu número de contactos y tu
+                    capacidad para contactar con otros Miembros. SITRANS se reserva el derecho de restringir, suspender o
+                    cerrar tu cuenta si considera que puedes haber incumplido este Contrato, la ley o que estás utilizando
+                    incorrectamente los Servicios (por ejemplo, has infringido la lista de lo que se debe y no se debe hacer).
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h4>Derechos de propiedad intelectual</h4>
+                <p>
+                    SITRANS se reserva todos sus derechos de propiedad intelectual en los Servicios. La utilización de los
+                    Servicios no te confiere la propiedad de los mismos ni del contenido o de la información que se muestra
+                    a través de los mismos.
+                </p>
+                <p>
+                    Las marcas y los logotipos utilizados en relación con los Servicios son las marcas comerciales de sus respectivos propietarios.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

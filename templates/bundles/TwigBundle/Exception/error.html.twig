@@ -1,0 +1,30 @@
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+ {% block stylesheets %}
+ <style>
+     ul.error li{
+         display: inline;
+     }
+     li a.active{
+         margin-left: 2%;
+     }
+ </style>
+ {% endblock stylesheets %}
+{% block body %}
+    <div class="block-information margin-top-10">
+        <div class="row margin-bottom-10">
+            <div class="col-md-5">
+                {% block error_picture %}
+                    <img src="{{ asset('assets/sitrans/img/http_error/error.png')}}" class="pull-right" style="width: 80%"/>
+                {% endblock error_picture %}
+            </div>
+            <div class="col-md-5">
+                <h3>{% block error_title %}Error {{ status_code }}{% endblock error_title %}</h3>
+                <p>{% block error_details %}{{ status_text}}{% endblock error_details %}</p>
+                <ul class="m-nav error">
+                    <li><a class="btn" href="{{ path('logout') }}">Cerrar sesión</a></li>
+                    <li><a class="btn btn-info active" href="{{ path('index') }}">Refrescar</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
