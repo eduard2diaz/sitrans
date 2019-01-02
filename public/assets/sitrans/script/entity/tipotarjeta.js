@@ -29,6 +29,13 @@ var tipotarjeta = function () {
         $("div#basicmodal form").validate({
             rules:{
                 'tipotarjeta[nombre]': {required:true}
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -161,7 +168,7 @@ var tipotarjeta = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este tipo de tarjeta?",
+                title: "Eliminar tipo de tarjeta",
                 message: "<p>¿Está seguro que desea eliminar este tipo de tarjeta?</p>",
                 buttons: {
                     confirm: {

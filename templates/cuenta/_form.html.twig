@@ -1,23 +1,56 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('cuenta_new')
+    'id': form_id|default('cuenta_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.nombre)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.nombre)}}
+                </label>
+                <div>
+                    {{form_widget(form.nombre)}}
+                    {{form_errors(form.nombre)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.codigo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigo)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigo)}}
+                    {{form_errors(form.codigo)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.naturaleza)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.naturaleza)}}
+                </label>
+                <div>
+                    {{form_widget(form.naturaleza)}}
+                    {{form_errors(form.naturaleza)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.nae)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.nae)}}
+                </label>
+                <div>
+                    {{form_widget(form.nae)}}
+                    {{form_errors(form.nae)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

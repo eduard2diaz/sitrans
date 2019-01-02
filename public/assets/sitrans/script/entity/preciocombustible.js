@@ -16,6 +16,13 @@ var preciocombustible = function () {
                 'precio_combustible[tipocombustible]': {required:true},
                 'precio_combustible[fecha]': {required:true},
                 'precio_combustible[importe]': {required:true, min: 0.1},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
 
@@ -215,7 +222,7 @@ var preciocombustible = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este precio?",
+                title: "Eliminar precio de combustible",
                 message: "<p>¿Está seguro que desea eliminar este precio?</p>",
                 buttons: {
                     confirm: {

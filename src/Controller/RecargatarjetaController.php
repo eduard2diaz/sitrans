@@ -83,65 +83,13 @@ class RecargatarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        return $this->render('recargatarjeta/_show.html.twig',['recarga'=>$recargatarjeta]);
-    }
+        $tarjeta=$recargatarjeta->getTarjeta()->getId();
 
-    /**
-     * @Route("/{id}/edit", name="recargatarjeta_edit", methods="GET|POST",options={"expose"=true})
-     */
-    public function edit(Request $request, Recargatarjeta $recargatarjeta): Response
-    {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
-        
-        $importeOriginal=$recargatarjeta->getCantidadefectivo();
-        $cantlitrosOriginal=$recargatarjeta->getCantidadlitros();
+        $mes=$recargatarjeta->getFecha()->format('m');
+        $anno=$recargatarjeta->getFecha()->format('Y');
+        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
 
-        $form = $this->createForm(RecargatarjetaType::class, $recargatarjeta, array('action' => $this->generateUrl('recargatarjeta_edit',array('id'=>$recargatarjeta->getId()))));
-        $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted())
-            if ($form->isValid()) {
-                    $recargatarjeta->setUsuario($this->getUser());
-                    $diferenciaImporte=$recargatarjeta->getCantidadefectivo()-$importeOriginal;
-                    $diferenciaLitros= $recargatarjeta->getCantidadlitros()-$cantlitrosOriginal;
-                    if($diferenciaImporte<0){
-                        $diferenciaImporte*=-1;
-                        $recargatarjeta->getTarjeta()->setCantefectivo($recargatarjeta->getTarjeta()->getCantefectivo()-$diferenciaImporte);
-                    }elseif($diferenciaImporte>0)
-                        $recargatarjeta->getTarjeta()->setCantefectivo($recargatarjeta->getTarjeta()->getCantefectivo()+$diferenciaImporte);
-
-                if($diferenciaLitros<0){
-                    $diferenciaLitros*=-1;
-                    $recargatarjeta->getTarjeta()->setCantlitros($recargatarjeta->getTarjeta()->getCantlitros()-$diferenciaLitros);
-                }elseif($diferenciaLitros>0)
-                    $recargatarjeta->getTarjeta()->setCantlitros($recargatarjeta->getTarjeta()->getCantlitros()+$diferenciaLitros);
-
-                $em->persist($recargatarjeta);
-                $em->flush();
-                return new JsonResponse(array('mensaje' =>"La recarga fue actualizada satisfactoriamente",
-                    'fecha' => $recargatarjeta->getFecha()->format('d-m-Y h:i a'),
-                    'cantidadlitros' => $recargatarjeta->getCantidadlitros(),
-                    'cantidadefectivo' => $recargatarjeta->getCantidadefectivo(),
-                    'tarjeta' => $recargatarjeta->getTarjeta()->getCodigo(),
-                    'id' => $recargatarjeta->getId(),
-                ));
-            } else {
-                $page = $this->renderView('recargatarjeta/_form.html.twig', array(
-                    'form' => $form->createView(),
-                    'form_id' => 'recargatarjeta_edit',
-                    'action' => 'Actualizar'
-                ));
-                return new JsonResponse(array('form' => $page, 'error' => true,));
-            }
-
-        return $this->render('recargatarjeta/new.html.twig', [
-            'recargatarjeta' => $recargatarjeta,
-            'form' => $form->createView(),
-            'form_id' => 'recargatarjeta_edit',
-            'action' => 'Actualizar',
-            'title' => 'Editar recarga de tarjeta',
-        ]);
+        return $this->render('recargatarjeta/_show.html.twig',['recarga'=>$recargatarjeta,'cierre'=>$cierre]);
     }
 
     /**

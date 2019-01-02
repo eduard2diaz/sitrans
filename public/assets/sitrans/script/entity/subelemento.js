@@ -16,9 +16,16 @@ var subelemento = function () {
         $("div#basicmodal form").validate({
             rules:{
                 'subelemento[nombre]': {required:true},
-                'subelemento[codigo]': {required:true},
+                'subelemento[codigo]': {required:true, number: true, min: 0},
                 'subelemento[partida]': {required:true},
                 'subelemento[elemento]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -236,7 +243,7 @@ var subelemento = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este subelemento?",
+                title: "Eliminar subelemento",
                 message: "<p>¿Está seguro que desea eliminar este subelemento?</p>",
                 buttons: {
                     confirm: {

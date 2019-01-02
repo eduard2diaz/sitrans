@@ -13,6 +13,13 @@ var centrocosto = function () {
                 'centrocosto[nombre]': {required:true},
                 'centrocosto[codigo]': {required:true},
                 'centrocosto[cuenta]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -173,7 +180,7 @@ var centrocosto = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este centro de costo?",
+                title: "Eliminar centro de costo",
                 message: "<p>¿Está seguro que desea eliminar este centro de costo?</p>",
                 buttons: {
                     confirm: {

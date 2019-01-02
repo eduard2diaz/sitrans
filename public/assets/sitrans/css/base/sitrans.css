@@ -55,7 +55,6 @@ span.select2{
 
 header{
     background: rgba(255,255,255,.8);
-    
     border-top: 0;
 }
 
@@ -163,4 +162,35 @@ footer.m-footer{ background-color: #1d262d !important;
 
 div.prefooter i[class^="socicon-"], [class*=" socicon-"] {
     font-size: large !important;
+}
+div.m-portlet p{
+    text-align: justify;
+}
+input.select2-search__field{
+    background-color: white;
+    color: black;
+}
+
+div#shortcuts_header
+{
+    background-image: url('../../../template/app/media/img/misc/quick_actions_bg.jpg');
+    color: white;
+}
+
+div#usertopmenu_header
+{
+    background-image: url('../../../template/app/media/img/misc/user_profile_bg.jpg');
+}
+.m-card-user__name, .m-card-user__email{
+    color: white !important;
+}
+
+
+.alert-notification
+{
+    box-shadow: 1px 2px 8px black;
+    position: absolute;
+    z-index: 2;
+    left: 2%;
+    top: 76%;
 }

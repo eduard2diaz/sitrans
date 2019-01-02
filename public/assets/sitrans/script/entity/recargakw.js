@@ -16,7 +16,6 @@ var recargakw = function () {
                 'recarga_kw[reloj]': {required:true},
                 'recarga_kw[codigoSTS]': {required:true},
                 'recarga_kw[folio00]': {required:true, min: 0},
-                'recarga_kw[folio01]': {required:true, min: 1},
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');
@@ -39,7 +38,7 @@ var recargakw = function () {
                     url: datatable_translation
                 },
                 columns:[
-                    {data:"id"},{data:"reloj"},{data:"fecha"},{data:"asignacion"},{data:"acciones"}
+                    {data:"id"},{data:"reloj"},{data:"fecha"},{data:"asignacion"},{data:"folio00"},{data:"acciones"}
                 ],
                 columnDefs:[
                     {
@@ -48,12 +47,10 @@ var recargakw = function () {
 
                         }
                     }
-
-
                     ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm recargakw_show" data-href="'+Routing.generate('recargakw_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_recargakw" data-href="'+Routing.generate('recargakw_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm recargakw_show" data-href="'+Routing.generate('recargakw_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li></ul>';
+                    }
                 }],
 
             });
@@ -139,7 +136,7 @@ var recargakw = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -154,7 +151,7 @@ var recargakw = function () {
 
             evento.preventDefault();
             var link = $(this).attr('data-href');
-            obj = $(this);
+         //   obj = $(this);
             $.ajax({
                 type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
                 dataType: 'html',
@@ -215,7 +212,8 @@ var recargakw = function () {
                             "id": data['id'],
                             "reloj": data['reloj'],
                             "fecha": data['fecha'],
-                            "asignacion": data['asignacion']
+                            "asignacion": data['asignacion'],
+                            "folio00": data['folio00']
                         });
                         objeto.draw();
                         table.page(pagina).draw('page');
@@ -230,49 +228,53 @@ var recargakw = function () {
     }
 
     var eliminar = function () {
-        $('table#recargakw_table').on('click', 'a.eliminar_recargakw', function (evento)
+       $('div#basicmodal').on('click', 'a.eliminar_recargakw', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
 
-           bootbox.confirm({
-                title: "Desea eliminar esta recarga?",
-                message: "<p>¿Está seguro que desea eliminar esta recarga?</p>",
-                buttons: {
-                    confirm: {
-                        label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
-                    cancel: {
-                        label: 'Cancelar',
-                        className: 'btn btn-metal'}
-                },
-                callback: function (result) {
-                    if (result == true)
-                        $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentrecargakw porque lo k estamos mandando es un json y no un html plano
-                            url: link,
-                            beforeSend: function () {
-                                mApp.block("body",
-                                    {overlayColor:"#000000",type:"loader",state:"success",message:"Eliminando..."});
-                            },
-                            complete: function () {
-                                mApp.unblock("body")
-                            },
-                            success: function (data) {
-                                table.row(obj.parents('tr'))
-                                    .remove()
-                                    .draw('page');
-                                toastr.success(data['mensaje']);
-                            },
-                            error: function ()
-                            {
-                                base.Error();
-                            }
-                        });
-                }
-            });
+            $('div#basicmodal').modal('hide');
+
+          setTimeout(function(){
+              bootbox.confirm({
+                  title: "Eliminar recarga de kilowatts",
+                  message: "<p>¿Está seguro que desea eliminar esta recarga?</p>",
+                  buttons: {
+                      confirm: {
+                          label: 'Sí, estoy seguro',
+                          className: 'btn btn-primary'},
+                      cancel: {
+                          label: 'Cancelar',
+                          className: 'btn btn-metal'}
+                  },
+                  callback: function (result) {
+                      if (result == true)
+                          $.ajax({
+                              type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                              // dataType: 'html', esta url se comentrecargakw porque lo k estamos mandando es un json y no un html plano
+                              url: link,
+                              beforeSend: function () {
+                                  mApp.block("body",
+                                      {overlayColor:"#000000",type:"loader",state:"success",message:"Eliminando..."});
+                              },
+                              complete: function () {
+                                  mApp.unblock("body")
+                              },
+                              success: function (data) {
+                                  table.row(obj.parents('tr'))
+                                      .remove()
+                                      .draw('page');
+                                  toastr.success(data['mensaje']);
+                              },
+                              error: function ()
+                              {
+                                  base.Error();
+                              }
+                          });
+                  }
+              });
+          },500);
+
         });
     }
 

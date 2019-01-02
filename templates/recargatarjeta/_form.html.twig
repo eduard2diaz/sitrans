@@ -1,24 +1,57 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('recargatarjeta_new')
+    'id': form_id|default('recargatarjeta_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.tarjeta)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tarjeta)}}
+                </label>
+                <div>
+                    {{form_widget(form.tarjeta)}}
+                    {{form_errors(form.tarjeta)}}
+                </div>
+            </div>
             {{form_errors(form)}}
         </div>
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.cantidadlitros)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.cantidadlitros)}}
+                </label>
+                <div>
+                    {{form_widget(form.cantidadlitros)}}
+                    {{form_errors(form.cantidadlitros)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.cantidadefectivo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.cantidadefectivo)}}
+                </label>
+                <div>
+                    {{form_widget(form.cantidadefectivo)}}
+                    {{form_errors(form.cantidadefectivo)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

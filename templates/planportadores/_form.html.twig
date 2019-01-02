@@ -1,14 +1,31 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('planportadores_new')
+    'id': form_id|default('planportadores_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.mes)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.mes)}}
+                </label>
+                <div>
+                    {{form_widget(form.mes)}}
+                    {{form_errors(form.mes)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.anno)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.anno)}}
+                </label>
+                <div>
+                    {{form_widget(form.anno)}}
+                    {{form_errors(form.anno)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

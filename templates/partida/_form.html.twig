@@ -1,22 +1,55 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('partida_new')
+    'id': form_id|default('partida_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.codigo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigo)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigo)}}
+                    {{form_errors(form.codigo)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.tipopartida)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipopartida)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipopartida)}}
+                    {{form_errors(form.tipopartida)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.nombre)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.nombre)}}
+                </label>
+                <div>
+                    {{form_widget(form.nombre)}}
+                    {{form_errors(form.nombre)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.cuenta)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.cuenta)}}
+                </label>
+                <div>
+                    {{form_widget(form.cuenta)}}
+                    {{form_errors(form.cuenta)}}
+                </div>
+            </div>
         </div>
 
     </div>

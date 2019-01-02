@@ -22,6 +22,13 @@ var cierremestarjeta = function () {
                 'cierre_mes_tarjeta[efectivoconsumido]': {required:true, min: 0},
                 'cierre_mes_tarjeta[restantecombustible]': {required:true, min: 0},
                 'cierre_mes_tarjeta[restanteefectivo]': {required:true, min: 0},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
 

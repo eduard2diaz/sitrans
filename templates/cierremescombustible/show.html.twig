@@ -15,10 +15,10 @@
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
                     <li class="m-portlet__nav-item">
-                        <a data-href="{{ path('cierremestarjeta_automatico',{'id':cierremescombustible.id}) }}" class="m-link" title="Generar automáticamente" id="cierretarjeta_automatico">
+                        <a data-href="{{ path('cierremestarjeta_automatico',{'id':cierremescombustible.id}) }}" class="btn btn-primary btn-sm active"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Generar cierre automático" id="cierretarjeta_automatico">
                             <span><i class="flaticon-refresh"></i></span> Generar
                         </a>
-                        <a data-href="{{ path('cierremestarjeta_new',{'id':cierremescombustible.id}) }}" class="m-link edicion" title="Nuevo cierre">
+                        <a data-href="{{ path('cierremestarjeta_new',{'id':cierremescombustible.id}) }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Agregar un cierre de tarjeta">
                             <span><i class="flaticon-add"></i></span> Nuevo
                         </a>
                     </li>

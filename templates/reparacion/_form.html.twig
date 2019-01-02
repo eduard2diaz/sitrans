@@ -1,24 +1,57 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('reparacion_new')
+    'id': form_id|default('reparacion_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-4">
-            {{form_row(form.vehiculo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.vehiculo)}}
+                </label>
+                <div>
+                    {{form_widget(form.vehiculo)}}
+                    {{form_errors(form.vehiculo)}}
+                </div>
+            </div>
             {{ form_errors(form) }}
         </div>
          <div class="col-md-4">
-            {{form_row(form.fechainicio)}}
+             <div class="form-group m-form__group">
+                 <label>
+                     {{form_label(form.fechainicio)}}
+                 </label>
+                 <div>
+                     {{form_widget(form.fechainicio)}}
+                     {{form_errors(form.fechainicio)}}
+                 </div>
+             </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.fechafin)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechafin)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechafin)}}
+                    {{form_errors(form.fechafin)}}
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row margin-top-10">
         <div class="col-md-12">
-            {{form_row(form.descripcion)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.descripcion)}}
+                </label>
+                <div>
+                    {{form_widget(form.descripcion)}}
+                    {{form_errors(form.descripcion)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

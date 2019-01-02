@@ -11,6 +11,13 @@ var reloj = function () {
             rules:{
                 'reloj[nombre]': {required:true},
                 'reloj[area]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -208,7 +215,7 @@ var reloj = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este reloj?",
+                title: "Eliminar reloj",
                 message: "<p>¿Está seguro que desea eliminar este reloj?</p>",
                 buttons: {
                     confirm: {

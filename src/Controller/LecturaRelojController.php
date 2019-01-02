@@ -52,6 +52,7 @@ class LecturaRelojController extends Controller
         if ($form->isSubmitted())
             if ($form->isValid()) {
                 $lecturareloj->setUsuario($this->getUser());
+                $lecturareloj->getReloj()->setKwrestante($lecturareloj->getReloj()->getKwrestante()-$lecturareloj->getLectura());
                 $em->persist($lecturareloj);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La lectura fue registrada satisfactoriamente",
@@ -83,49 +84,13 @@ class LecturaRelojController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
-        return $this->render('lectura_reloj/_show.html.twig',['lecturareloj'=>$lecturareloj]);
-    }
 
-    /**
-     * @Route("/{id}/edit", name="lecturareloj_edit", methods="GET|POST",options={"expose"=true})
-     */
-    public function edit(Request $request, LecturaReloj $lecturareloj): Response
-    {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
-        
-        $form = $this->createForm(LecturaRelojType::class, $lecturareloj, array('action' => $this->generateUrl('lecturareloj_edit',array('id'=>$lecturareloj->getId()))));
-        $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted())
-            if ($form->isValid()) {
-                $lecturareloj->setUsuario($this->getUser());
-                $em->persist($lecturareloj);
-                $em->flush();
-                return new JsonResponse(array('mensaje' =>"La lectura fue actualizada satisfactoriamente",
-                    'reloj' => $lecturareloj->getReloj()->getCodigo(),
-                    'fecha' => $lecturareloj->getFecha()->format('d-m-Y h:i a'),
-                    'area' => $lecturareloj->getReloj()->getArea()->__toString(),
-                    'lectura' => $lecturareloj->getLectura(),
-                    'id' => $lecturareloj->getId(),
-                ));
-            } else {
-                $page = $this->renderView('lectura_reloj/_form.html.twig', array(
-                    'form' => $form->createView(),
-                    'form_id' => 'lecturareloj_edit',
-                    'action' => 'Actualizar'
-                ));
-                return new JsonResponse(array('form' => $page, 'error' => true,));
-            }
+        $area=$lecturareloj->getReloj()->getArea()->getId();
 
-        return $this->render('lectura_reloj/new.html.twig', [
-            'lecturareloj' => $lecturareloj,
-            'form' => $form->createView(),
-            'form_id' => 'lecturareloj_edit',
-            'action' => 'Actualizar',
-            'title' => 'Editar lectura'
-        ]);
+        $mes=$lecturareloj->getFecha()->format('m');
+        $anno=$lecturareloj->getFecha()->format('Y');
+        $cierre=$this->get('energia.service')->existeCierreKilowatts($anno,$mes,$area);
+        return $this->render('lectura_reloj/_show.html.twig',['lecturareloj'=>$lecturareloj,'cierre'=>$cierre]);
     }
 
     /**
@@ -137,6 +102,7 @@ class LecturaRelojController extends Controller
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
+        $lecturareloj->getReloj()->setKwrestante($lecturareloj->getReloj()->getKwrestante()+$lecturareloj->getLectura());
         $em->remove($lecturareloj);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La lectura fue eliminada satisfactoriamente'));

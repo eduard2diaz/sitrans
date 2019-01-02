@@ -12,6 +12,13 @@ var elemento = function () {
                 'elemento[nombre]': {required:true},
                 'elemento[codigo]': {required:true, number: true, min: 0},
                 'elemento[partida]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -170,7 +177,7 @@ var elemento = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este elemento?",
+                title: "Eliminar elemento",
                 message: "<p>¿Está seguro que desea eliminar este elemento?</p>",
                 buttons: {
                     confirm: {

@@ -1,6 +1,30 @@
-            <h5>
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<head>
+    <title>Resumen de consumo de combustible por vehículos {{mes~', '~anno }}</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold !important;
+            width: 300px !important;
+            text-align: left;
+        }
+
+        thead tr {
+            background-color: rebeccapurple !important;
+        }
+    </style>
+
+</head>
+<body>
+<h1>
                 Resumen de consumo de combustible por vehículos {{mes~', '~anno }}
-            </h5>
+            </h1>
+<hr/>
                 <table class="table table-bordered">
     <tr>
         <td></td>
@@ -49,4 +73,5 @@
     {% endfor %}
 
 </table>
-
+</body>
+</html>

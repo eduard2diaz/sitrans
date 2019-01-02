@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Importe as ImporteConstraint;
+use App\Validator\CierreCombustible as CierreCombustibleConstraint;
 
 /**
  * Chip
@@ -13,6 +14,7 @@ use App\Validator\Importe as ImporteConstraint;
  * @ORM\Table(name="chip", indexes={@ORM\Index(name="IDX_AA29BCBBAE90B786", columns={"tarjeta"}), @ORM\Index(name="IDX_AA29BCBB5F42E8B9", columns={"cupet"})})
  * @ORM\Entity
  * @ImporteConstraint(fecha="fecha",litros="litrosextraidos",foreign="tarjeta",importe="importe")
+ * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
  */
 class Chip
 {

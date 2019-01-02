@@ -15,7 +15,14 @@ var area = function () {
                 'area[codigo]': {required:true},
                 'area[ccosto]': {required:true},
                 'area[direccionparticular]': {required:true},
-            }
+            },
+                highlight: function (element) {
+                    $(element).parent().parent().addClass('has-danger');
+                },
+                unhighlight: function (element) {
+                    $(element).parent().parent().removeClass('has-danger');
+                    $(element).parent().parent().addClass('has-success');
+                }
         });
     }
     var configurarDataTable = function () {
@@ -207,7 +214,7 @@ var area = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta área?",
+                title: "Eliminar área",
                 message: "<p>¿Está seguro que desea eliminar esta área?</p>",
                 buttons: {
                     confirm: {

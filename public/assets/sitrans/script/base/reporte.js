@@ -1,5 +1,5 @@
 var reporte = function () {
-    var ultimoreporte;
+    var ultimoreporte=null;
     //Inicio de la definicion de los formularios
     function createDateRangeForm(title,form_id, action){
         var dialog = bootbox.dialog({
@@ -269,13 +269,26 @@ var reporte = function () {
     }
     //Fin de la definicion de los formularios
 
+    function exportar(title){
+        if(!title)
+            title='Reporte';
+
+        var doc = new jsPDF();
+        doc.text(title, 14, 16);
+        var elem = document.getElementById("jspdf_content");
+        var res = doc.autoTableHtmlToJson(elem);
+        doc.autoTable(res.columns, res.data, {startY: 20});
+        doc.save(title);
+        return doc;
+    }
+
     //Inicio de los reporte del consumo y los kms
     var kmConsumoReportLink=function() {
         $('body').on('click', 'a#kmconsumoreport_link', function (evento) {
             evento.preventDefault();
             var link = Routing.generate('kmconsumo_report');
             var form_id = 'kmconsumoreport';
-            var title = 'Consumo litros y kms';
+            var title = 'Consumo kilómetros y litros';
             createDateRangeForm(title,form_id,link);
         });
     }
@@ -284,37 +297,45 @@ var reporte = function () {
         $('body').on('submit', 'form#kmconsumoreport', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data= $(this).serialize();
+
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        {
+                            if($('div#extramodal').html(data.html)) {
+                                $("div#extramodal table").DataTable(
+                                    {
+                                        "language": {
+                                            url: datatable_translation
+                                        },
+                                    }
+                                );
+                                $('div#extramodal').modal('show');
+                                $('div.alert-notification').fadeIn(3000);
+                                ultimoreporte=data.pdf;
+                            }
+                        }
+                    },
+                    error: function ()
                     {
-                       if($('div#extramodal').html(data.html)) {
-                           $("div#extramodal table").DataTable(
-                               {
-                                   "language": {
-                                   url: datatable_translation
-                                    },
-                               }
-                               );
-                           $('div#extramodal').modal('show');
-                           ultimoreporte = data.pdf;
-                       }
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500)
+
         });
     }
     //Fin del reporte del consumo y los kms
@@ -334,35 +355,41 @@ var reporte = function () {
         $('body').on('submit', 'form#diferenciaconsumoreport', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                       if( $('div#extramodal').html(data.html)) {
-                           $("div#extramodal table").DataTable(
-                               {
-                                   "language": {
-                                       url: datatable_translation
-                                   },
-                               }
-                           );
-                           $('div#extramodal').modal('show');
-                           ultimoreporte = data.pdf;
-                       }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if( $('div#extramodal').html(data.html)) {
+                            $("div#extramodal table").DataTable(
+                                {
+                                    "language": {
+                                        url: datatable_translation
+                                    },
+                                }
+                            );
+                            ultimoreporte=data.pdf;
+                            $('div#extramodal').modal('show');
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
+                    }
+                });
+            },500);
+
         });
     }
     //Fin de diferencia de consumo
@@ -419,35 +446,41 @@ var reporte = function () {
         $('body').on('submit', 'form#porcientodesviacionreport', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                       if( $('div#extramodal').html(data.html)) {
-                           $("div#extramodal table").DataTable(
-                               {
-                                   "language": {
-                                       url: datatable_translation
-                                   },
-                               }
-                           );
-                           $('div#extramodal').modal('show');
-                           ultimoreporte = data.pdf;
-                       }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if( $('div#extramodal').html(data.html)) {
+                            $("div#extramodal table").DataTable(
+                                {
+                                    "language": {
+                                        url: datatable_translation
+                                    },
+                                }
+                            );
+                            $('div#extramodal').modal('show');
+                            ultimoreporte = data.pdf;
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
+                    }
+                });
+            },500);
+
         });
     }
     //fin de porciento de desviacion
@@ -504,28 +537,34 @@ var reporte = function () {
         $('body').on('submit', 'form#kwconsumoarea_report', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if($('div#extramodal').html(data.html)) {
-                        $('div#extramodal').modal('show');
-                        ultimoreporte = data.pdf;
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if($('div#extramodal').html(data.html)) {
+                            $('div#extramodal').modal('show');
+                            ultimoreporte = data.pdf;
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500);
+
         });
     }
     //Fin de kw consumo
@@ -545,28 +584,33 @@ var reporte = function () {
         $('body').on('submit', 'form#combustibleconsumomesarea_report', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if($('div#extramodal').html(data.html)) {
-                        $('div#extramodal').modal('show');
-                        ultimoreporte = data.pdf;
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if($('div#extramodal').html(data.html)) {
+                            $('div#extramodal').modal('show');
+                            ultimoreporte = data.pdf;
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500);
         });
     }
     //Fin de consumo de combustible para mes X
@@ -586,28 +630,34 @@ var reporte = function () {
         $('body').on('submit', 'form#combustibledistribucionmes_report', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if($('div#extramodal').html(data.html)){
-                        $('div#extramodal').modal('show');
-                        ultimoreporte = data.pdf;
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if($('div#extramodal').html(data.html)){
+                            $('div#extramodal').modal('show');
+                            ultimoreporte = data.pdf;
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500);
+
         });
     }
     //Fin de consumo de combustible para mes X
@@ -627,28 +677,33 @@ var reporte = function () {
         $('body').on('submit', 'form#combustibleconsumomesvehiculo_report', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if($('div#extramodal').html(data.html)){
-                        $('div#extramodal').modal('show');
-                        ultimoreporte = data.pdf;
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if($('div#extramodal').html(data.html)){
+                            $('div#extramodal').modal('show');
+                            ultimoreporte = data.pdf;
+                        }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500);
         });
     }
     //Fin de consumo de combustible para mes X por vehiculo
@@ -713,19 +768,23 @@ var reporte = function () {
         $('body').on('submit', 'form#resumenviajesreport', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                    $('div#basicmodal').modal('hide');
-                },
-                success: function (datos) {
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                        $('div#basicmodal').modal('hide');
+                    },
+                    success: function (datos) {
                         $('div#extramodal').html(datos.view);
                         $('div#extramodal').modal('show');
 
@@ -781,12 +840,14 @@ var reporte = function () {
                                 "series": ["s1"]
                             }
                         }, "chartdiv", "XYChart");
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                    },
+                    error: function ()
+                    {
+                        base.Error();
+                    }
+                });
+            },500);
+
         });
     }
     //Fin de resumen de viajes
@@ -806,95 +867,100 @@ var reporte = function () {
         $('body').on('submit', 'form#consumomensual_kw', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                url:  $(this).attr("action"),
-                beforeSend: function (data) {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if ($('div#extramodal').html(data.view))
-                        $('div#extramodal').modal('show');
-                    var chart = am4core.createFromConfig({
-                        // Reduce saturation of colors to make them appear as toned down
-                        "colors": {
-                            "saturation": 0.4
-                        },
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            setTimeout(function(){
+                $.ajax({
+                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    url:  action,
+                    beforeSend: function (data) {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        if ($('div#extramodal').html(data.view))
+                            $('div#extramodal').modal('show');
+                        var chart = am4core.createFromConfig({
+                            // Reduce saturation of colors to make them appear as toned down
+                            "colors": {
+                                "saturation": 0.4
+                            },
 
-                        // Setting data
-                        "data": data.data,
+                            // Setting data
+                            "data": data.data,
 
-                        // Add Y axis
-                        "yAxes": [{
-                            "type": "ValueAxis",
-                            "renderer": {
-                                "maxLabelPosition": 0.98
-                            }
-                        }],
-
-                        // Add X axis
-                        "xAxes": [{
-                            "type": "CategoryAxis",
-                            "renderer": {
-                                "minGridDistance": 20,
-                                "grid": {
-                                    "location": 0
+                            // Add Y axis
+                            "yAxes": [{
+                                "type": "ValueAxis",
+                                "renderer": {
+                                    "maxLabelPosition": 0.98
                                 }
-                            },
-                            "dataFields": {
-                                "category": "mes"
-                            }
-                        }],
+                            }],
 
-                        // Add series
-                        "series": [{
-                            // Set type
-                            "type": "ColumnSeries",
+                            // Add X axis
+                            "xAxes": [{
+                                "type": "CategoryAxis",
+                                "renderer": {
+                                    "minGridDistance": 20,
+                                    "grid": {
+                                        "location": 0
+                                    }
+                                },
+                                "dataFields": {
+                                    "category": "mes"
+                                }
+                            }],
 
-                            // Define data fields
-                            "dataFields": {
-                                "categoryX": "mes",
-                                "valueY": "contador"
-                            },
+                            // Add series
+                            "series": [{
+                                // Set type
+                                "type": "ColumnSeries",
 
-                            // Modify default state
-                            "defaultState": {
-                                "ransitionDuration": 1000
-                            },
+                                // Define data fields
+                                "dataFields": {
+                                    "categoryX": "mes",
+                                    "valueY": "contador"
+                                },
 
-                            // Set animation options
-                            "sequencedInterpolation": true,
-                            "sequencedInterpolationDelay": 100,
+                                // Modify default state
+                                "defaultState": {
+                                    "ransitionDuration": 1000
+                                },
 
-                            // Modify color appearance
-                            "columns": {
-                                // Disable outline
-                                "strokeOpacity": 0,
+                                // Set animation options
+                                "sequencedInterpolation": true,
+                                "sequencedInterpolationDelay": 100,
 
-                                // Add adapter to apply different colors for each column
-                                "adapter": {
-                                    "fill": function (fill, target) {
-                                        return chart.colors.getIndex(target.dataItem.index);
+                                // Modify color appearance
+                                "columns": {
+                                    // Disable outline
+                                    "strokeOpacity": 0,
+
+                                    // Add adapter to apply different colors for each column
+                                    "adapter": {
+                                        "fill": function (fill, target) {
+                                            return chart.colors.getIndex(target.dataItem.index);
+                                        }
                                     }
                                 }
-                            }
-                        }],
+                            }],
 
-                        // Enable chart cursor
-                        "cursor": {
-                            "type": "XYCursor",
-                            "behavior": "zoomX"
-                        }
-                    }, "chartdiv", "XYChart")
-                },
-                error: function () {
-                    base.Error();
-                },
-            });
+                            // Enable chart cursor
+                            "cursor": {
+                                "type": "XYCursor",
+                                "behavior": "zoomX"
+                            }
+                        }, "chartdiv", "XYChart")
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                });
+            },500);
+
         });
     }
     //Fin de consumo mensual de kw
@@ -914,18 +980,22 @@ var reporte = function () {
         $('body').on('submit', 'form#analisisportadoresreport', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (datos) {
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (datos) {
                         $('div#extramodal').html(datos.view);
                         $('div#extramodal').modal('show');
 
@@ -1021,12 +1091,14 @@ var reporte = function () {
                             },
                             "chartdiv", "XYChart"
                         );
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                    },
+                    error: function ()
+                    {
+                        base.Error();
+                    }
+                });
+            },500);
+
         });
     }
     //fin de analisis de portadores
@@ -1046,79 +1118,50 @@ var reporte = function () {
         $('body').on('submit', 'form#analisishojaruta_report', function (evento)
         {
             evento.preventDefault();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    {
-                        if($('div#extramodal').html(data.html)) {
-                            $('div#extramodal').modal('show');
-                            ultimoreporte = data.pdf;
+            $('div.bootbox').modal('hide');
+            var action=$(this).attr("action");
+            var data=$(this).serialize();
+            setTimeout(function(){
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    data: data, //para enviar el formulario hay que serializarlo
+                    beforeSend: function () {
+                        mApp.block("body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    complete: function () {
+                        mApp.unblock("body");
+                    },
+                    success: function (data) {
+                        {
+                            if($('div#extramodal').html(data.html)) {
+                                $('div#extramodal').modal('show');
+                                ultimoreporte = data.pdf;
+                            }
                         }
+                    },
+                    error: function ()
+                    {
+                        base.Error();
                     }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
+                });
+            },500);
         });
     }
     //Fin del reporte del consumo y los kms
 
-    var exportartAction = function () {
+    var exportarAction = function () {
         $('div#extramodal').on('click', 'a.exportar', function (evento)
         {
-            var pdf = new jsPDF('p', 'pt', 'letter')
+            evento.preventDefault();
 
-// source can be HTML-formatted string, or a reference
-// to an actual DOM element from which the text will be scraped.
-               // , source = $('div#extramodal div#modal-body').html()
-                , source = ultimoreporte
-
-// we support special element handlers. Register them with jQuery-style
-// ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
-// There is no support for any other type of selectors
-// (class, of compound) at this time.
-                , specialElementHandlers = {
-                // element with id of "bypass" - jQuery style selector
-                '#bypassme': function(element, renderer){
-                    // true = "handled elsewhere, bypass text extraction"
-                    return true
+            $.fileDownload(Routing.generate('exportar_report'), {
+                data:{
+                    form: ultimoreporte
                 }
-            }
+            });
 
-            margins = {
-                top: 80,
-                bottom: 60,
-                left: 40,
-                width: 522
-            };
-            // all coords and widths are in jsPDF instance's declared units
-            // 'inches' in this case
-            pdf.fromHTML(
-                source // HTML string or DOM elem ref.
-                , margins.left // x coord
-                , margins.top // y coord
-                , {
-                    'width': margins.width // max width of content on PDF
-                    , 'elementHandlers': specialElementHandlers
-                },
-                function (dispose) {
-                    // dispose: object with X, Y of the last line add to the PDF
-                    //          this allow the insertion of new lines after html
-                    pdf.save('Reporte.pdf');
-                },
-                margins
-            )
         });
     }
 
@@ -1151,7 +1194,7 @@ var reporte = function () {
                 combustibleConsumoMesVehiculoReportAction();
                 analisisHojaRutaReportLink();
                 analisisHojaRutaReportAction();
-                exportartAction();
+                exportarAction();
             });
         },
     };

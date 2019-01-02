@@ -1,12 +1,21 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('tarifakw_new')
+    'id': form_id|default('tarifakw_new'),
+    'class': 'm-form m-form--state'
 }})}}
 {% set i=0 %}
 <div class="modal-body" id="modal-body">
     <div class="m-scrollable" data-scrollbar-shown="true" data-scrollable="true" data-max-height="200">
     <div class="row">
         <div class="col-md-4">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
     </div>
     <div id="rangos">

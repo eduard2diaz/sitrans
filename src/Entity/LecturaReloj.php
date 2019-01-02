@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\CierreKw as CierreKwConstraint;
 
 /**
  * @ORM\Entity
+ * @CierreKwConstraint(foreign="reloj",fecha="fecha")
  */
 class LecturaReloj
 {
@@ -100,11 +102,8 @@ class LecturaReloj
                 ->atPath($path)
                 ->addViolation();
 
-        $diferencia=$this->getLectura();
-
-
-        if(!$this->getReloj()->getKwrestante()<$diferencia)
-            $context->buildViolation('Seleccione un reloj activo')
+        if($this->getReloj()->getKwrestante()<$this->getLectura())
+            $context->buildViolation('El reloj seleccionado no tiene suficientes kilowatts')
                 ->atPath($path)
                 ->addViolation();
 

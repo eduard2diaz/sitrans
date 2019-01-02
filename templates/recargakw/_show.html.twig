@@ -26,7 +26,7 @@
                         <td>{{recarga.asignacion}}</td>
                     </tr>
                     <tr>
-                        <th>Folio00</th>
+                        <th>Folio 00</th>
                         <td>{{recarga.folio00}}</td>
                     </tr>
                     <tr>
@@ -36,6 +36,9 @@
                 </table>
             </div>
             <div class="modal-footer">
+                {% if cierre is null and recarga.asignacion<=recarga.reloj.kwrestante%}
+                    <a class="btn btn-danger eliminar_recargakw" data-dismiss="modal" data-href="{{ path('recargakw_delete',{'id':recarga.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
+                {% endif %}
                 <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>

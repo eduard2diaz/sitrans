@@ -18,6 +18,13 @@ var planportadoresarea = function () {
                 'planportadores_area[areas][]': {required:true},
                 'planportadores_area[categoria]': {required:true},
                 'planportadores_area[valor]': {required:true, min: 1},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -190,8 +197,8 @@ var planportadoresarea = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este plan de portadores?",
-                message: "<p>¿Está seguro que desea eliminar este plan de portadores?</p>",
+                title: "Eliminar plan de portadores por área",
+                message: "<p>¿Está seguro que desea eliminar el plan de portadores para esta área?</p>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',

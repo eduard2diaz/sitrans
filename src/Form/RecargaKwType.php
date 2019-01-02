@@ -50,7 +50,7 @@ class RecargaKwType extends AbstractType
                 }
             ))
             
-            ->add('folio00',NumberType::class,array('help'=>'El folio 00 corresponde a los kilowatts restantes del mes anterior','label'=>'Folio 00','attr'=>array('placeholder'=>'Escriba los kilowatts restantes','class'=>'form-control input-medium','readonly'=>true)))
+            ->add('folio00',NumberType::class,array('help'=>'El folio 00 corresponde a los kilowatts restantes del mes anterior','label'=>'Folio 00','attr'=>array('placeholder'=>'Kilowatts restantes','class'=>'form-control input-medium','readonly'=>true)))
         ;
 
         $builder->get('fecha')

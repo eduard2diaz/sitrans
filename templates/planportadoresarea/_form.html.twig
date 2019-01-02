@@ -1,19 +1,44 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('planportadoresarea_new')
+    'id': form_id|default('planportadoresarea_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-12">
-            {{form_row(form.areas)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.areas)}}
+                </label>
+                <div>
+                    {{form_widget(form.areas)}}
+                    {{form_errors(form.areas)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.categoria)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.categoria)}}
+                </label>
+                <div>
+                    {{form_widget(form.categoria)}}
+                    {{form_errors(form.categoria)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.valor)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.valor)}}
+                </label>
+                <div>
+                    {{form_widget(form.valor)}}
+                    {{form_errors(form.valor)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

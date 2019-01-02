@@ -83,66 +83,13 @@ class AjusteTarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        return $this->render('ajustetarjeta/_show.html.twig',['ajuste'=>$ajustetarjeta]);
-    }
+        $tarjeta=$ajustetarjeta->getTarjeta()->getId();
 
-    /**
-     * @Route("/{id}/edit", name="ajustetarjeta_edit", methods="GET|POST",options={"expose"=true})
-     */
-    public function edit(Request $request, AjusteTarjeta $ajustetarjeta): Response
-    {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
+        $mes=$ajustetarjeta->getFecha()->format('m');
+        $anno=$ajustetarjeta->getFecha()->format('Y');
+        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
 
-        $importeOriginal=$ajustetarjeta->getCantefectivo();
-        $cantlitrosOriginal=$ajustetarjeta->getMonto();
-
-        $form = $this->createForm(AjusteTarjetaType::class, $ajustetarjeta, array('action' => $this->generateUrl('ajustetarjeta_edit',array('id'=>$ajustetarjeta->getId()))));
-        $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted())
-            if ($form->isValid()) {
-                    $ajustetarjeta->setUsuario($this->getUser());
-                    $diferenciaImporte=$ajustetarjeta->getCantefectivo()-$importeOriginal;
-                    $diferenciaLitros= $ajustetarjeta->getMonto()-$cantlitrosOriginal;
-                    $multiplo=$ajustetarjeta->getTipo() ==1 ? 1 : -1;
-                    if($diferenciaImporte<0){
-                        $diferenciaImporte*=-1;
-                        $ajustetarjeta->getTarjeta()->setCantefectivo($ajustetarjeta->getTarjeta()->getCantefectivo()-$diferenciaImporte*$multiplo);
-                    }elseif($diferenciaImporte>0)
-                        $ajustetarjeta->getTarjeta()->setCantefectivo($ajustetarjeta->getTarjeta()->getCantefectivo()+$diferenciaImporte*$multiplo);
-
-                if($diferenciaLitros<0){
-                    $diferenciaLitros*=-1;
-                    $ajustetarjeta->getTarjeta()->setCantlitros($ajustetarjeta->getTarjeta()->getCantlitros()-$diferenciaLitros*$multiplo);
-                }elseif($diferenciaLitros>0)
-                    $ajustetarjeta->getTarjeta()->setCantlitros($ajustetarjeta->getTarjeta()->getCantlitros()+$diferenciaLitros*$multiplo);
-
-                $em->persist($ajustetarjeta);
-                $em->flush();
-                return new JsonResponse(array('mensaje' =>"El ajuste fue actualizado satisfactoriamente",
-                    'fecha' => $ajustetarjeta->getFecha()->format('d-m-Y h:i a'),
-                    'cantidadlitros' => $ajustetarjeta->getMonto(),
-                    'cantidadefectivo' => $ajustetarjeta->getCantefectivo(),
-                    'tarjeta' => $ajustetarjeta->getTarjeta()->getCodigo(),
-                    'id' => $ajustetarjeta->getId(),
-                ));
-            } else {
-                $page = $this->renderView('ajustetarjeta/_form.html.twig', array(
-                    'form' => $form->createView(),
-                    'form_id' => 'ajustetarjeta_edit',
-                    'action' => 'Actualizar'
-                ));
-                return new JsonResponse(array('form' => $page, 'error' => true,));
-            }
-
-        return $this->render('ajustetarjeta/new.html.twig', [
-            'ajustetarjeta' => $ajustetarjeta,
-            'form' => $form->createView(),
-            'form_id' => 'ajustetarjeta_edit',
-            'action' => 'Actualizar',
-            'title' => 'Editar ajuste de tarjeta',
-        ]);
+        return $this->render('ajustetarjeta/_show.html.twig',['ajuste'=>$ajustetarjeta,'cierre'=>$cierre]);
     }
 
     /**

@@ -1,7 +1,29 @@
-            <h5>
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<head>
+    <title>Diferencia de consumos</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        th {
+            font-weight: bold !important;
+            width: 300px !important;
+            text-align: left;
+        }
+        thead tr{
+            background-color: rebeccapurple !important;
+        }
+    </style>
+
+</head>
+<body>
+            <h1>
                 Diferencia de consumos
-            </h5>
-                <table class="table">
+            </h1>
+            <hr/>
+                <table>
                     <thead>
                     <tr>
                         <th>Matrícula</th>
@@ -9,6 +31,7 @@
                         <th>Consumo real</th>
                     </tr>
                     </thead>
+                    <tbody>
                     {% for obj in data %}
                         <tr>
                             <td>{{ obj.matricula }}</td>
@@ -16,11 +39,7 @@
                             <td>{{ obj.consumoreal }}</td>
                         </tr>
                     {% endfor %}
-                    <tfoot>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Consumo registrado</th>
-                        <th>Consumo real</th>
-                    </tr>
-                    </tfoot>
+                    </tbody>
                 </table>
+</body>
+</html>

@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use App\Validator\CierreKw;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Entity\Reloj;
+use App\Validator\CierreKw as CierreKwConstraint;
 
 /**
  * @ORM\Entity
+ * @CierreKwConstraint(foreign="reloj",fecha="fecha")
  */
 class RecargaKw
 {

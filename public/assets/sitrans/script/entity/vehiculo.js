@@ -36,6 +36,13 @@ var vehiculo = function () {
                 'vehiculo[kmsxmantenimiento]': {required:true},
                 'vehiculo[estado]': {required:true},
                 'vehiculo[chofer]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }

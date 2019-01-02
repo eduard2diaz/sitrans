@@ -16,6 +16,13 @@ var cierremesarea = function () {
                 'cierremes_area[fecha]': {required:true},
                 'cierremes_area[consumido]': {required:true, min: 0},
                 'cierremes_area[restante]': {required:true, min: 0},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
 

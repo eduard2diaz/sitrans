@@ -16,6 +16,13 @@ var usuario = function () {
                 'usuario[password][first]': {required:true},
                 'usuario[password][second]': { equalTo: "#usuario_password_first"},
                 'usuario[idrol][]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -169,7 +176,7 @@ var usuario = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este usuario?",
+                title: "Eliminar usuario",
                 message: "<p>¿Está seguro que desea eliminar este usuario?</p>",
                 buttons: {
                     confirm: {

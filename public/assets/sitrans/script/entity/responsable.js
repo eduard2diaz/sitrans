@@ -21,6 +21,13 @@ var responsable = function () {
                 'responsable[ci]': {required:true, maxlength: 11},
                 'responsable[area]': {required:true},
                 'responsable[direccion]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -213,7 +220,7 @@ var responsable = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este responsable?",
+                title: "Eliminar responsable",
                 message: "<p>¿Está seguro que desea eliminar este responsable?</p>",
                 buttons: {
                     confirm: {
