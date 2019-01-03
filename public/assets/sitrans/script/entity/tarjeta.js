@@ -17,6 +17,13 @@ var tarjeta = function () {
                 'tarjeta[codigo]': {required:true},
                 'tarjeta[tipotarjeta]': {required:true},
                 'tarjeta[tipocombustible]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }

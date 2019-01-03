@@ -6,17 +6,41 @@
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.reloj)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.reloj)}}
+                </label>
+                <div>
+                    {{form_widget(form.reloj)}}
+                    {{form_errors(form.reloj)}}
+                </div>
+            </div>
             {{ form_errors(form) }}
         </div>
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.codigoSTS)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigoSTS)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigoSTS)}}
+                    {{form_errors(form.codigoSTS)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
@@ -35,7 +59,15 @@
             </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.asignacion)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.asignacion)}}
+                </label>
+                <div>
+                    {{form_widget(form.asignacion)}}
+                    {{form_errors(form.asignacion)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

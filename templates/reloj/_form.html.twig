@@ -1,5 +1,6 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('reloj_new')
+    'id': form_id|default('reloj_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
@@ -15,10 +16,27 @@
     <div class="clearfix"></div>
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.codigo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigo)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigo)}}
+                    {{form_errors(form.codigo)}}
+                </div>
+            </div>
         </div>
+
         <div class="col-md-6">
-            {{form_row(form.area)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.area)}}
+                </label>
+                <div>
+                    {{form_widget(form.area)}}
+                    {{form_errors(form.area)}}
+                </div>
+            </div>
             {{form_errors(form.activo)}}
         </div>
     </div>

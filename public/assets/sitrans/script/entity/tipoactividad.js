@@ -6,6 +6,13 @@ var tipoactividad = function () {
         $("div#basicmodal form").validate({
             rules:{
                 'tipoactividad[nombre]': {required:true}
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -160,7 +167,7 @@ var tipoactividad = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este tipo de actividad?",
+                title: "Eliminar tipo de actividad",
                 message: "<p>¿Está seguro que desea eliminar este tipo de actividad?</p>",
                 buttons: {
                     confirm: {

@@ -1,45 +1,126 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('vehiculo_new')
+    'id': form_id|default('vehiculo_new'),
+    'class': 'm-form m-form--state'
 }})}}
 <div class="modal-body" id="modal-body">
     <div class="clearfix"></div>
     <div class="row">
         <div class="col-md-4">
-            {{form_row(form.matricula)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.matricula)}}
+                </label>
+                <div>
+                    {{form_widget(form.matricula)}}
+                    {{form_errors(form.matricula)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.tipovehiculo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipovehiculo)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipovehiculo)}}
+                    {{form_errors(form.tipovehiculo)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.marca)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.marca)}}
+                </label>
+                <div>
+                    {{form_widget(form.marca)}}
+                    {{form_errors(form.marca)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.modelo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.modelo)}}
+                </label>
+                <div>
+                    {{form_widget(form.modelo)}}
+                    {{form_errors(form.modelo)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.responsable)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.responsable)}}
+                </label>
+                <div>
+                    {{form_widget(form.responsable)}}
+                    {{form_errors(form.responsable)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.chofer)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.chofer)}}
+                </label>
+                <div>
+                    {{form_widget(form.chofer)}}
+                    {{form_errors(form.chofer)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.estado)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.estado)}}
+                </label>
+                <div>
+                    {{form_widget(form.estado)}}
+                    {{form_errors(form.estado)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.tipocombustible)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipocombustible)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipocombustible)}}
+                    {{form_errors(form.tipocombustible)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.indconsumo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.indconsumo)}}
+                </label>
+                <div>
+                    {{form_widget(form.indconsumo)}}
+                    {{form_errors(form.indconsumo)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.kmsxmantenimiento)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.kmsxmantenimiento)}}
+                </label>
+                <div>
+                    {{form_widget(form.kmsxmantenimiento)}}
+                    {{form_errors(form.kmsxmantenimiento)}}
+                </div>
+            </div>
         </div>
     </div>
 

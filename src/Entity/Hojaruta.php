@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Period as PeriodConstraint;
 use App\Validator\Importe as ImporteConstraint;
+use App\Validator\CierreCombustible as CierreCombustibleConstraint;
 
 /**
  * Hojaruta
@@ -15,6 +16,7 @@ use App\Validator\Importe as ImporteConstraint;
  * @ORM\Entity
  * @PeriodConstraint(from="fechasalida",to="fechallegada",foreign="vehiculo",message="Ya existe una hoja de ruta para el período indicado")
  * @ImporteConstraint(fecha="fechasalida",litros="litrosconsumidos",foreign="vehiculo",importe="importe")
+ * @CierreCombustibleConstraint(foreign="vehiculo",fecha="fechasalida")
  */
 class Hojaruta
 {

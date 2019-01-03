@@ -34,6 +34,13 @@ var tipovehiculo = function () {
             rules:{
                 'tipovehiculo[nombre]': {required:true},
                 'tipovehiculo[idlicencia][]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -198,7 +205,7 @@ var tipovehiculo = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este tipo de vehículo?",
+                title: "Eliminar tipo de vehículo",
                 message: "<p>¿Está seguro que desea eliminar este tipo de vehículo?</p>",
                 buttons: {
                     confirm: {

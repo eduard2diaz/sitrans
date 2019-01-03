@@ -1,6 +1,6 @@
 {% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
 {% block body %}
-    <div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet m-portlet--mobile m--margin-top-30">
         <div class="m-portlet__head">
             <div class="m-portlet__head-caption">
                 <div class="m-portlet__head-title">
@@ -15,7 +15,7 @@
             <h4>¿Cómo puedo adquirir SITRANS?</h4>
             <p>Cómo mencionamos en <a href="{{ path('estatica',{'page':'acercanosotros'}) }}">Acerca de Nosotros</a> SITRANS es una aplicación libre y gratuita sin ánimos de lucro,
                por tal motivo su código fuente está al alcance de todas la empresas y desarrolladores siempre y cuando
-            cumpla con los <a href="{{ path('estatica',{'page':'terminoservicio'}) }}"> Terminos del servicio</a> y <a>Políticas de Copyright</a>. Por tal motivo, usted
+            cumpla con los <a href="{{ path('estatica',{'page':'terminoservicio'}) }}"> Términos del servicio</a> y <a>Políticas de Copyright</a>. Por tal motivo, usted
                 puede adquirir su código fuente accediendo a su sitio en <a href="https://github.com/">Github</a> o contactando con los responsables
                 del desarrollo, soporte y mantenimiento del sistema en la Universidad Agraria de la Habana.
             </p>

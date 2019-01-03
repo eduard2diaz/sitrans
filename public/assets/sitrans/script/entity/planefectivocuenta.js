@@ -22,6 +22,13 @@ var planefectivocuenta = function () {
                 'planefectivo_cuenta[centrocosto][]': {required:true},
                 'planefectivo_cuenta[cuenta]': {required:true},
                 'planefectivo_cuenta[valor]': {required:true, min: 1},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -220,8 +227,8 @@ var planefectivocuenta = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este plan de efectivo?",
-                message: "<p>¿Está seguro que desea eliminar este plan de efectivo?</p>",
+                title: "Eliminar plan de efectivo por cuenta",
+                message: "<p>¿Está seguro que desea eliminar el plan de efectivo para esta cuenta?</p>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',

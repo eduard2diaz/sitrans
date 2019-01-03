@@ -1,11 +1,20 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('tarjeta_new')
+    'id': form_id|default('tarjeta_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.codigo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigo)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigo)}}
+                    {{form_errors(form.codigo)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             {{form_label(form.activo)}}
@@ -21,10 +30,26 @@
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.tipotarjeta)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipotarjeta)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipotarjeta)}}
+                    {{form_errors(form.tipotarjeta)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.tipocombustible)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipocombustible)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipocombustible)}}
+                    {{form_errors(form.tipocombustible)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

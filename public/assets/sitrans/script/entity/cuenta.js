@@ -13,6 +13,13 @@ var cuenta = function () {
                 'cuenta[codigo]': {required:true},
                 'cuenta[naturaleza]': {required:true},
                 'cuenta[nae]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -178,7 +185,7 @@ var cuenta = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta cuenta?",
+                title: "Eliminar cuenta",
                 message: "<p>¿Está seguro que desea eliminar esta cuenta?</p>",
                 buttons: {
                     confirm: {

@@ -1,30 +1,79 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('cierremesarea_new')
+    'id': form_id|default('cierremesarea_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.area)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.area)}}
+                </label>
+                <div>
+                    {{form_widget(form.area)}}
+                    {{form_errors(form.area)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.consumido)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.consumido)}}
+                </label>
+                <div>
+                    {{form_widget(form.consumido)}}
+                    {{form_errors(form.consumido)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.restante)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.restante)}}
+                </label>
+                <div>
+                    {{form_widget(form.restante)}}
+                    {{form_errors(form.restante)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.efectivoconsumido)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.efectivoconsumido)}}
+                </label>
+                <div>
+                    {{form_widget(form.efectivoconsumido)}}
+                    {{form_errors(form.efectivoconsumido)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.efectivorestante)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.efectivorestante)}}
+                </label>
+                <div>
+                    {{form_widget(form.efectivorestante)}}
+                    {{form_errors(form.efectivorestante)}}
+                </div>
+            </div>
         </div>
     </div>
     {{form_errors(form)}}

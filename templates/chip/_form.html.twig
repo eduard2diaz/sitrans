@@ -1,51 +1,140 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('chip_new')
+    'id': form_id|default('chip_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-4">
-            {{form_row(form.tarjeta)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tarjeta)}}
+                </label>
+                <div>
+                    {{form_widget(form.tarjeta)}}
+                    {{form_errors(form.tarjeta)}}
+                </div>
+            </div>
             {{form_errors(form)}}
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.cupet)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.cupet)}}
+                </label>
+                <div>
+                    {{form_widget(form.cupet)}}
+                    {{form_errors(form.cupet)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.numerocomprobante)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.numerocomprobante)}}
+                </label>
+                <div>
+                    {{form_widget(form.numerocomprobante)}}
+                    {{form_errors(form.numerocomprobante)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
 
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.idfisico)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.idfisico)}}
+                </label>
+                <div>
+                    {{form_widget(form.idfisico)}}
+                    {{form_errors(form.idfisico)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.idlogico)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.idlogico)}}
+                </label>
+                <div>
+                    {{form_widget(form.idlogico)}}
+                    {{form_errors(form.idlogico)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.moneda)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.moneda)}}
+                </label>
+                <div>
+                    {{form_widget(form.moneda)}}
+                    {{form_errors(form.moneda)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.servicio)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.servicio)}}
+                </label>
+                <div>
+                    {{form_widget(form.servicio)}}
+                    {{form_errors(form.servicio)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.saldoinicial)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.saldoinicial)}}
+                </label>
+                <div>
+                    {{form_widget(form.saldoinicial)}}
+                    {{form_errors(form.saldoinicial)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.litrosextraidos)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.litrosextraidos)}}
+                </label>
+                <div>
+                    {{form_widget(form.litrosextraidos)}}
+                    {{form_errors(form.litrosextraidos)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.importe)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.importe)}}
+                </label>
+                <div>
+                    {{form_widget(form.importe)}}
+                    {{form_errors(form.importe)}}
+                </div>
+            </div>
         </div>
     </div>
     {{form_errors(form)}}

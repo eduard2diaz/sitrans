@@ -20,6 +20,8 @@ class HojarutaType extends AbstractType
     {
         $data=$options['data'];
         $vehiculo=$options['data']->getVehiculo();
+        $fsalida=$options['data']->getFechaSalida();
+        $fllegada=$options['data']->getFechaLlegada();
         $disabled=false;
         if($data->getId()!=null)
             $disabled=true;
@@ -29,12 +31,18 @@ class HojarutaType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('fechasalida', TextType::class, array('label'=>'Fecha de salida','attr' => array(
+            ->add('fechasalida', TextType::class, array('label'=>'Fecha de salida',
+                'empty_data'=>$fsalida!=null ? $fsalida->format('d-m-Y') : null,
+                'attr' => array(
                 'autocomplete' => 'off',
+                'disabled'=>$disabled,
                 'class' => 'form-control input-medium'
             )))
-            ->add('fechallegada', TextType::class, array('label'=>'Fecha de llegada','attr' => array(
+            ->add('fechallegada', TextType::class, array('label'=>'Fecha de llegada',
+                'empty_data'=>$fllegada!=null ? $fllegada->format('d-m-Y') : null,
+                'attr' => array(
                 'autocomplete' => 'off',
+                'disabled'=>$disabled,
                 'class' => 'form-control input-medium'
             )))
             ->add('origen', TextType::class, array('attr' => array(
@@ -65,6 +73,7 @@ class HojarutaType extends AbstractType
                 'disabled'=>$disabled
             ,'attr' => array(
                 'autocomplete' => 'off',
+                'readonly' => true,
                 'class' => 'form-control input-medium'
             )))
 

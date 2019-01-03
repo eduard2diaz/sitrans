@@ -17,7 +17,6 @@ class RecargatarjetaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $isdisabled=$options['data']->getId() ? true : false;
         $tarjeta=$options['data']->getTarjeta();
 
         $builder
@@ -36,15 +35,12 @@ class RecargatarjetaType extends AbstractType
             )))
             ->add('tarjeta',EntityType::class,array(
                 'required'=>true,
-                'disabled'=>$isdisabled,
                 'auto_initialize'=>false,
                 'class'         =>'App:Tarjeta',
                 'query_builder'=>function(EntityRepository $repository) use($tarjeta){
                     $qb=$repository->createQueryBuilder('t');
                     $qb->join('t.responsable','r');
                     $qb->where('t.activo = :activo AND r.activo = :activo')->setParameter('activo',true);
-                    if(null!=$tarjeta)
-                        $qb->orWhere('t.id= :id')->setParameter('id',$tarjeta);
                     return $qb;
                 }
             ))

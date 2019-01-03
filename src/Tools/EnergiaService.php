@@ -235,6 +235,26 @@ class EnergiaService
         return $tipocombustibles_array;
     }
 
+    public function existeCierreKilowatts($anno,$mes,$area)
+    {
+        $em = $this->getEm()->getManager();
+        $consulta = $em->createQuery('SELECT ca.id FROM App:CierremesArea ca join ca.area a JOIN ca.cierre c WHERE a.id= :area AND c.mes= :mes AND c.anno= :anno');
+        $consulta->setParameters(['area' => $area, 'mes'=>$mes,'anno'=>$anno]);
+        $consulta->setMaxResults(1);
+        $cierre = $consulta->getResult();
+        return empty($cierre) ? null : $cierre[0]['id'];
+    }
+
+    public function existeCierreCombustible($anno,$mes,$tarjeta)
+    {
+        $em = $this->getEm()->getManager();
+        $consulta = $em->createQuery('SELECT ct.id FROM App:CierreMesTarjeta ct join ct.tarjeta t JOIN ct.cierre c WHERE t.id= :tarjeta AND c.mes= :mes AND c.anno= :anno');
+        $consulta->setParameters(['tarjeta' => $tarjeta, 'mes'=>$mes,'anno'=>$anno]);
+        $consulta->setMaxResults(1);
+        $cierre = $consulta->getResult();
+        return empty($cierre) ? null : $cierre[0]['id'];
+    }
+
     public function combustibleConsumoMesVehiculo($anno,$mes)
     {
         $em = $this->getEm()->getManager();

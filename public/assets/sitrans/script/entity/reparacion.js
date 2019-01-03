@@ -22,6 +22,13 @@ var reparacion = function () {
                 'reparacion[vehiculo]': {required:true},
                 'reparacion[fechainicio]': {required:true},
                 'reparacion[fechafin]': {required:true, greaterThan: "#reparacion_fechainicio" },
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
 

@@ -17,6 +17,13 @@ var chofer = function () {
                 'chofer[ci]': {required:true, maxlength: 11},
                 'chofer[direccion]': {required:true},
                 'chofer[idlicencia][]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -207,7 +214,7 @@ var chofer = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este chofer?",
+                title: "Eliminar chofer",
                 message: "<p>¿Está seguro que desea eliminar este chofer?</p>",
                 buttons: {
                     confirm: {

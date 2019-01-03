@@ -1,19 +1,44 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('lecturareloj_new')
+    'id': form_id|default('lecturareloj_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.reloj)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.reloj)}}
+                </label>
+                <div>
+                    {{form_widget(form.reloj)}}
+                    {{form_errors(form.reloj)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.lectura)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.lectura)}}
+                </label>
+                <div>
+                    {{form_widget(form.lectura)}}
+                    {{form_errors(form.lectura)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -24,5 +49,7 @@
         <span class="ladda-spinner"></span>
     </button>
 </div>
+{{form_errors(form)}}
+{{form_rest(form)}}
 {{form_end(form)}}
 

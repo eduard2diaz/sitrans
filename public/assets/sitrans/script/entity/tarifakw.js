@@ -5,7 +5,15 @@ var tarifakw = function () {
     var configurarFormulario=function(){
         $('input#tarifa_kw_fecha').datepicker();
 
-        $("div#basicmodal form").validate();
+        $("div#basicmodal form").validate({
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
+            }
+        });
     }
     var configurarDataTable = function () {
         table = $("table#tarifakw_table").DataTable(
@@ -198,7 +206,7 @@ var tarifakw = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta tarifa?",
+                title: "Eliminar tarifa de kilowatts",
                 message: "<p>¿Está seguro que desea eliminar esta tarifa?</p>",
                 buttons: {
                     confirm: {
@@ -266,7 +274,7 @@ var tarifakw = function () {
             var link = $(this).attr('data-href');
 
             bootbox.confirm({
-                title: "Desea eliminar este rango?",
+                title: "Eliminar rango",
                 message: "<p>¿Está seguro que desea eliminar este rango?</p>",
                 buttons: {
                     confirm: {

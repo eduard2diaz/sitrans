@@ -2,16 +2,32 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">
-                Resultados: Kilómetros y litros consumidos
+                Resultados: Consumo de kilómetros y litros
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         <div>
             <div class="modal-body" id="modal-body">
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
-                    <b>Cantidad de kilómetros recorridos:</b> {{ data.totalkms }} <b>Total de litros:</b>{{ data.totallitros }}.
+
+                <div class="col-md-6 m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show alert-notification" role="alert" style="display: none !important;">
+                    <div class="m-alert__icon">
+                        <i class="flaticon-analytics"></i>
+                        <span></span>
+                    </div>
+                    <div class="m-alert__text">
+                        <span><b>Análisis del período</b></span>
+                        <ul >
+                            <li>Cantidad de kilómetros recorridos: {{ data.totalkms }}</li>
+                            <li>Total de litros: {{ data.totallitros }}</li>
+                        </ul>
+                    </div>
+                    <div class="m-alert__close">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
+
+                <div class="clearfix"></div>
+
                 <table class="table">
                     <thead>
                     <tr>
@@ -43,5 +59,3 @@
         </div>
     </div>
 </div>
-
-

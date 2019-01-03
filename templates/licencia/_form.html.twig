@@ -1,11 +1,20 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('licencia_new')
+    'id': form_id|default('licencia_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-12">
-            {{form_row(form.nombre)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.nombre)}}
+                </label>
+                <div>
+                    {{form_widget(form.nombre)}}
+                    {{form_errors(form.nombre)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,32 +1,81 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('cierremestarjeta_new')
+    'id': form_id|default('cierremestarjeta_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.tarjeta)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tarjeta)}}
+                </label>
+                <div>
+                    {{form_widget(form.tarjeta)}}
+                    {{form_errors(form.tarjeta)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.combustibleconsumido)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.combustibleconsumido)}}
+                </label>
+                <div>
+                    {{form_widget(form.combustibleconsumido)}}
+                    {{form_errors(form.combustibleconsumido)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.efectivoconsumido)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.efectivoconsumido)}}
+                </label>
+                <div>
+                    {{form_widget(form.efectivoconsumido)}}
+                    {{form_errors(form.efectivoconsumido)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.restantecombustible)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.restantecombustible)}}
+                </label>
+                <div>
+                    {{form_widget(form.restantecombustible)}}
+                    {{form_errors(form.restantecombustible)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.restanteefectivo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.restanteefectivo)}}
+                </label>
+                <div>
+                    {{form_widget(form.restanteefectivo)}}
+                    {{form_errors(form.restanteefectivo)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

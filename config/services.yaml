@@ -145,6 +145,24 @@ services:
             - { name: validator.constraint_validator, alias: tarifakw.validator }
         arguments: ['@doctrine']
 
+    cierrekw.validator:
+        class: App\Validator\CierreKwValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: cierrekw.validator }
+        arguments: ['@energia.service']
+
+    cierrecombustible.validator:
+        class: App\Validator\CierreCombustibleValidator
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: validator.constraint_validator, alias: cierrecombustible.validator }
+        arguments: ['@energia.service']
+
     energia.service:
         class: App\Tools\EnergiaService
         public: true

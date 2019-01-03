@@ -21,6 +21,13 @@ var mantenimiento = function () {
                 'mantenimiento[vehiculo]': {required:true},
                 'mantenimiento[fechainicio]': {required:true},
                 'mantenimiento[fechafin]': {required:true, greaterThan: "#mantenimiento_fechainicio" },
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
 

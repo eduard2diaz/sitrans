@@ -18,6 +18,13 @@ function validarEditUser(){
             'usuario[password][second]': {
                 equalTo: "#usuario_password_first"
             }
+        },
+        highlight: function (element) {
+            $(element).parent().parent().addClass('has-danger');
+        },
+        unhighlight: function (element) {
+            $(element).parent().parent().removeClass('has-danger');
+            $(element).parent().parent().addClass('has-success');
         }
     });
 }

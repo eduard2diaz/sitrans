@@ -6,6 +6,13 @@ var tipocombustible = function () {
         $("div#basicmodal form").validate({
             rules:{
                 'tipocombustible[nombre]': {required:true}
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -161,7 +168,7 @@ var tipocombustible = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este tipo de combustible?",
+                title: "Eliminar tipo de combustible",
                 message: "<p>¿Está seguro que desea eliminar este tipo de combustible?</p>",
                 buttons: {
                     confirm: {

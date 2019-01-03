@@ -14,6 +14,13 @@ var cierremeskw = function () {
             rules:{
                 'cierremes_kw[mes]': {required:true},
                 'cierremes_kw[anno]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }

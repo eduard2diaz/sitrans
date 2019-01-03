@@ -7,6 +7,13 @@ var cupet = function () {
             rules:{
                 'cupet[nombre]': {required:true},
                 'cupet[direccion]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -202,7 +209,7 @@ var cupet = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este cupet?",
+                title: "Eliminar cupet",
                 message: "<p>¿Está seguro que desea eliminar este cupet?</p>",
                 buttons: {
                     confirm: {

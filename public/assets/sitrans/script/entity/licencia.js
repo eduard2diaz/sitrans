@@ -6,6 +6,13 @@ var licencia = function () {
         $("div#basicmodal form").validate({
             rules:{
                 'licencia[nombre]': {required:true}
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -162,7 +169,7 @@ var licencia = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta licencia?",
+                title: "Eliminar licencia",
                 message: "<p>¿Está seguro que desea eliminar esta licencia?</p>",
                 buttons: {
                     confirm: {

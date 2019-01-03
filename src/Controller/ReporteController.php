@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Hojaruta;
 use App\Tools\Util;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -261,13 +262,14 @@ class ReporteController extends Controller
      */
     public function exportar(Request $request)
     {
-       /* $html = $this->renderView('MyBundle:Foo:bar.html.twig', array(
-            'some'  => $vars
-        ));*/
-        $html='hola mundo';
+      /*  if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();*/
+
+        $html=$request->request->get('form');
+
         return new PdfResponse(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            'Eduardo.pdf'
+            'Reporte.pdf'
         );
     }
 

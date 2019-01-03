@@ -41,6 +41,13 @@ var partida = function () {
                 'partida[codigo]': {required:true, number: true, min: 0},
                 'partida[cuenta]': {required:true},
                 'partida[tipopartida]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
@@ -206,7 +213,7 @@ var partida = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta partida?",
+                title: "Eliminar partida",
                 message: "<p>¿Está seguro que desea eliminar esta partida?</p>",
                 buttons: {
                     confirm: {

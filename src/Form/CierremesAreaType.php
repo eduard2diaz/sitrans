@@ -18,7 +18,6 @@ class CierremesAreaType extends AbstractType
     {
         $cierre=$options['data']->getCierre()->getId();
         $area=null==$options['data']->getArea() ? null : $options['data']->getArea()->getId();
-        $readonly=$options['data']->getId()==null ? false : true;
         $builder
             ->add('fecha', TextType::class, array('attr' => array(
                 'autocomplete' => 'off',
@@ -27,22 +26,22 @@ class CierremesAreaType extends AbstractType
 
             ->add('restante', NumberType::class, array('label'=>'Kilowatts restantes','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
             ->add('consumido', NumberType::class, array('label'=>'Kilowatts consumidos','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
             ->add('efectivoconsumido', NumberType::class, array('label'=>'Efectivo consumido','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
             ->add('efectivorestante', NumberType::class, array('label'=>'Efectivo restante','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
 

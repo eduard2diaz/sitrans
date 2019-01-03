@@ -1,53 +1,142 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('hojaruta_new')
+    'id': form_id|default('hojaruta_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-4">
-            {{form_row(form.vehiculo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.vehiculo)}}
+                </label>
+                <div>
+                    {{form_widget(form.vehiculo)}}
+                    {{form_errors(form.vehiculo)}}
+                </div>
+            </div>
             {{form_errors(form)}}
         </div>
     </div>
 
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.codigo)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.codigo)}}
+                </label>
+                <div>
+                    {{form_widget(form.codigo)}}
+                    {{form_errors(form.codigo)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.fechasalida)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechasalida)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechasalida)}}
+                    {{form_errors(form.fechasalida)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.fechallegada)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechallegada)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechallegada)}}
+                    {{form_errors(form.fechallegada)}}
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.tipoactividad)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipoactividad)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipoactividad)}}
+                    {{form_errors(form.tipoactividad)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.origen)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.origen)}}
+                </label>
+                <div>
+                    {{form_widget(form.origen)}}
+                    {{form_errors(form.origen)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.destino)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.destino)}}
+                </label>
+                <div>
+                    {{form_widget(form.destino)}}
+                    {{form_errors(form.destino)}}
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row margin-top-10">
         <div class="col-md-4">
-            {{form_row(form.kmrecorrido)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.kmrecorrido)}}
+                </label>
+                <div>
+                    {{form_widget(form.kmrecorrido)}}
+                    {{form_errors(form.kmrecorrido)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.litrosconsumidos)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.litrosconsumidos)}}
+                </label>
+                <div>
+                    {{form_widget(form.litrosconsumidos)}}
+                    {{form_errors(form.litrosconsumidos)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            {{form_row(form.importe)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.importe)}}
+                </label>
+                <div>
+                    {{form_widget(form.importe)}}
+                    {{form_errors(form.importe)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-12">
-            {{form_row(form.descripcion)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.descripcion)}}
+                </label>
+                <div>
+                    {{form_widget(form.descripcion)}}
+                    {{form_errors(form.descripcion)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -84,7 +84,14 @@ class HojarutaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        return $this->render('hojaruta/_show.html.twig',['hojaruta'=>$hojaruta]);
+        $em=$this->getDoctrine()->getManager();
+        $trazahruta=$em->getRepository('App:Traza')->findOneBy(['identificador'=>$hojaruta->getId(),'entity'=>get_class($hojaruta)]);
+        $tarjeta=$trazahruta->getTarjeta();
+        $mes=$hojaruta->getFechasalida()->format('m');
+        $anno=$hojaruta->getFechasalida()->format('Y');
+        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
+
+        return $this->render('hojaruta/_show.html.twig',['hojaruta'=>$hojaruta,'cierre'=>$cierre]);
     }
 
     /**

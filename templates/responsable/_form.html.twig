@@ -1,5 +1,6 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('responsable_new')
+    'id': form_id|default('responsable_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
@@ -14,28 +15,76 @@
     <div class="clearfix"></div>
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.nombre)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.nombre)}}
+                </label>
+                <div>
+                    {{form_widget(form.nombre)}}
+                    {{form_errors(form.nombre)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.apellidos)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.apellidos)}}
+                </label>
+                <div>
+                    {{form_widget(form.apellidos)}}
+                    {{form_errors(form.apellidos)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.ci)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.ci)}}
+                </label>
+                <div>
+                    {{form_widget(form.ci)}}
+                    {{form_errors(form.ci)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.area)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.area)}}
+                </label>
+                <div>
+                    {{form_widget(form.area)}}
+                    {{form_errors(form.area)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.tarjetas)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tarjetas)}}
+                </label>
+                <div>
+                    {{form_widget(form.tarjetas)}}
+                    {{form_errors(form.tarjetas)}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row margin-top-10">
         <div class="col-md-12">
-            {{form_row(form.direccion)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.direccion)}}
+                </label>
+                <div>
+                    {{form_widget(form.direccion)}}
+                    {{form_errors(form.direccion)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

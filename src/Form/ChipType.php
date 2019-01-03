@@ -18,7 +18,6 @@ class ChipType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $isdisabled=$options['data']->getId() ? true : false;
         $tarjeta=$options['data']->getTarjeta();
 
         $builder
@@ -27,7 +26,6 @@ class ChipType extends AbstractType
                 'class' => 'form-control input-medium'
             )))
             ->add('tarjeta',EntityType::class,array(
-                'disabled'=>$isdisabled,
                 'auto_initialize'=>false,
                 'class'         =>'App:Tarjeta',
                 'query_builder'=>function(EntityRepository $repository) use($tarjeta){
@@ -35,8 +33,6 @@ class ChipType extends AbstractType
                     $qb->join('t.responsable','r');
                     $qb->where('t.activo = :activo AND t.cantlitros > 0 AND r.activo = :activo')
                         ->setParameter('activo',true);
-                    if(null!=$tarjeta)
-                        $qb->orWhere('t.id= :id')->setParameter('id',$tarjeta);
                     return $qb;
                 }
             ))

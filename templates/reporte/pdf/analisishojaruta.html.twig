@@ -1,7 +1,29 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<head>
+    <title>Análisis de hoja de ruta</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
 
-            <h5>
-                Análisis de hoja de ruta
-            </h5>
+        th {
+            font-weight: bold !important;
+            text-align: left;
+        }
+
+        thead tr {
+            background-color: rebeccapurple !important;
+        }
+    </style>
+
+</head>
+<body>
+<h1>
+    Análisis de hoja de ruta
+</h1>
+<hr/>
 <table class="table">
     <tbody>
     <tr>
@@ -16,7 +38,7 @@
     {% set combustibleconsumido=0 %}
     {% for obj in datos %}
         <tr>
-            <td>{{ obj.fecha |date('d-m-Y H:i')}}</td>
+            <td>{{ obj.fecha |date('d-m-Y H:i') }}</td>
             <td>{{ obj.tarjeta }}</td>
             <td>{{ obj.kms }}</td>
             <td>{{ obj.litros }}</td>
@@ -53,3 +75,5 @@
 
     </tbody>
 </table>
+</body>
+</html>

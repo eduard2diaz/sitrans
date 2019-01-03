@@ -22,7 +22,7 @@ class RecargaKwController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $recargakws = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , re.codigo as reloj, r.fecha, r.asignacion FROM App:RecargaKw r JOIN r.reloj re')->getResult();
+            $recargakws = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , re.codigo as reloj, r.fecha, r.asignacion, r.folio00 FROM App:RecargaKw r JOIN r.reloj re')->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($recargakws),
@@ -60,6 +60,7 @@ class RecargaKwController extends Controller
                     'fecha' => $recargakw->getFecha(),
                     'reloj' => $recargakw->getReloj()->getCodigo(),
                     'asignacion' => $recargakw->getAsignacion(),
+                    'folio00' => $recargakw->getFolio00(),
                     'id' => $recargakw->getId(),
                 ));
             } else {
@@ -84,7 +85,12 @@ class RecargaKwController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        return $this->render('recargakw/_show.html.twig',['recarga'=>$recargakw]);
+        $area=$recargakw->getReloj()->getArea()->getId();
+
+        $mes=$recargakw->getFecha()->format('m');
+        $anno=$recargakw->getFecha()->format('Y');
+        $cierre=$this->get('energia.service')->existeCierreKilowatts($anno,$mes,$area);
+        return $this->render('recargakw/_show.html.twig',['recarga'=>$recargakw,'cierre'=>$cierre]);
     }
 
     /**

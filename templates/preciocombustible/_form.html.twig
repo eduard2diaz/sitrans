@@ -1,20 +1,45 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('preciocombustible_new')
+    'id': form_id|default('preciocombustible_new'),
+    'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-6">
-            {{form_row(form.tipocombustible)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.tipocombustible)}}
+                </label>
+                <div>
+                    {{form_widget(form.tipocombustible)}}
+                    {{form_errors(form.tipocombustible)}}
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row margin-top-10">
         <div class="col-md-6">
-            {{form_row(form.fecha)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
-            {{form_row(form.importe)}}
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.importe)}}
+                </label>
+                <div>
+                    {{form_widget(form.importe)}}
+                    {{form_errors(form.importe)}}
+                </div>
+            </div>
         </div>
     </div>
 </div>

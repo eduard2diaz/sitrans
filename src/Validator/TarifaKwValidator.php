@@ -35,7 +35,8 @@ class TarifaKwValidator extends ConstraintValidator
                 ->addViolation();
         else {
             $array = $value->getRangoTarifaKws()->toArray();
-            for ($i = 0; $i < $total - 1; $i++)
+            /* SE ORDENAN LOS RANGOS
+             * for ($i = 0; $i < $total - 1; $i++)
                 for ($j = $i + 1; $j < $total; $j++)
                     if ($array[$i]->getInicio() > $array[$j]->getInicio()) {
                         $aux = $array[$i];
@@ -43,6 +44,7 @@ class TarifaKwValidator extends ConstraintValidator
                         $array[$j] = $aux;
                     }
 
+                    */
             $continue = 0;
             $pos = 0;
             foreach ($array as $value) {

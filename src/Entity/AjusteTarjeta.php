@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Importe as ImporteConstraint;
+use App\Validator\CierreCombustible as CierreCombustibleConstraint;
 
 /**
  * @ORM\Entity
  * @ImporteConstraint(fecha="fecha",litros="monto",foreign="tarjeta",importe="cantefectivo")
+ * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
  */
 class AjusteTarjeta
 {

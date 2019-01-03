@@ -15,6 +15,13 @@ var cierremescombustible = function () {
             rules:{
                 'cierre_mes_combustible[mes]': {required:true},
                 'cierre_mes_combustible[anno]': {required:true},
+            },
+            highlight: function (element) {
+                $(element).parent().parent().addClass('has-danger');
+            },
+            unhighlight: function (element) {
+                $(element).parent().parent().removeClass('has-danger');
+                $(element).parent().parent().addClass('has-success');
             }
         });
     }
