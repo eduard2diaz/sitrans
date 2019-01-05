@@ -45,6 +45,18 @@ class Cupet
      */
     private $enfuncionamiento;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Provincia")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $provincia;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Municipio")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $municipio;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,5 +101,29 @@ class Cupet
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    public function getProvincia(): ?Provincia
+    {
+        return $this->provincia;
+    }
+
+    public function setProvincia(?Provincia $provincia): self
+    {
+        $this->provincia = $provincia;
+
+        return $this;
+    }
+
+    public function getMunicipio(): ?Municipio
+    {
+        return $this->municipio;
+    }
+
+    public function setMunicipio(?Municipio $municipio): self
+    {
+        $this->municipio = $municipio;
+
+        return $this;
     }
 }

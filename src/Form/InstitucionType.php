@@ -2,25 +2,26 @@
 
 namespace App\Form;
 
-use App\Entity\Cupet;
+use App\Entity\Institucion;
+use App\Form\Subscriber\AddMunicipioFieldSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use App\Form\Subscriber\AddMunicipioFieldSubscriber;
 
-class CupetType extends AbstractType
+class InstitucionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nombre',TextType::class,array('attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba el nombre','class'=>'form-control input-medium')))
-            ->add('direccion',TextareaType::class,array('label'=>'Dirección particular','attr'=>array('placeholder'=>'Escriba la dirección particular','class'=>'form-control input-medium')))
-            ->add('enfuncionamiento',null,array('label'=>'En funcionamiento'))
+            ->add('nombre',TextType::class,['attr'=>['class'=>'form-control']])
+            ->add('activo',null,['label'=>' '])
             ->add('provincia',null,['placeholder'=>'Seleccione una provincia',])
             ->add('municipio')
+            ->add('institucionpadre',null,['label'=>'Institución padre'])
+
         ;
+
         $factory=$builder->getFormFactory();
         $builder->addEventSubscriber(new AddMunicipioFieldSubscriber($factory));
     }
@@ -28,7 +29,7 @@ class CupetType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Cupet::class,
+            'data_class' => Institucion::class,
         ]);
     }
 }

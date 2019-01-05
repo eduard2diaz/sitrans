@@ -3,7 +3,7 @@ security:
         App\Entity\Usuario: { algorithm: bcrypt , cost: 13 }
 
     role_hierarchy:
-        ROLE_SUPER:  ROLE_ADMIN
+        ROLE_SUPERADMIN:  ROLE_ADMIN
         ROLE_ADMIN:  [ROLE_CAJERO, ROLE_JEFETRANSPORTE, ROLE_ELECTRICIDAD]
 
 
@@ -33,6 +33,8 @@ security:
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/estatica/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #Rutas de administracion
+        - { path: ^/provincia, roles: ROLE_ADMIN }
+        - { path: ^/municipio, roles: ROLE_ADMIN }
         - { path: ^/centrocosto, roles: ROLE_ADMIN }
         - { path: ^/cuenta, roles: ROLE_ADMIN }
         - { path: ^/partida, roles: ROLE_ADMIN }

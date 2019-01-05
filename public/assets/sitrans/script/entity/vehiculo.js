@@ -69,7 +69,7 @@ var vehiculo = function () {
             });
     }
 
-    var tipovehiculoListener = function () {
+       var tipovehiculoListener = function () {
         $('div#basicmodal').on('change', 'select#vehiculo_tipovehiculo', function (evento)
         {
             if ($(this).val() > 0)

@@ -1,0 +1,55 @@
+{{form_start(form,{'attr':{
+    'id': 'pruebalitro_new',
+    'class': 'm-form m-form--state'
+}})}}
+
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.vehiculo)}}
+                </label>
+                <div>
+                    {{form_widget(form.vehiculo)}}
+                    {{form_errors(form.vehiculo)}}
+                </div>
+            </div>
+            {{form_errors(form)}}
+        </div>
+    </div>
+
+    <div class="row margin-top-10">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fecha)}}
+                </label>
+                <div>
+                    {{form_widget(form.fecha)}}
+                    {{form_errors(form.fecha)}}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.kmsrecorrido)}}
+                </label>
+                <div>
+                    {{form_widget(form.kmsrecorrido)}}
+                    {{form_errors(form.kmsrecorrido)}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+        <i class="flaticon-edit-1 ladda-label"></i> Guardar
+        <span class="ladda-spinner"></span>
+    </button>
+</div>
+{{form_end(form)}}
+

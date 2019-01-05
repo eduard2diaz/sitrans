@@ -9,7 +9,7 @@ class TipoActividadFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $tactividades=['Agua en pipa'];
+        $tactividades=['Administración','Implementación y soporte','Negocios','Servicios Generales'];
         foreach ($tactividades as $value){
             $t = new Tipoactividad();
             $t->setNombre($value);

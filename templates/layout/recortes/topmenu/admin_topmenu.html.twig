@@ -22,6 +22,42 @@
             </li>
             <li class="m-menu__item  m-menu__item--submenu"  m-menu-submenu-toggle="hover" m-menu-link-redirect="1" aria-haspopup="true">
                 <a  href="javascript:;" class="m-menu__link m-menu__toggle">
+                    <i class="m-menu__link-icon flaticon-dashboard"></i>
+                    <span class="m-menu__link-text">
+																	General
+																</span>
+                    <i class="m-menu__hor-arrow la la-angle-right"></i>
+                    <i class="m-menu__ver-arrow la la-angle-right"></i>
+                </a>
+                <div class="m-menu__submenu m-menu__submenu--classic m-menu__submenu--right">
+                    <span class="m-menu__arrow "></span>
+                    <ul class="m-menu__subnav">
+                        <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                            <a  href="{{ path('institucion_index') }}" class="m-menu__link ">
+																			<span class="m-menu__link-text">
+																				Institución
+																			</span>
+                            </a>
+                        </li>
+                        <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                            <a  href="{{ path('municipio_index') }}" class="m-menu__link ">
+																			<span class="m-menu__link-text">
+																				Municipio
+																			</span>
+                            </a>
+                        </li>
+                        <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                            <a  href="{{ path('provincia_index') }}" class="m-menu__link ">
+																			<span class="m-menu__link-text">
+																				Provincia
+																			</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="m-menu__item  m-menu__item--submenu"  m-menu-submenu-toggle="hover" m-menu-link-redirect="1" aria-haspopup="true">
+                <a  href="javascript:;" class="m-menu__link m-menu__toggle">
                     <i class="m-menu__link-icon flaticon-coins"></i>
                     <span class="m-menu__link-text">
 																	Economía
@@ -104,6 +140,13 @@
                             <a  href="{{ path('reloj_index') }}" class="m-menu__link ">
 																			<span class="m-menu__link-text">
 																				Reloj
+																			</span>
+                            </a>
+                        </li>
+                        <li class="m-menu__item "  m-menu-link-redirect="1" aria-haspopup="true">
+                            <a  href="{{ path('tarifakw_index') }}" class="m-menu__link ">
+																			<span class="m-menu__link-text">
+																				Tarifa de kilowatts
 																			</span>
                             </a>
                         </li>

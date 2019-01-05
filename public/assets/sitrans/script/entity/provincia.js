@@ -1,21 +1,34 @@
-var cupet = function () {
+var provincia = function () {
     var table = null;
     var obj = null;
 
-    var configurarFormulario=function(){
-        $('select#cupet_provincia').select2({
-            dropdownParent: $("#basicmodal"),
-            //allowClear: true
-        });
-        $('select#cupet_municipio').select2({
-            dropdownParent: $("#basicmodal"),
-            //allowClear: true
-        });
+    var configurarDataTable = function () {
+        table = $("table#provincia_table").DataTable(
+            {
+                responsive:true,
+                //   searchDelay:500,
+                //  processing:true,
+                //    serverSide:true,
+                ajax: Routing.generate('provincia_index'),
+                "language": {
+                    url: datatable_translation
+                },
+                columns:[
+                    {data:"id"},{data:"nombre"},{data:"acciones"}
+                ],
+                columnDefs:[{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
+                        return' <ul class="m-nav m-nav--inline m--pull-right">'+
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('provincia_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
+                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_provincia" data-href="'+Routing.generate('provincia_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                }]
+            });
+    }
 
+
+    var configurarFormulario=function(){
         $("div#basicmodal form").validate({
             rules:{
-                'cupet[nombre]': {required:true},
-                'cupet[direccion]': {required:true},
+                'provincia[nombre]': {required:true}
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');
@@ -26,94 +39,6 @@ var cupet = function () {
             }
         });
     }
-    
-    var configurarDataTable = function () {
-        table = $("table#cupet_table").DataTable(
-            {
-                responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
-                ajax: Routing.generate('cupet_index'),
-                "language": {
-                    url: datatable_translation
-                },
-                columns:[
-                    {data:"id"},{data:"nombre"},{data:"enfuncionamiento"},{data:"acciones"}
-                ],
-                columnDefs:[
-                    {targets:-2,title:"En funcionamiento",orderable:!1,render:function(a,e,t,n){
-                            return colorear(t.enfuncionamiento);
-                    }},
-                    {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
-                        return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm cupet_show" data-href="'+Routing.generate('cupet_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('cupet_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_cupet" data-href="'+Routing.generate('cupet_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
-                }]
-            });
-    }
-
-    var provinciaListener = function () {
-        $('div#basicmodal').on('change', 'select#cupet_provincia', function (evento)
-        {
-            if ($(this).val() > 0)
-                $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                    dataType: 'html',
-                    url: Routing.generate('municipio_findbyprovincia', {'id': $(this).val()}),
-                    beforeSend: function (data) {
-                        mApp.block("div#basicmodal div.modal-body",
-                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                    },
-                    success: function (data) {
-                        var cadena="";
-                        var array=JSON.parse(data);
-                        for(var i=0;i<array.length;i++)
-                            cadena+="<option value="+array[i]['id']+">"+array[i]['nombre']+"</option>";
-                        $('select#cupet_municipio').html(cadena);
-                    },
-                    error: function () {
-                        base.Error();
-                    },
-                    complete: function () {
-                        mApp.unblock("div#basicmodal div.modal-body")
-                    }
-                });
-        });
-    }
-
-    var show = function () {
-        $('body').on('click', 'a.cupet_show', function (evento)
-        {
-
-            evento.preventDefault();
-            var link = $(this).attr('data-href');
-            obj = $(this);
-            $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                dataType: 'html',
-                url: link,
-                beforeSend: function (data) {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                success: function (data) {
-                      if ($('div#basicmodal').html(data)) {
-                         $('div#basicmodal').modal('show');
-                    }
-                },
-                error: function ()
-                {
-                   // base.Error();
-                },
-                complete: function () {
-                    mApp.unblock("body")
-                }
-            });
-        });
-    }
-
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
@@ -147,7 +72,7 @@ var cupet = function () {
     }
 
     var newAction = function () {
-        $('div#basicmodal').on('submit', 'form#cupet_new', function (evento)
+        $('div#basicmodal').on('submit', 'form#provincia_new', function (evento)
         {
             evento.preventDefault();
             var padre = $(this).parent();
@@ -178,12 +103,9 @@ var cupet = function () {
                         $('div#basicmodal').modal('hide');
                      //   total += 1;
                         var pagina = table.page();
-                        console.log(data['enfuncionamiento']);
                         objeto = table.row.add({
                             "id": data['id'],
                             "nombre": data['nombre'],
-                            "direccion": data['direccion'],
-                            "enfuncionamiento": data['enfuncionamiento'],
                         });
                         objeto.draw();
                         table.page(pagina).draw('page');
@@ -198,7 +120,7 @@ var cupet = function () {
     }
 
     var edicionAction = function () {
-        $('div#basicmodal').on('submit', 'form#cupet_edit', function (evento)
+        $('div#basicmodal').on('submit', 'form#provincia_edit', function (evento)
         {
             evento.preventDefault();
             var padre = $(this).parent();
@@ -229,7 +151,6 @@ var cupet = function () {
                         $('div#basicmodal').modal('hide');
                         var pagina = table.page();
                         obj.parents('tr').children('td:nth-child(2)').html(data['nombre']);
-                        obj.parents('tr').children('td:nth-child(3)').html(colorear(data['enfuncionamiento']));
                     }
                 },
                 error: function ()
@@ -240,15 +161,15 @@ var cupet = function () {
         });
     }
     var eliminar = function () {
-        $('table#cupet_table').on('click', 'a.eliminar_cupet', function (evento)
+        $('table#provincia_table').on('click', 'a.eliminar_provincia', function (evento)
         {
             evento.preventDefault();
             var obj = $(this);
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Eliminar cupet",
-                message: "<p>¿Está seguro que desea eliminar este cupet?</p>",
+                title: "Eliminar provincia",
+                message: "<p>¿Está seguro que desea eliminar esta provincia?</p>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
@@ -261,7 +182,7 @@ var cupet = function () {
                     if (result == true)
                         $.ajax({
                             type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcupet porque lo k estamos mandando es un json y no un html plano
+                            // dataType: 'html', esta url se comentprovincia porque lo k estamos mandando es un json y no un html plano
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",
@@ -291,11 +212,9 @@ var cupet = function () {
             $().ready(function () {
                     configurarDataTable();
                     newAction();
-                    show();
                     edicion();
                     edicionAction();
                     eliminar();
-                    provinciaListener();
                 }
             );
         }

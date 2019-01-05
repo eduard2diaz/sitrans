@@ -1,10 +1,21 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('cupet_new'),
+    'id': form_id|default('institucion_new'),
     'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
-
+    <div class="pull-right">
+        {{form_label(form.activo)}}
+        <br/>
+        <span class="m-switch m-switch--icon m-switch--success">
+				<label>
+					{{form_widget(form.activo)}}
+                    <span></span>
+			</label>
+			</span>
+        {{form_errors(form.activo)}}
+    </div>
+    <div class="clearfix"></div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group m-form__group">
@@ -16,31 +27,30 @@
                     {{form_errors(form.nombre)}}
                 </div>
             </div>
+            {{ form_errors(form) }}
         </div>
         <div class="col-md-6">
-            {{form_label(form.enfuncionamiento)}}
-            <br/>
-            <span class="m-switch m-switch--icon m-switch--success">
-				<label>
-					{{form_widget(form.enfuncionamiento)}}
-                <span></span>
-			</label>
-			</span>
-            {{form_errors(form.enfuncionamiento)}}
-        </div>
-    </div>
+            <label>
+                {{form_label(form.institucionpadre)}}
+            </label>
+    		<div>
+                {{form_widget(form.institucionpadre)}}
+                {{form_errors(form.institucionpadre)}}
+			</div>
 
+        </div>
+        </div>
     <div class="row m--margin-top-20-desktop">
-        <div class="col-md-6">
-            <div class="form-group m-form__group">
-                <label>
-                    {{form_label(form.provincia)}}
-                </label>
-                <div>
-                    {{form_widget(form.provincia)}}
-                    {{form_errors(form.provincia)}}
-                </div>
-            </div>
+         <div class="col-md-6">
+             <div class="form-group m-form__group">
+                 <label>
+                     {{form_label(form.provincia)}}
+                 </label>
+                 <div>
+                     {{form_widget(form.provincia)}}
+                     {{form_errors(form.provincia)}}
+                 </div>
+             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group m-form__group">
@@ -50,19 +60,6 @@
                 <div>
                     {{form_widget(form.municipio)}}
                     {{form_errors(form.municipio)}}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row margin-top-10">
-        <div class="col-md-12">
-            <div class="form-group m-form__group">
-                <label>
-                    {{form_label(form.direccion)}}
-                </label>
-                <div>
-                    {{form_widget(form.direccion)}}
-                    {{form_errors(form.direccion)}}
                 </div>
             </div>
         </div>

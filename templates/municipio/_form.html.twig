@@ -1,10 +1,9 @@
 {{form_start(form,{'attr':{
-    'id': form_id|default('cupet_new'),
+    'id': form_id|default('municipio_new'),
     'class': 'm-form m-form--state'
 }})}}
 
 <div class="modal-body" id="modal-body">
-
     <div class="row">
         <div class="col-md-6">
             <div class="form-group m-form__group">
@@ -18,20 +17,6 @@
             </div>
         </div>
         <div class="col-md-6">
-            {{form_label(form.enfuncionamiento)}}
-            <br/>
-            <span class="m-switch m-switch--icon m-switch--success">
-				<label>
-					{{form_widget(form.enfuncionamiento)}}
-                <span></span>
-			</label>
-			</span>
-            {{form_errors(form.enfuncionamiento)}}
-        </div>
-    </div>
-
-    <div class="row m--margin-top-20-desktop">
-        <div class="col-md-6">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.provincia)}}
@@ -39,30 +24,6 @@
                 <div>
                     {{form_widget(form.provincia)}}
                     {{form_errors(form.provincia)}}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group m-form__group">
-                <label>
-                    {{form_label(form.municipio)}}
-                </label>
-                <div>
-                    {{form_widget(form.municipio)}}
-                    {{form_errors(form.municipio)}}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row margin-top-10">
-        <div class="col-md-12">
-            <div class="form-group m-form__group">
-                <label>
-                    {{form_label(form.direccion)}}
-                </label>
-                <div>
-                    {{form_widget(form.direccion)}}
-                    {{form_errors(form.direccion)}}
                 </div>
             </div>
         </div>

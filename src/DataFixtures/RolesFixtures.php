@@ -11,7 +11,7 @@ class RolesFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $roles=['ROLE_CAJERO','ROLE_JEFETRANSPORTE','ROLE_ADMIN','ROLE_SUPER','ROLE_ELECTRICIDAD'];
+        $roles=['ROLE_CAJERO','ROLE_JEFETRANSPORTE','ROLE_ADMIN','ROLE_SUPERADMIN','ROLE_ELECTRICIDAD'];
         foreach ($roles as $value){
             $rol=new Rol();
             $rol->setNombre($value);

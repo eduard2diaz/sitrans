@@ -2,7 +2,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">
-                Detalles del cupet
+                Detalles de la institución
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -10,24 +10,26 @@
             <div class="modal-body" id="modal-body">
                 <table class="table">
                     <tr>
-                        <th style="width: 10%">Nombre</th>
-                        <td>{{ cupet.nombre }}</td>
+                        <th>Nombre</th>
+                        <td>{{institucion.nombre}}</td>
+                    </tr>
+                    {%if institucion.institucionpadre is not null %}
+                    <tr>
+                        <th>Subordinado de</th>
+                        <td>{{institucion.institucionpadre}}</td>
+                    </tr>
+                    {%endif%}
+                    <tr>
+                        <th>Municipio</th>
+                        <td>{{institucion.municipio}}</td>
                     </tr>
                     <tr>
                         <th>Provincia</th>
-                        <td>{{ cupet.provincia }}</td>
+                        <td>{{institucion.provincia}}</td>
                     </tr>
                     <tr>
-                        <th>Municipio</th>
-                        <td>{{ cupet.municipio }}</td>
-                    </tr>
-                    <tr>
-                        <th>En funcionamiento</th>
-                        <td>{{ cupet.enfuncionamiento| colorear}}</td>
-                    </tr>
-                    <tr>
-                        <th>Dirección particular</th>
-                        <td><p>{{ cupet.direccion }}</p></td>
+                        <th>Activo</th>
+                        <td><p>{{institucion.activo|colorear}}</p></td>
                     </tr>
                 </table>
             </div>

@@ -20,7 +20,7 @@ class UsuarioFixtures extends Fixture implements OrderedFixtureInterface
          $usuario->setActivo(true);
          $usuario->setSalt('');
 
-         $rol=$manager->getRepository('App:Rol')->findOneBy(['nombre'=>'ROLE_SUPER']);
+         $rol=$manager->getRepository('App:Rol')->findOneBy(['nombre'=>'ROLE_SUPERADMIN']);
             if(null!=$rol)
                 $usuario->addIdrol($rol);
          $manager->persist($usuario);
