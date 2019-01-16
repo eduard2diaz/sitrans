@@ -8,13 +8,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Centrocosto as CentrocostoConstraint;
+
 /**
  * Centrocosto
  *
  * @ORM\Table(name="centrocosto")
  * @ORM\Entity
- * @UniqueEntity(fields={"nombre"})
- * @UniqueEntity(fields={"codigo"})
+ * @CentrocostoConstraint(nombre="nombre",codigo="codigo")
  */
 class Centrocosto
 {
@@ -31,14 +32,14 @@ class Centrocosto
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nombre", type="string", nullable=false, unique=true)
+     * @ORM\Column(name="nombre", type="string", nullable=false)
      */
     private $nombre;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="codigo", type="string", nullable=false, unique=true)
+     * @ORM\Column(name="codigo", type="string", nullable=false)
      */
     private $codigo;
 
@@ -95,11 +96,6 @@ class Centrocosto
         $this->codigo = $codigo;
     }
 
-    public function __toString()
-    {
-     return $this->getNombre();
-    }
-
     public function getCuenta(): ?Cuenta
     {
         return $this->cuenta;
@@ -138,6 +134,11 @@ class Centrocosto
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
     }
 
     /**

@@ -22,7 +22,7 @@ class ElementoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $elementos = $this->getDoctrine()->getManager()->createQuery('SELECT e.id , e.nombre, e.codigo, p.nombre as partida FROM App:Elemento e JOIN e.partida p')->getResult();
+            $elementos = $this->getDoctrine()->getManager()->createQuery('SELECT e.id , e.nombre, e.codigo, p.nombre as partida FROM App:Elemento e JOIN e.partida p JOIN p.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($elementos),
@@ -46,7 +46,7 @@ class ElementoController extends Controller
             throw $this->createAccessDeniedException();
         
         $elemento = new Elemento();
-        $form = $this->createForm(ElementoType::class, $elemento, array('action' => $this->generateUrl('elemento_new')));
+        $form = $this->createForm(ElementoType::class, $elemento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('elemento_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -82,8 +82,8 @@ class ElementoController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
-        $form = $this->createForm(ElementoType::class, $elemento, array('action' => $this->generateUrl('elemento_edit',array('id'=>$elemento->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$elemento);
+        $form = $this->createForm(ElementoType::class, $elemento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('elemento_edit',array('id'=>$elemento->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -121,13 +121,14 @@ class ElementoController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$elemento);
         $em = $this->getDoctrine()->getManager();
         $em->remove($elemento);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El elemento fue eliminado satisfactoriamente'));
     }
 
+    //Funcion ajax utilizada por otras clases
     /**
      * @Route("/{partida}/searchbypartida",options={"expose"=true}, name="elemento_searchbypartida")
      */
@@ -140,7 +141,7 @@ class ElementoController extends Controller
         $elementos=$em->getRepository('App:Elemento')->findByPartida($partida);
         $array=array();
         foreach ($elementos as $value)
-            $array[]=['id'=>$value->getId(),'nombre'=>$value->getNombre().' - '.$value->getCodigo()];
+            $array[]=['id'=>$value->getId(),'nombre'=>$value->getCodigo().' - '.$value->getNombre()];
 
         return new Response(json_encode($array));
     }

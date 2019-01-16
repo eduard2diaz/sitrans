@@ -21,7 +21,7 @@ class VehiculoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $vehiculos = $this->getDoctrine()->getManager()->createQuery('SELECT v.id, v.matricula , ch.nombre as chofer, r.nombre as responsable FROM App:Vehiculo v JOIN v.responsable r JOIN v.chofer ch')->getResult();
+            $vehiculos = $this->getDoctrine()->getManager()->createQuery('SELECT v.id, v.matricula , ch.nombre as chofer, r.nombre as responsable FROM App:Vehiculo v JOIN v.responsable r JOIN v.chofer ch JOIN v.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($vehiculos),
@@ -41,16 +41,17 @@ class VehiculoController extends Controller
      */
     public function new(Request $request): Response
     {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
+      //  if(!$request->isXmlHttpRequest())
+        //    throw $this->createAccessDeniedException();
 
         $vehiculo = new Vehiculo();
-        $form = $this->createForm(VehiculoType::class, $vehiculo, array('action' => $this->generateUrl('vehiculo_new')));
+        $form = $this->createForm(VehiculoType::class, $vehiculo, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('vehiculo_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
+
                 $em->persist($vehiculo);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El vehículo fue registrado satisfactoriamente",
@@ -66,10 +67,12 @@ class VehiculoController extends Controller
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
 
-
-        return $this->render('vehiculo/new.html.twig', [
-            'vehiculo' => $vehiculo,
-            'form' => $form->createView(),
+        return new JsonResponse([
+           'html'=>$this->renderView('vehiculo/new.html.twig', [
+               'vehiculo' => $vehiculo,
+               'form' => $form->createView(),
+           ]),
+           'vehiculo'=>$vehiculo->getId()
         ]);
     }
 
@@ -93,7 +96,7 @@ class VehiculoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(VehiculoType::class, $vehiculo, array('action' => $this->generateUrl('vehiculo_edit',array('id'=>$vehiculo->getId()))));
+        $form = $this->createForm(VehiculoType::class, $vehiculo, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('vehiculo_edit',array('id'=>$vehiculo->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -115,13 +118,18 @@ class VehiculoController extends Controller
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
 
-        return $this->render('vehiculo/new.html.twig', [
-            'vehiculo' => $vehiculo,
-            'form' => $form->createView(),
-            'form_id' => 'vehiculo_edit',
-            'action' => 'Actualizar',
-            'title' => 'Editar vehículo'
+        return new JsonResponse([
+            'html'=>$this->renderView('vehiculo/new.html.twig', [
+                'vehiculo' => $vehiculo,
+                'form' => $form->createView(),
+                'form_id' => 'vehiculo_edit',
+                'action' => 'Actualizar',
+                'title' => 'Editar vehículo'
+            ]),
+            'vehiculo'=>$vehiculo->getId()
         ]);
+
+
     }
 
     /**

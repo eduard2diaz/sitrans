@@ -43,14 +43,13 @@ class RelojValidator extends ConstraintValidator
         $class = $em->getClassMetadata(get_class($value));
         $repository = $em->getRepository(get_class($value));
 
-
+        /*
+         *Funcionalidad que se encarga de validar que solo exista un reloj activo por cada área
+         */
 
         $area = $pa->getValue($value, 'area');
         $activo = $pa->getValue($value, 'activo');
         $id = $pa->getValue($value, 'id');
-
-
-
         if(true==$activo){
             $lista=[];
             if(null!=$id)

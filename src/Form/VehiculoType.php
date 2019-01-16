@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Vehiculo;
 use App\Form\Subscriber\AddVehiculoChoferFieldSubscriber;
+use App\Form\Subscriber\AddVehiculoResponsableFieldSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,9 +16,31 @@ use Doctrine\ORM\EntityRepository;
 
 class VehiculoType extends AbstractType
 {
+    private $doctrine;
+
+    /**
+     * ChoferType constructor.
+     * @param $doctrine
+     */
+    public function __construct($doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDoctrine()
+    {
+        return $this->doctrine;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $institucion = $options['institucion'];
         $responsable=$options['data']->getResponsable();
+
+        $hijas=$this->obtenerInstitucionHijas($institucion);
         $builder
             ->add('matricula',TextType::class,array('label'=>'Matrícula','attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba la matrícula','class'=>'form-control input-medium')))
             ->add('marca',TextType::class,array('attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba la marca','class'=>'form-control input-medium')))
@@ -32,34 +55,26 @@ class VehiculoType extends AbstractType
                 'choices'=>['Activo'=>0,'En mantenimiento o reparación'=>1,'Inactivos temporalmente'=>2,'Pendiente a baja'=>3,'Baja'=>4],
                 'attr'=>['class'=>'form-control']
             ])
-            ->add('responsable',EntityType::class, array(
-                'required'=>true,
-                'auto_initialize'=>false,
-                'class'         =>'App:Responsable',
-                'query_builder'=>function(EntityRepository $repository) use($responsable){
-                    $res = $repository->createQueryBuilder('responsable');
-                    $res->select('r')->from('App:Responsable','r');
-                    $res->join('r.tarjetas','t');
-                    $res->where('t.activo = :activo')->setParameter('activo', true);
-                    $res->where('r.activo = :activo')->setParameter('activo', true);
-                    $responsables=$res->getQuery()->getResult();
+            ->add('responsable',null,['choices'=>[]])
+            /**/
 
-                    $result=[];
-                    foreach ($responsables as $value)
-                        if($value->getTarjetas()->count()==1)
-                            $result[]=$value;
-
-                    $qb = $repository->createQueryBuilder('responsable');
-                    $qb->where('responsable.id IN (:responsable)')->setParameter('responsable',$result);
-                    if(null!=$responsable)
-                        $qb->orWhere('responsable.id =:id')->setParameter('id',$responsable);
-                    return $qb;
-                }))
-
+            ->add('institucion', null, array('placeholder'=>'Seleccione una institución','choices'=>$hijas,'required'=>true,'label' => 'Institución','attr' => array('class' => 'form-control input-medium')))
         ;
 
         $factory=$builder->getFormFactory();
         $builder->addEventSubscriber(new AddVehiculoChoferFieldSubscriber($factory));
+        $builder->addEventSubscriber(new AddVehiculoResponsableFieldSubscriber($factory));
+    }
+
+    private function obtenerInstitucionHijas($institucion){
+        $em=$this->getDoctrine()->getManager();
+        $current=$em->getRepository('App:Institucion')->find($institucion);
+        $array=[$current];
+        $instituciones=$em->createQuery('SELECT i FROM App:Institucion i JOIN i.institucionpadre p WHERE p.id= :padre')->setParameter('padre',$institucion)->getResult();
+        foreach ($instituciones as $value){
+            $array=array_merge($array,$this->obtenerInstitucionHijas($value->getId()));
+        }
+        return $array;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -67,5 +82,6 @@ class VehiculoType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Vehiculo::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

@@ -47,21 +47,23 @@ class AddVehiculoChoferFieldSubscriber  implements EventSubscriberInterface{
         if(null===$data){
             return;
         }
-        $tipoVehiculo= is_array($data) ? $data['tipovehiculo'] : $data->getTipovehiculo();
-        $chofer= is_array($data) ? $data['chofer'] : $data->getChofer();
-        $this->addElements($event->getForm(), $tipoVehiculo,$chofer);
+        $tipoVehiculo= is_array($data) ? $data['tipovehiculo'] : $data->getTipovehiculo()->getId();
+        $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
+        $chofer= is_array($data) ? $data['chofer'] : $data->getChofer()->getId();
+        $this->addElements($event->getForm(), $tipoVehiculo,$institucion,$chofer);
     }
 
-    protected function addElements($form, $tipoVehiculo, $chofer) {
+    protected function addElements($form, $tipoVehiculo, $institucion, $chofer) {
 
         $form->add($this->factory->createNamed('chofer',EntityType::class,null,array(
             'required'=>true,
             'auto_initialize'=>false,
             'class'         =>'App:Chofer',
-            'query_builder'=>function(EntityRepository $repository)use($tipoVehiculo, $chofer){
+            'query_builder'=>function(EntityRepository $repository)use($tipoVehiculo,$institucion, $chofer){
                 $choferesActivos = $repository->createQueryBuilder('chofer');
                 $choferesActivos->select('c')->from('App:Chofer','c');
-                $choferesActivos->where('c.activo = :activo')->setParameter('activo', true);
+                $choferesActivos->join('c.institucion','i');
+                $choferesActivos->where('c.activo = TRUE and i.id= :institucion')->setParameter('institucion', $institucion);
                 $result=$choferesActivos->getQuery()->getResult();
 
                 $choferes=[];
@@ -96,9 +98,6 @@ class AddVehiculoChoferFieldSubscriber  implements EventSubscriberInterface{
 //                if(count($choferes)>0)
                 //$qb->andWhere('chofer.id  IN (:choferes)')->setParameter('choferes',$choferes );
                 return $qb;
-
-
-
             }
         )));
     }
@@ -111,9 +110,10 @@ class AddVehiculoChoferFieldSubscriber  implements EventSubscriberInterface{
            $form->add('chofer',null,array('required'=>true,'choices'=>array()));
         }else
        {
-           $tipoVehiculo= is_array($data) ? $data['tipovehiculo'] : $data->getTipovehiculo();
-           $chofer= is_array($data) ? $data['chofer'] : $data->getChofer();
-           $this->addElements($event->getForm(), $tipoVehiculo,$chofer);
+           $tipoVehiculo= is_array($data) ? $data['tipovehiculo'] : $data->getTipovehiculo()->getId();
+           $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
+           $chofer= is_array($data) ? $data['chofer'] : $data->getChofer()->getId();
+           $this->addElements($event->getForm(), $tipoVehiculo,$institucion,$chofer);
        }
 
     }

@@ -21,7 +21,7 @@ class ReparacionController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $reparacions = $this->getDoctrine()->getManager()->createQuery('SELECT m.id, v.matricula as vehiculo, m.fechainicio, m.fechafin FROM App:Reparacion m JOIN m.vehiculo v')->getResult();
+            $reparacions = $this->getDoctrine()->getManager()->createQuery('SELECT m.id, v.matricula as vehiculo, m.fechainicio, m.fechafin FROM App:Reparacion m JOIN m.vehiculo v JOIN m.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($reparacions),
@@ -41,11 +41,12 @@ class ReparacionController extends Controller
      */
     public function new(Request $request): Response
     {
-    //    if(!$request->isXmlHttpRequest())
-     //       throw $this->createAccessDeniedException();
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
 
         $reparacion = new Reparacion();
-        $form = $this->createForm(ReparacionType::class, $reparacion, array('action' => $this->generateUrl('reparacion_new')));
+        $reparacion->setInstitucion($this->getUser()->getInstitucion());
+        $form = $this->createForm(ReparacionType::class, $reparacion, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('reparacion_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -93,7 +94,7 @@ class ReparacionController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(ReparacionType::class, $reparacion, array('action' => $this->generateUrl('reparacion_edit',array('id'=>$reparacion->getId()))));
+        $form = $this->createForm(ReparacionType::class, $reparacion, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('reparacion_edit',array('id'=>$reparacion->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())

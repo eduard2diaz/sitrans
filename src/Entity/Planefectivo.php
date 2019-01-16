@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
- * @UniqueEntity(fields={"anno","mes"})
+ * @UniqueEntity(fields={"mes","anno","institucion"})
  */
 class Planefectivo
 {
@@ -22,6 +22,10 @@ class Planefectivo
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 12,
+     * )
      */
     private $mes;
 
@@ -29,6 +33,12 @@ class Planefectivo
      * @ORM\Column(type="integer")
      */
     private $anno;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
 
     public function getId()
     {
@@ -40,9 +50,10 @@ class Planefectivo
         return $this->mes;
     }
 
-    public function getMesToString(){
-        $meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        return $meses[$this->getMes()-1];
+    public function getMesToString()
+    {
+        $meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        return $meses[$this->getMes() - 1];
     }
 
 
@@ -66,22 +77,37 @@ class Planefectivo
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        $current_year=date('Y');
-        $next_year=date('Y');
-        if (date('m') ==12)
-            $next_year=$current_year+1;
-        if($this->getAnno()<$current_year || $this->getAnno()>$next_year)
+        $current_year = date('Y');
+        $next_year = date('Y');
+        if (date('m') == 12)
+            $next_year = $current_year + 1;
+        if ($this->getAnno() < $current_year || $this->getAnno() > $next_year)
             $context->buildViolation('Seleccione un año válido')
                 ->atPath('anno')
                 ->addViolation();
-        else
-            if($this->getMes()<1 || $this->getMes()>12)
-                $context->buildViolation('Seleccione un mes válido')
-                    ->atPath('mes')
-                    ->addViolation();
+        if (null==$this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
+                ->addViolation();
     }
 }

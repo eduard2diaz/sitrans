@@ -7,6 +7,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/*
+ * Clase que el superadministrador que posee el sistema por defecto
+ */
 class UsuarioFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)

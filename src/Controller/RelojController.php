@@ -21,7 +21,7 @@ class RelojController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $relojs = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , r.codigo, a.nombre as area, r.activo FROM App:Reloj r JOIN r.area a')->getResult();
+            $relojs = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , r.codigo, a.nombre as area, r.activo FROM App:Reloj r JOIN r.area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($relojs),
@@ -45,7 +45,7 @@ class RelojController extends Controller
             throw $this->createAccessDeniedException();
 
         $reloj = new Reloj();
-        $form = $this->createForm(RelojType::class, $reloj, array('action' => $this->generateUrl('reloj_new')));
+        $form = $this->createForm(RelojType::class, $reloj, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('reloj_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -78,6 +78,10 @@ class RelojController extends Controller
      */
     public function show(Request $request, Reloj $reloj): Response
     {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $this->denyAccessUnlessGranted('VIEW',$reloj);
         return $this->render('reloj/_show.html.twig',['reloj'=>$reloj]);
     }
 
@@ -88,8 +92,8 @@ class RelojController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
-        $form = $this->createForm(RelojType::class, $reloj, array('action' => $this->generateUrl('reloj_edit',array('id'=>$reloj->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$reloj);
+        $form = $this->createForm(RelojType::class, $reloj, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('reloj_edit',array('id'=>$reloj->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -127,7 +131,7 @@ class RelojController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$reloj);
         $em = $this->getDoctrine()->getManager();
         $em->remove($reloj);
         $em->flush();

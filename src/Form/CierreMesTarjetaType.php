@@ -17,61 +17,64 @@ class CierreMesTarjetaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $cierre=$options['data']->getCierre()->getId();
-        $tarjeta=null==$options['data']->getTarjeta() ? null : $options['data']->getTarjeta()->getId();
+        $cierre = $options['data']->getCierre()->getId();
+        $institucion = $options['data']->getCierre()->getInstitucion()->getId();
+        $tarjeta = null == $options['data']->getTarjeta() ? null : $options['data']->getTarjeta()->getId();
         //$readonly=$options['data']->getId()==null ? false : true;
-        $readonly=true;
+        $readonly = true;
         $builder
             ->add('fecha', TextType::class, array('attr' => array(
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('restantecombustible', IntegerType::class, array('label'=>'Combustible restante','attr' => array(
+            ->add('restantecombustible', IntegerType::class, array('label' => 'Combustible restante', 'attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly' => $readonly,
                 'class' => 'form-control input-medium'
             )))
-            ->add('combustibleconsumido', IntegerType::class, array('label'=>'Combustible consumido','attr' => array(
+            ->add('combustibleconsumido', IntegerType::class, array('label' => 'Combustible consumido', 'attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly' => $readonly,
                 'class' => 'form-control input-medium'
             )))
-            ->add('restanteefectivo', NumberType::class, array('label'=>'Efectivo restante','attr' => array(
+            ->add('restanteefectivo', NumberType::class, array('label' => 'Efectivo restante', 'attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly' => $readonly,
                 'class' => 'form-control input-medium'
             )))
-            ->add('efectivoconsumido', NumberType::class, array('label'=>'Efectivo consumido','attr' => array(
+            ->add('efectivoconsumido', NumberType::class, array('label' => 'Efectivo consumido', 'attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>$readonly,
+                'readonly' => $readonly,
                 'class' => 'form-control input-medium'
             )))
-            ->add('tarjeta',EntityType::class,array(
-                'placeholder'=>'Seleccione una tarjeta',
-                'auto_initialize'=>false,
-                'class'         =>'App:Tarjeta',
-                'query_builder'=>function(EntityRepository $repository) use($cierre,$tarjeta){
+            ->add('tarjeta', EntityType::class, array(
+                'placeholder' => 'Seleccione una tarjeta',
+                'auto_initialize' => false,
+                'class' => 'App:Tarjeta',
+                'query_builder' => function (EntityRepository $repository) use ($cierre, $tarjeta, $institucion) {
                     $res = $repository->createQueryBuilder('tarjeta');
-                    $res->select('ct')->from('App:CierreMesTarjeta','ct');
-                    $res->join('ct.cierre','c');
+                    $res->select('ct')->from('App:CierreMesTarjeta', 'ct');
+                    $res->join('ct.cierre', 'c');
                     $res->where('c.id = :id')->setParameter('id', $cierre);
-                    $cierres=$res->getQuery()->getResult();
+                    $cierres = $res->getQuery()->getResult();
 
-                    $tarjetasconcierre=[];
-                    foreach ($cierres as $value){
-                        if($tarjeta!=null && $tarjeta==$value->getTarjeta()->getId())
-                            continue;
-                        $tarjetasconcierre[]=$value->getTarjeta()->getId();
+                    $tarjetasconcierre = [];
+                    foreach ($cierres as $value) {
+                        if (null != $value->getTarjeta())
+                            $tarjetasconcierre[] = $value->getTarjeta()->getId();
                     }
 
-                    $qb=$repository->createQueryBuilder('t');
-                    $qb->where('t.activo = :activo')->setParameter('activo',true);
-                    if(!empty($tarjetasconcierre))
-                    $qb->andWhere('t.id NOT IN (:tarjetas)')->setParameter('tarjetas',$tarjetasconcierre);
+                    $qb = $repository->createQueryBuilder('t');
+                    $qb->join('t.tipotarjeta', 'tt');
+                    $qb->join('tt.institucion', 'i');
+                    $qb->where('t.activo = :activo AND i.id= :id')->setParameters(['activo' => true, 'id' => $institucion]);
+                    if (!empty($tarjetasconcierre))
+                        $qb->andWhere('t.id NOT IN (:tarjetas)')->setParameter('tarjetas', $tarjetasconcierre);
+                    if (null != $tarjeta)
+                        $qb->orWhere('t.id= :tarjeta')->setParameter('tarjeta', $tarjeta);
                     return $qb;
                 }
-            ))
-        ;
+            ));
 
         $builder->get('fecha')
             ->addModelTransformer(new DateTimetoStringTransformer());

@@ -21,7 +21,7 @@ class PartidaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $partidas = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.nombre, p.codigo FROM App:Partida p')->getResult();
+            $partidas = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.nombre, p.codigo FROM App:Partida p JOIN p.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($partidas),
@@ -45,7 +45,7 @@ class PartidaController extends Controller
             throw $this->createAccessDeniedException();
 
         $partida = new Partida();
-        $form = $this->createForm(PartidaType::class, $partida, array('action' => $this->generateUrl('partida_new')));
+        $form = $this->createForm(PartidaType::class, $partida, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('partida_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -80,7 +80,7 @@ class PartidaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('VIEW',$partida);
         return $this->render('partida/_show.html.twig',['partida'=>$partida]);
     }
 
@@ -91,8 +91,8 @@ class PartidaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
-        $form = $this->createForm(PartidaType::class, $partida, array('action' => $this->generateUrl('partida_edit',array('id'=>$partida->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$partida);
+        $form = $this->createForm(PartidaType::class, $partida, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('partida_edit',array('id'=>$partida->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -129,7 +129,7 @@ class PartidaController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$partida);
         $em = $this->getDoctrine()->getManager();
         $em->remove($partida);
         $em->flush();

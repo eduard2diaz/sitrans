@@ -1,9 +1,14 @@
 var responsable = function () {
     var table = null;
     var obj = null;
+    var responsable_id = null;
 
     var configurarFormulario=function(){
         $('select#responsable_area').select2({
+            dropdownParent: $("#basicmodal"),
+            //allowClear: true
+        });
+        $('select#responsable_institucion').select2({
             dropdownParent: $("#basicmodal"),
             //allowClear: true
         });
@@ -53,8 +58,60 @@ var responsable = function () {
                 }]
             });
     }
+    var institucionListener = function () {
+        $('div#basicmodal').on('change', 'select#responsable_institucion', function (evento)
+        {
+            if ($(this).val() > 0)
+                $.ajax({
+                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    dataType: 'html',
+                    url: Routing.generate('area_findbyinstitucion', {'id': $(this).val()}),
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    success: function (data) {
+                        var cadena="";
+                        var array=JSON.parse(data);
+                        for(var i=0;i<array.length;i++)
+                            cadena+="<option value="+array[i]['id']+">"+array[i]['nombre']+"</option>";
+                        $('select#responsable_area').html(cadena);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
 
-
+            $.ajax({
+                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    dataType: 'html',
+                    url: Routing.generate('tarjeta_findbyinstitucion', {'id': $(this).val()}),
+                    data: {
+                       responsable: responsable_id
+                    },
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                    },
+                    success: function (data) {
+                        var cadena="";
+                        var array=JSON.parse(data);
+                        for(var i=0;i<array.length;i++)
+                            cadena+="<option value="+array[i]['id']+">"+array[i]['nombre']+"</option>";
+                        $('select#responsable_tarjetas').html(cadena);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
+        });
+    }
     var show = function () {
         $('body').on('click', 'a.responsable_show', function (evento)
         {
@@ -85,7 +142,6 @@ var responsable = function () {
             });
         });
     }
-
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
@@ -95,21 +151,25 @@ var responsable = function () {
             obj = $(this);
             $.ajax({
                 type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                dataType: 'html',
+            //    dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
                 },
                 success: function (data) {
-                      if ($('div#basicmodal').html(data)) {
+                      if ($('div#basicmodal').html(data.html)) {
                           configurarFormulario();
                          $('div#basicmodal').modal('show');
+                         if(data.responsable)
+                             responsable_id=data.responsable;
+                         else
+                             responsable_id=null;
                     }
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -263,6 +323,7 @@ var responsable = function () {
         init: function () {
             $().ready(function () {
                     configurarDataTable();
+                    institucionListener();
                     newAction();
                     show();
                     edicion();

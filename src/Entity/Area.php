@@ -8,22 +8,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Area as AreaConstraint;
 
 /**
  * Area
  *
  * @ORM\Table(name="area", indexes={@ORM\Index(name="IDX_D7943D68429C20AD", columns={"ccosto"})})
  * @ORM\Entity
- * @UniqueEntity(fields={"nombre"})
- * @UniqueEntity(fields={"codigo"})
+ * @AreaConstraint(nombre="nombre",codigo="codigo",ccosto="ccosto")
  */
 class Area
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer", nullable=false, options={"comment"="
-"})
+     * @ORM\Column(name="id", type="integer", nullable=false, options={"comment"=""})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="area_id_seq", allocationSize=1, initialValue=1)

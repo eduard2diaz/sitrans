@@ -37,7 +37,7 @@ class DefaultController extends Controller
 
     private function targetPath(){
         $path=null;
-        if($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SUPER'))
+        if($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SUPERADMIN'))
             $path='usuario_index';
         elseif($this->isGranted('ROLE_JEFETRANSPORTE'))
             $path='hojaruta_index';

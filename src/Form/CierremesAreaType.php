@@ -17,7 +17,9 @@ class CierremesAreaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $cierre=$options['data']->getCierre()->getId();
+        $institucion=$options['data']->getCierre()->getInstitucion()->getId();
         $area=null==$options['data']->getArea() ? null : $options['data']->getArea()->getId();
+
         $builder
             ->add('fecha', TextType::class, array('attr' => array(
                 'autocomplete' => 'off',
@@ -51,7 +53,7 @@ class CierremesAreaType extends AbstractType
                 'placeholder'=>'Seleccione un área',
                 'auto_initialize'=>false,
                 'class'         =>'App:Area',
-                'query_builder'=>function(EntityRepository $repository) use($cierre,$area){
+                'query_builder'=>function(EntityRepository $repository) use($cierre,$area,$institucion){
                     $res = $repository->createQueryBuilder('area');
                     $res->select('ca')->from('App:CierremesArea','ca');
                     $res->join('ca.cierre','c');
@@ -60,14 +62,19 @@ class CierremesAreaType extends AbstractType
 
                     $areasconcierre=[];
                     foreach ($cierres as $value){
-                        if($area!=null && $area==$value->getArea()->getId())
-                            continue;
-                        $areasconcierre[]=$value->getArea()->getId();
+                        if(null!=$value->getArea())
+                            $areasconcierre[]=$value->getArea()->getId();
                     }
 
                     $qb=$repository->createQueryBuilder('a');
+                    $qb->join('a.ccosto','cc');
+                    $qb->join('cc.cuenta','c');
+                    $qb->join('c.institucion','i');
+                    $qb->Where('i.id= :institucion')->setParameter('institucion',$institucion);
                     if(!empty($areasconcierre))
-                        $qb->Where('a.id NOT IN (:areas)')->setParameter('areas',$areasconcierre);
+                        $qb->andWhere('a.id NOT IN (:areas)')->setParameter('areas',$areasconcierre);
+                    if(null!=$area)
+                        $qb->orWhere('a.id= :area')->setParameter('area',$area);
                     return $qb;
                 }
             ))

@@ -19,6 +19,7 @@ class HojarutaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $data=$options['data'];
+        $institucion=$options['institucion'];
         $vehiculo=$options['data']->getVehiculo();
         $fsalida=$options['data']->getFechaSalida();
         $fllegada=$options['data']->getFechaLlegada();
@@ -81,17 +82,30 @@ class HojarutaType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('tipoactividad',null,array('label'=>'Tipo de actividad', 'required'=>true))
+            ->add('tipoactividad',EntityType::class,array(
+                'label'=>'Tipo de actividad',
+                'required'=>true,
+                'auto_initialize'=>false,
+                'class'         =>'App:Tipoactividad',
+                'query_builder'=>function(EntityRepository $repository) use($institucion){
+                    $qb=$repository->createQueryBuilder('tt');
+                    $qb->join('tt.institucion','i');
+                    $qb->where('i.id= :institucion')->setParameter('institucion',$institucion);
+                    return $qb;
+                }
+            ))
             ->add('vehiculo',EntityType::class,array(
                 'label'=>'Vehículo',
                 'auto_initialize'=>false,
                 'class'         =>'App:Vehiculo',
                 'disabled'=>$disabled,
-                'query_builder'=>function(EntityRepository $repository) use($vehiculo){
+                'query_builder'=>function(EntityRepository $repository) use($vehiculo,$institucion){
                     $qb=$repository->createQueryBuilder('v');
                     $qb->join('v.responsable','r');
                     $qb->join('r.tarjetas','t');
-                    $qb->where('v.estado= 0 AND t.activo = :activo AND r.activo = :activo AND (v.litrosentanque  > :cantidad)')->setParameters(['activo'=>true,'cantidad'=>0]);
+                    $qb->join('t.tipotarjeta','tt');
+                    $qb->join('tt.institucion','i');
+                    $qb->where('v.estado= 0 AND t.activo = TRUE AND r.activo = TRUE AND i.id= :institucion AND(v.litrosentanque  > :cantidad)')->setParameters(['institucion'=>$institucion,'cantidad'=>0]);
                     if(null!=$vehiculo)
                         $qb->orWhere('v.id= :id')->setParameter('id',$vehiculo);
                     return $qb;
@@ -110,5 +124,6 @@ class HojarutaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Hojaruta::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

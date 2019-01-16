@@ -4,13 +4,16 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 
 /**
  * Tipotarjeta
  *
  * @ORM\Table(name="tipotarjeta")
  * @ORM\Entity
- * @UniqueEntity(fields={"nombre"})
+ * @UniqueEntity(fields={"nombre","institucion"})
  */
 class Tipotarjeta
 {
@@ -31,6 +34,12 @@ class Tipotarjeta
      */
     private $nombre;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -48,9 +57,36 @@ class Tipotarjeta
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
     public function __toString()
     {
         return $this->nombre;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (null==$this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
+                ->addViolation();
     }
 
 }

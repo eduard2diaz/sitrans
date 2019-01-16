@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -102,6 +104,17 @@ class Tipovehiculo
     public function __toString()
     {
      return $this->getNombre();
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if ( $this->getIdlicencia()->isEmpty())
+            $context->buildViolation('Seleccione las licencias necesarias para conducir este vehículo')
+                ->atPath('idlicencia')
+                ->addViolation();
     }
 
 }

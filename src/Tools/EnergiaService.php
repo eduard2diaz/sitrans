@@ -32,6 +32,9 @@ class EnergiaService
         return $this->em;
     }
 
+    /*
+     * Funcionalidad que devuelve el importe o precio de un determinado tipo de combustible en una fecha dada
+     */
     public function importeCombustible($tipocombustible,$fecha){
         $consulta=$this->getEm()->getManager()->createQuery('SELECT pc.importe FROM App:PrecioCombustible pc JOIN pc.tipocombustible tc WHERE tc.id= :id AND pc.fecha<= :fecha ORDER BY pc.fecha DESC');
         $consulta->setParameters(['id'=>$tipocombustible,'fecha'=>$fecha]);

@@ -126,12 +126,27 @@ class Recargatarjeta
         return $this;
     }
 
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $path=$this->getId()!= null ? null : 'tarjeta';
+
+        if(null==$this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
         if(null==$this->getTarjeta())
             $context->buildViolation('Seleccione una tarjeta')
                 ->atPath($path)
@@ -161,17 +176,5 @@ class Recargatarjeta
             $context->buildViolation('Seleccione una fecha dentro del mes actual')
                 ->atPath('fecha')
                 ->addViolation();
-    }
-
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
-
-    public function setUsuario(?Usuario $usuario): self
-    {
-        $this->usuario = $usuario;
-
-        return $this;
     }
 }

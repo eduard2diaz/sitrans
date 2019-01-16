@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity
@@ -29,6 +31,10 @@ class PrecioCombustible
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\Range(
+     *      min = 0.1,
+     *      minMessage = "El precio debe ser mayor o igual a  {{ limit }}",
+     * )
      */
     private $importe;
 
@@ -76,5 +82,16 @@ class PrecioCombustible
     public function __toString()
     {
        return $this->getTipocombustible()->getNombre().': '.$this->getFecha()->format('d-m-Y');
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (null==$this->getTipocombustible())
+            $context->buildViolation('Seleccione el tipo de combustible')
+                ->atPath('tipocombustible')
+                ->addViolation();
     }
 }

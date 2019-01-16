@@ -54,6 +54,10 @@ class AjusteTarjeta
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 1,
+     * )
      */
     private $tipo;
 
@@ -134,12 +138,28 @@ class AjusteTarjeta
         return $this;
     }
 
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $path=$this->getId() ? null : 'tarjeta';
+
+        if(null==$this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
+
         if(null==$this->getTarjeta())
             $context->buildViolation('Seleccione una tarjeta')
                 ->atPath($path)
@@ -148,14 +168,16 @@ class AjusteTarjeta
             $context->buildViolation('Seleccione una tarjeta activa')
                 ->atPath($path)
                 ->addViolation();
-
-        if($this->getTipo()<0 || $this->getTipo()>1)
-                    $context->buildViolation('Compruebe el tipo de operacion')
-                        ->atPath('tipo')
-                        ->addViolation();
+        elseif($this->getTipo()==0 && $this->getMonto()>$this->getTarjeta()->getCantlitros())
+            $context->buildViolation('La tarjeta no dispone con la cantidad de litros indicadas')
+                ->atPath($path)
+                ->addViolation();
+        elseif($this->getTipo()==0 && $this->getCantefectivo()>$this->getTarjeta()->getCantefectivo())
+            $context->buildViolation('La tarjeta no dispone con la cantidad de efectivo necesaria')
+                ->atPath($path)
+                ->addViolation();
 
         $hoy=new \DateTime('today');
-
         $anno=$hoy->format('y');
         if($this->getFecha()->format('y')!=$anno)
             $context->buildViolation('Seleccione una fecha dentro del año actual')
@@ -169,16 +191,6 @@ class AjusteTarjeta
 
     }
 
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
 
-    public function setUsuario(?Usuario $usuario): self
-    {
-        $this->usuario = $usuario;
-
-        return $this;
-    }
 
 }

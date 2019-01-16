@@ -7,6 +7,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/*
+ * Clase que carga el precio de cada uno de los tipos de combustible
+ */
 class PrecioCombutibleFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)

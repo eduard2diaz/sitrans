@@ -61,7 +61,7 @@ var planefectivocuenta = function () {
         $('div#basicmodal').on('change', 'select#planefectivo_cuenta_cuenta', function (evento)
         {
 
-            if ($(this).val() > 0)
+            if ($(this).val() > 0){
                 $.ajax({
                     type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
                     dataType: 'html',
@@ -84,6 +84,30 @@ var planefectivocuenta = function () {
                         mApp.unblock("div#basicmodal div.modal-body")
                     }
                 });
+
+            $.ajax({
+                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                dataType: 'html',
+                url: Routing.generate('centrocosto_searchbycuenta', {'cuenta': $(this).val()}),
+                beforeSend: function (data) {
+                    mApp.block("div#basicmodal div.modal-body",
+                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                },
+                success: function (data) {
+                    var cadena="";
+                    var array=JSON.parse(data);
+                    for(var i=0;i<array.length;i++)
+                        cadena+="<option value="+array[i]['id']+">"+array[i]['nombre']+"</option>";
+                    $('select#planefectivo_cuenta_centrocosto').html(cadena);
+                },
+                error: function () {
+                    base.Error();
+                },
+                complete: function () {
+                    mApp.unblock("div#basicmodal div.modal-body")
+                }
+            });
+            }
         });
     }
 

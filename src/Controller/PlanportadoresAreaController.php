@@ -46,13 +46,13 @@ class PlanportadoresAreaController extends Controller
         
         $planportadoresarea = new PlanportadoresArea();
         $planportadoresarea->setPlanportadores($planportadores);
-        $form = $this->createForm(PlanportadoresAreaType::class, $planportadoresarea, array('action' => $this->generateUrl('planportadoresarea_new',['id'=>$planportadores->getId()])));
+        $planportadoresarea->setUsuario($this->getUser());
+        $form = $this->createForm(PlanportadoresAreaType::class, $planportadoresarea, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('planportadoresarea_new',['id'=>$planportadores->getId()])));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $planportadoresarea->setUsuario($this->getUser());
                 $em->persist($planportadoresarea);
                 $em->flush();
                 $this->addFlash('success',"El plan de portadores fue registrado satisfactoriamente");
@@ -90,7 +90,7 @@ class PlanportadoresAreaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
         
-        $form = $this->createForm(PlanportadoresAreaType::class, $planportadoresarea, array('action' => $this->generateUrl('planportadoresarea_edit',array('id'=>$planportadoresarea->getId()))));
+        $form = $this->createForm(PlanportadoresAreaType::class, $planportadoresarea, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('planportadoresarea_edit',array('id'=>$planportadoresarea->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())

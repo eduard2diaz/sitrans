@@ -21,7 +21,7 @@ class PlanefectivoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $planefectivos = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.anno, p.mes FROM App:Planefectivo p')->getResult();
+            $planefectivos = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.anno, p.mes FROM App:Planefectivo p JOIN p.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($planefectivos),
@@ -45,6 +45,7 @@ class PlanefectivoController extends Controller
             throw $this->createAccessDeniedException();
         
         $planefectivo = new Planefectivo();
+        $planefectivo->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(PlanefectivoType::class, $planefectivo, array('action' => $this->generateUrl('planefectivo_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();

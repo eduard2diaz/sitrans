@@ -20,9 +20,12 @@
 {% block header %}
 {% embed "layout/recortes/header.html.twig" %}
 {% block top_menu %}
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ROLE_SUPERADMIN') %}
+        {{ include('layout/recortes/topmenu/superadmin_topmenu.html.twig') }}
+    {% elseif is_granted('ROLE_ADMIN') %}
         {{ include('layout/recortes/topmenu/admin_topmenu.html.twig') }}
     {% endif %}
+
     {%if is_granted('ROLE_JEFETRANSPORTE') or is_granted('ROLE_CAJERO')%}
         {{ include('layout/recortes/topmenu/transporte_topmenu.html.twig') }}
     {% endif %}

@@ -4,17 +4,9 @@
 }})}}
 
 <div class="modal-body" id="modal-body">
-    <div class="row pull-right">
-    <span class="m-switch m-switch--icon m-switch--success pull-right">
-				<label>
-					{{form_widget(form.activo)}}
-                    <span></span>
-			</label>
-    </span>
-    </div>
-    <div class="clearfix"></div>
+
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.nombre)}}
@@ -25,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.apellidos)}}
@@ -36,10 +28,22 @@
                 </div>
             </div>
         </div>
+        {%  if form.children['institucion'] is defined%}
+        <div class="col-md-4">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.institucion)}}
+                </label>
+                <div>
+                    {{form_widget(form.institucion)}}
+                    {{form_errors(form.institucion)}}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    <div class="clearfix"></div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row m--margin-top-20-desktop">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.usuario)}}
@@ -50,7 +54,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.correo)}}
@@ -61,9 +65,19 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            {{ form_label(form.activo) }}
+            <br/>
+            <span class="m-switch m-switch--icon m-switch--success">
+				<label>
+					{{form_widget(form.activo)}}
+                    <span></span>
+			</label>
+    </span>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row m--margin-top-20-desktop">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.idrol)}}
@@ -76,8 +90,8 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row  m--margin-top-20-desktop">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.password.first)}}
@@ -88,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.password.second)}}

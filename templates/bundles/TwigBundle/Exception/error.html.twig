@@ -1,6 +1,9 @@
 {% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
  {% block stylesheets %}
  <style>
+     div.m-body{
+         background-color: white !important;
+     }
      ul.error li{
          display: inline;
      }

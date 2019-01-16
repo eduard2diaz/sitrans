@@ -3,7 +3,7 @@ security:
         App\Entity\Usuario: { algorithm: bcrypt , cost: 13 }
 
     role_hierarchy:
-        ROLE_SUPERADMIN:  ROLE_ADMIN
+       # ROLE_SUPERADMIN:  ROLE_ADMIN
         ROLE_ADMIN:  [ROLE_CAJERO, ROLE_JEFETRANSPORTE, ROLE_ELECTRICIDAD]
 
 
@@ -32,38 +32,46 @@ security:
     access_control:
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/estatica/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #rutas de superadmin
+        - { path: ^/provincia, roles: ROLE_SUPERADMIN }
+        - { path: ^/institucion, roles: ROLE_SUPERADMIN }
+        - { path: ^/municipio, roles: ROLE_SUPERADMIN }
+        - { path: ^/tipocombustible, roles: ROLE_SUPERADMIN }
+        - { path: ^/tipovehiculo, roles: ROLE_SUPERADMIN }
+        - { path: ^/tarifakw, roles: ROLE_SUPERADMIN }
+        - { path: ^/cupet, roles: ROLE_SUPERADMIN }
+        - { path: ^/licencia, roles: ROLE_SUPERADMIN }
+        - { path: ^/preciocombustible/findbytarjeta, roles: ROLE_CAJERO }
+        - { path: ^/preciocombustible/findbyvehiculo, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/preciocombustible, roles: ROLE_SUPERADMIN }
         #Rutas de administracion
-        - { path: ^/provincia, roles: ROLE_ADMIN }
-        - { path: ^/municipio, roles: ROLE_ADMIN }
         - { path: ^/centrocosto, roles: ROLE_ADMIN }
         - { path: ^/cuenta, roles: ROLE_ADMIN }
         - { path: ^/partida, roles: ROLE_ADMIN }
         - { path: ^/reloj, roles: ROLE_ADMIN }
-        - { path: ^/cupet, roles: ROLE_ADMIN }
         - { path: ^/tipoactividad, roles: ROLE_ADMIN }
-        - { path: ^/tipocombustible, roles: ROLE_ADMIN }
         - { path: ^/tipotarjeta, roles: ROLE_ADMIN }
-        - { path: ^/tipovehiculo, roles: ROLE_ADMIN }
-        - { path: ^/tarifakw, roles: ROLE_ADMIN }
         - { path: ^/area, roles: ROLE_ADMIN }
-        - { path: ^/licencia, roles: ROLE_ADMIN }
         - { path: ^/elemento\d+/searchbypartida, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/elemento, roles: ROLE_ADMIN }
         - { path: ^/subelemento\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/subelemento, roles: ROLE_ADMIN }
         - { path: ^/subelemento\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/subelemento, roles: ROLE_ADMIN }
-        - { path: ^/usuario$, roles: ROLE_ADMIN }
-        - { path: ^/usuario/new, roles: ROLE_ADMIN }
-        - { path: ^/usuario\d+/delete, roles: ROLE_ADMIN }
-        - { path: ^/usuario$, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/usuario$, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
+        - { path: ^/usuario/new, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
+        - { path: ^/usuario\d+/delete, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
         #Rutas de transporte
+        - { path: ^/chofer/new, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/chofer, roles: ROLE_JEFETRANSPORTE }
-        - { path: ^/responsable, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/responsable/new, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/responsable, roles:  ROLE_JEFETRANSPORTE }
+        - { path: ^/vehiculo/new, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/vehiculo, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/mantenimiento, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/reparacion, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/hojaruta, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/pruebalitro, roles: ROLE_JEFETRANSPORTE }
         #Rutas de cajero
         - { path: ^/tarjeta, roles: ROLE_CAJERO }
         - { path: ^/chip, roles: ROLE_CAJERO }
@@ -75,7 +83,7 @@ security:
         - { path: ^/planportadoresarea, roles: ROLE_CAJERO }
         - { path: ^/planefectivo, roles: ROLE_CAJERO }
         - { path: ^/planefectivocuenta, roles: ROLE_CAJERO }
-        - { path: ^/preciocombustible, roles: ROLE_CAJERO }
+
         #Rutas de electricidad
         - { path: ^/recargakw, roles: ROLE_ELECTRICIDAD }
         - { path: ^/lecturareloj, roles: ROLE_ELECTRICIDAD }

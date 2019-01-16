@@ -7,6 +7,10 @@ var chofer = function () {
                   dropdownParent: $("#basicmodal"),
             //allowClear: true
         });
+        $('select#chofer_institucion').select2({
+                  dropdownParent: $("#basicmodal"),
+            //allowClear: true
+        });
 
         $("input#chofer_ci").maxlength({warningClass:"m-badge m-badge--warning m-badge--rounded m-badge--wide",limitReachedClass:"m-badge m-badge--success m-badge--rounded m-badge--wide",appendToParent:!0});
 
@@ -16,6 +20,7 @@ var chofer = function () {
                 'chofer[apellido]': {required:true},
                 'chofer[ci]': {required:true, maxlength: 11},
                 'chofer[direccion]': {required:true},
+                'chofer[institucion]': {required:true},
                 'chofer[idlicencia][]': {required:true},
             },
             highlight: function (element) {

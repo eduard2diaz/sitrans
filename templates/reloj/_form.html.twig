@@ -10,12 +10,11 @@
 					{{form_widget(form.activo)}}
                     <span></span>
 			</label>
-        <br/>
     </span>
     </div>
     <div class="clearfix"></div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.codigo)}}
@@ -26,8 +25,10 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-6">
+    <div class="row m--margin-top-20">
+        <div class="col-md-12">
             <div class="form-group m-form__group">
                 <label>
                     {{form_label(form.area)}}
@@ -45,8 +46,8 @@
 {{form_errors(form)}}
 {{form_rest(form)}}
 <div class="modal-footer">
-    <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
-    <button class="btn btn-primary mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+    <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary btn-sm mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
         <i class="flaticon-edit-1 ladda-label"></i> {{ action |default('Guardar')}}
         <span class="ladda-spinner"></span>
     </button>

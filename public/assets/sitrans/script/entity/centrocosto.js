@@ -5,7 +5,6 @@ var centrocosto = function () {
     var configurarFormulario=function(){
         $('select#centrocosto_cuenta').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $("div#basicmodal form").validate({
@@ -27,9 +26,6 @@ var centrocosto = function () {
         table = $("table#centrocostos_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('centrocosto_index'),
                 "language": {
                     url: datatable_translation
@@ -70,7 +66,7 @@ var centrocosto = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -89,7 +85,7 @@ var centrocosto = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -109,7 +105,6 @@ var centrocosto = function () {
                             toastr.success(data['mensaje']);
 
                         $('div#basicmodal').modal('hide');
-                     //   total += 1;
                         var pagina = table.page();
                         objeto = table.row.add({
                             "id": data['id'],
@@ -162,7 +157,7 @@ var centrocosto = function () {
                         var pagina = table.page();
                         obj.parents('tr').children('td:nth-child(2)').html(data['nombre']);
                         obj.parents('tr').children('td:nth-child(3)').html(data['codigo']);
-                        obj.parents('tr').children('td:nth-child(3)').html(data['cuenta']);
+                        obj.parents('tr').children('td:nth-child(4)').html(data['cuenta']);
                     }
                 },
                 error: function ()
@@ -181,20 +176,19 @@ var centrocosto = function () {
 
            bootbox.confirm({
                 title: "Eliminar centro de costo",
-                message: "<p>¿Está seguro que desea eliminar este centro de costo?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este centro de costo?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal  btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcentrocosto porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

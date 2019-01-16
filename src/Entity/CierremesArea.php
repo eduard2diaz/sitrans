@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity
@@ -24,7 +25,7 @@ class CierremesArea
      */
     private $fecha;
 
-   /**
+    /**
      * @var \CierremesKw
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\CierremesKw")
@@ -181,5 +182,20 @@ class CierremesArea
         $this->efectivorestante = $efectivorestante;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (null == $this->getArea())
+            $context->buildViolation('Seleccione al menos un tipo de licencia')
+                ->atPath('area')
+                ->addViolation();
+        if (null == $this->getCierre())
+            $context->buildViolation('Seleccione un cierre')->addViolation();
+        if (null == $this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
     }
 }

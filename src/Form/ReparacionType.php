@@ -17,6 +17,7 @@ class ReparacionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $data=$options['data'];
+        $institucion=$options['institucion'];
         $vehiculo=$options['data']->getVehiculo();
         $disabled=false;
         if($data->getId()!=null)
@@ -41,12 +42,15 @@ class ReparacionType extends AbstractType
                 'auto_initialize'=>false,
                 'class'         =>'App:Vehiculo',
                 'disabled'=>$disabled,
-                'query_builder'=>function(EntityRepository $repository) use($vehiculo){
+                'query_builder'=>function(EntityRepository $repository) use($vehiculo,$institucion){
                     $qb=$repository->createQueryBuilder('v');
                     $qb->join('v.responsable','r');
-                    $qb->where('v.estado= 1  AND r.activo = :activo')->setParameter('activo',true);
+                    $qb->join('r.tarjetas','t');
+                    $qb->join('v.institucion','i');
+                    $qb->where('v.estado= 1 AND t.activo = TRUE AND r.activo = TRUE AND i= :institucion')->setParameter('institucion', $institucion);
                     if(null!=$vehiculo)
                         $qb->orWhere('v.id= :vehiculo')->setParameter('vehiculo',$vehiculo);
+
                     return $qb;
                 }
             ))
@@ -63,5 +67,6 @@ class ReparacionType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Reparacion::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

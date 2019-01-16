@@ -41,6 +41,12 @@ class Mantenimiento
      */
     private $descripcion;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
     public function getId()
     {
         return $this->id;
@@ -95,11 +101,32 @@ class Mantenimiento
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $path=$this->getId() ? null : 'vehiculo';
+        if(null==$this->getInstitucion())
+            $context->buildViolation('Seleccione la institución')
+                ->atPath('institucion')
+                ->addViolation();
+
         if(null==$this->getVehiculo())
             $context->buildViolation('Seleccione el vehículo')
                 ->atPath($path)

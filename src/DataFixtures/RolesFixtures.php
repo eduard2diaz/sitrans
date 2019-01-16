@@ -7,6 +7,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/*
+ * Clase que carga los roles o permisos que pueden ser asignados a los usuarios
+ */
 class RolesFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)

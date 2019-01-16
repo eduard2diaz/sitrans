@@ -21,7 +21,7 @@ class TipotarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $tipotarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.nombre FROM App:Tipotarjeta t')->getResult();
+            $tipotarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.nombre FROM App:Tipotarjeta t JOIN t.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($tipotarjetas),
@@ -45,6 +45,7 @@ class TipotarjetaController extends Controller
             throw $this->createAccessDeniedException();
 
         $tipotarjeta = new Tipotarjeta();
+        $tipotarjeta->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(TipotarjetaType::class, $tipotarjeta, array('action' => $this->generateUrl('tipotarjeta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -80,6 +81,7 @@ class TipotarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$tipotarjeta);
         $form = $this->createForm(TipotarjetaType::class, $tipotarjeta, array('action' => $this->generateUrl('tipotarjeta_edit',array('id'=>$tipotarjeta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -117,6 +119,7 @@ class TipotarjetaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$tipotarjeta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($tipotarjeta);
         $em->flush();

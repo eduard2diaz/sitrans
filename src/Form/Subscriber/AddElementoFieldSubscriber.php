@@ -54,9 +54,6 @@ class AddElementoFieldSubscriber  implements EventSubscriberInterface{
         $form->add($this->factory->createNamed('elemento',EntityType::class,null,array(
             'auto_initialize'=>false,
             'class'         =>'App:Elemento',
-            'choice_label' => function ($elemento) {
-                return $elemento->getNombre()."  - ".$elemento->getCodigo();
-            },
             'query_builder'=>function(EntityRepository $repository)use($partida){
                 $qb=$repository->createQueryBuilder('elemento')
                     ->innerJoin('elemento.partida','p');

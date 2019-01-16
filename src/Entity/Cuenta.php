@@ -6,11 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity
- * @UniqueEntity(fields={"nombre"})
- * @UniqueEntity(fields={"codigo"})
+ * @UniqueEntity(fields={"nombre","institucion"})
+ * @UniqueEntity(fields={"codigo","institucion"})
  */
 class Cuenta
 {
@@ -33,6 +35,10 @@ class Cuenta
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 1,
+     * )
      */
     private $naturaleza;
 
@@ -40,6 +46,12 @@ class Cuenta
      * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nae;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
 
     public function getId()
     {
@@ -98,8 +110,31 @@ class Cuenta
         return $this;
     }
 
+    public function getInstitucion(): ?Institucion
+    {
+        return $this->institucion;
+    }
+
+    public function setInstitucion(?Institucion $institucion): self
+    {
+        $this->institucion = $institucion;
+
+        return $this;
+    }
+
     public function __toString()
     {
      return $this->getNombre();
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (null==$this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
+                ->addViolation();
     }
 }

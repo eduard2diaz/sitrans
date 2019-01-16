@@ -127,6 +127,12 @@ class Hojaruta
      */
     private $usuario;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -253,6 +259,22 @@ class Hojaruta
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
@@ -260,6 +282,11 @@ class Hojaruta
         if(null==$this->getTipoactividad())
             $context->buildViolation('Seleccione el tipo de actividad')
                 ->atPath('tipoactividad')
+                ->addViolation();
+
+        if(null==$this->getInstitucion())
+            $context->buildViolation('Seleccione la institución')
+                ->atPath('institucion')
                 ->addViolation();
 
         $path=$this->getId()!= null ? null : 'vehiculo';

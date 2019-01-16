@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tipovehiculo;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Chofer;
 use App\Form\ChoferType;
@@ -22,7 +23,16 @@ class ChoferController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $chofers = $this->getDoctrine()->getManager()->createQuery('SELECT ch.id, ch.nombre, ch.apellido, ch.ci FROM App:Chofer ch')->getResult();
+            $em=$this->getDoctrine()->getManager();
+            if($this->isGranted('ROLE_SUPERADMIN'))
+                $consulta = $em->createQuery('SELECT ch.id, ch.nombre, ch.apellido, ch.ci FROM App:Chofer ch');
+            else
+            {
+                $consulta = $em->createQuery('SELECT ch.id, ch.nombre, ch.apellido, ch.ci FROM App:Chofer ch JOIN ch.institucion i WHERE i.id= :institucion');
+                $consulta->setParameter('institucion',$this->getUser()->getInstitucion()->getId());
+            }
+
+            $chofers = $consulta->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($chofers),
@@ -46,7 +56,7 @@ class ChoferController extends Controller
             throw $this->createAccessDeniedException();
 
         $chofer = new Chofer();
-        $form = $this->createForm(ChoferType::class, $chofer, array('action' => $this->generateUrl('chofer_new')));
+        $form = $this->createForm(ChoferType::class, $chofer, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('chofer_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -89,20 +99,29 @@ class ChoferController extends Controller
     */
     public function edit(Request $request, Chofer $chofer): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(ChoferType::class, $chofer, array('action' => $this->generateUrl('chofer_edit',array('id'=>$chofer->getId()))));
-        $activoOriginal=$form->get('activo')->getData();
+        $form = $this->createForm(ChoferType::class, $chofer, array('institucion' => $this->getUser()->getInstitucion()->getId(), 'action' => $this->generateUrl('chofer_edit', array('id' => $chofer->getId()))));
+        $activoOriginal = $form->get('activo')->getData();
+        $institucionOriginal = $chofer->getInstitucion()->getId();
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted())
+
+        if ($form->isSubmitted()){
+                if($chofer->getInstitucion()->getId()!=$institucionOriginal){
+                    $vehiculo_asignado=$this->tieneVehiculoAsignado($chofer->getId());
+                    if(!empty($vehiculo_asignado))
+                        $form->get('institucion')->addError(new  FormError("Para poder cambiar el chofer de institución antes debe quitarlo del vehiculo con matrícula ".$vehiculo_asignado[0]['matricula']));
+                }
+
             if ($form->isValid()) {
-                if(!$chofer->getActivo() && $activoOriginal==true)
+                if (!$chofer->getActivo() && $activoOriginal == true)
                     $this->disableVehiculo($chofer->getId());
+
                 $em->persist($chofer);
                 $em->flush();
-                return new JsonResponse(array('mensaje' =>"El chofer fue actualizado satisfactoriamente",
+                return new JsonResponse(array('mensaje' => "El chofer fue actualizado satisfactoriamente",
                     'nombre' => $chofer->getNombre(),
                     'apellido' => $chofer->getApellido(),
                     'ci' => $chofer->getCi(),
@@ -116,6 +135,7 @@ class ChoferController extends Controller
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
+    }
 
         return $this->render('chofer/new.html.twig', [
             'chofer' => $chofer,
@@ -149,7 +169,8 @@ class ChoferController extends Controller
             throw $this->createAccessDeniedException();
 
         $em=$this->getDoctrine()->getManager();
-        $choferesActivos=$em->getRepository('App:Chofer')->findBy(['activo'=>true]);
+        $institucion=$request->get('institucion');
+        $choferesActivos=$em->createQuery('Select ch from App:Chofer ch join ch.institucion i WHERE ch.activo= TRUE AND i.id= :institucion')->setParameter('institucion',$institucion)->getResult();
         $choferes=[];
         foreach ($choferesActivos as $value){
             $esValido=true;
@@ -164,6 +185,15 @@ class ChoferController extends Controller
         }
         return new JsonResponse($choferes);
     }
+
+    private function tieneVehiculoAsignado($chofer){
+        $em=$this->getDoctrine()->getManager();
+        $consulta=$em->createQuery('SELECT v.matricula FROM App:Vehiculo v JOIN v.chofer c WHERE c.id= :id');
+        $consulta->setParameter('id',$chofer);
+        $consulta->setMaxResults(1);
+        return $consulta->getResult();
+    }
+
 
     private function disableVehiculo($chofer){
         $em=$this->getDoctrine()->getManager();

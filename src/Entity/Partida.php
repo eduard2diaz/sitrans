@@ -8,12 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Partida as PartidaConstraint;
 
 /**
  * @ORM\Entity
- * @UniqueEntity(fields={"nombre"})
- * @UniqueEntity(fields={"codigo"})
- * @UniqueEntity(fields={"tipopartida"})
+ * @PartidaConstraint(nombre="nombre",codigo="codigo",tipopartida="tipopartida",cuenta="cuenta")
  */
 class Partida
 {
@@ -95,22 +94,6 @@ class Partida
         return $this;
     }
 
-    public function __toString(){
-        return $this->getNombre();
-    }
-
-
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
-        if(null==$this->getCuenta())
-            $context->buildViolation('Seleccione una cuenta')
-                ->atPath('cuenta')
-                ->addViolation();
-    }
-
     public function getTipopartida(): ?Tipopartida
     {
         return $this->tipopartida;
@@ -123,5 +106,22 @@ class Partida
         return $this;
     }
 
+    public function __toString(){
+        return "{$this->getCodigo()}-{$this->getNombre()}";
+    }
 
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if(null==$this->getCuenta())
+            $context->buildViolation('Seleccione una cuenta')
+                ->atPath('cuenta')
+                ->addViolation();
+        if(null==$this->getTipopartida())
+            $context->buildViolation('Seleccione un tipo de partida')
+                ->atPath('tipopartida')
+                ->addViolation();
+    }
 }

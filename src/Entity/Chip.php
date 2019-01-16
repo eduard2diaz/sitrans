@@ -60,6 +60,10 @@ class Chip
      * @var integer|null
      *
      * @ORM\Column(name="moneda", type="integer", nullable=false)
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 1,
+     * )
      */
     private $moneda;
 
@@ -272,12 +276,28 @@ class Chip
         return $this;
     }
 
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $path=$this->getId()!=null ? null : 'tarjeta';
+
+        if(null==$this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
+
         if(null==$this->getTarjeta())
             $context->buildViolation('Seleccione la tarjeta')
                 ->atPath($path)
@@ -301,23 +321,20 @@ class Chip
             $context->buildViolation('Seleccione el cupet')
                 ->atPath('cupet')
                 ->addViolation();
-
-        if(0!=$this->getMoneda() && 1!=$this->getMoneda())
-            $context->buildViolation('Seleccione el tipo de moneda')
-                ->atPath('moneda')
+        elseif(!$this->getCupet()->getEnfuncionamiento())
+            $context->buildViolation('Seleccione un cupet en funcionamiento')
+                ->atPath('cupet')
                 ->addViolation();
 
         if($this->getLitrosextraidos()>$this->getTarjeta()->getCantlitros())
-            $context->buildViolation('La tarjeta seleccionada no posee la cantidad indicada de litros')
+            $context->buildViolation('La tarjeta seleccionada no posee la cantidad de litros indicada')
                 ->atPath('litrosextraidos')
                 ->addViolation();
-
-        if($this->getLitrosextraidos()>$this->getSaldoinicial())
+        elseif($this->getLitrosextraidos()>$this->getSaldoinicial())
             $context->buildViolation('No puede extraer más combustible que el que posee la tarjeta')
                 ->atPath('litrosextraidos')
                 ->addViolation();
-
-        if($this->getImporte()>$this->getTarjeta()->getCantefectivo())
+        elseif($this->getImporte()>$this->getTarjeta()->getCantefectivo())
             $context->buildViolation('La tarjeta seleccionada no posee la cantidad indicada de efectivo')
                 ->atPath('importe')
                 ->addViolation();
@@ -336,15 +353,4 @@ class Chip
                 ->addViolation();
     }
 
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
-
-    public function setUsuario(?Usuario $usuario): self
-    {
-        $this->usuario = $usuario;
-
-        return $this;
-    }
 }

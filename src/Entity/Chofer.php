@@ -84,6 +84,12 @@ class Chofer
     private $activo;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -186,6 +192,22 @@ class Chofer
         $this->activo = $activo;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
     public function __toString(){
         return $this->getNombre().' '.$this->getApellido();
     }
@@ -198,6 +220,10 @@ class Chofer
         if($this->getIdlicencia()->isEmpty())
             $context->buildViolation('Seleccione al menos un tipo de licencia')
                 ->atPath('idlicencia')
+                ->addViolation();
+        if(null==$this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
                 ->addViolation();
     }
 

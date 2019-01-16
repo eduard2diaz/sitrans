@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity
- * @UniqueEntity(fields={"mes","anno"})
+ * @UniqueEntity(fields={"mes","anno","institucion"})
  */
 class CierremesKw
 {
@@ -22,6 +22,10 @@ class CierremesKw
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 12,
+     * )
      */
     private $mes;
 
@@ -29,6 +33,12 @@ class CierremesKw
      * @ORM\Column(type="integer")
      */
     private $anno;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
 
     public function getId()
     {
@@ -65,6 +75,22 @@ class CierremesKw
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
@@ -77,10 +103,10 @@ class CierremesKw
             $context->buildViolation('Seleccione un año válido')
                 ->atPath('anno')
                 ->addViolation();
-        else
-            if($this->getMes()<1 || $this->getMes()>12)
-                $context->buildViolation('Seleccione un mes válido')
-                    ->atPath('mes')
-                    ->addViolation();
+
+        if (null==$this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
+                ->addViolation();
     }
 }

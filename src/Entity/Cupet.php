@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Cupet
@@ -98,11 +100,6 @@ class Cupet
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->getNombre();
-    }
-
     public function getProvincia(): ?Provincia
     {
         return $this->provincia;
@@ -125,5 +122,31 @@ class Cupet
         $this->municipio = $municipio;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
+    }
+
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (null==$this->getProvincia())
+            $context->buildViolation('Seleccione una provincia')
+                ->atPath('provincia')
+                ->addViolation();
+        elseif (null==$this->getMunicipio())
+            $context->buildViolation('Seleccione  un municipio')
+                ->atPath('municipio')
+                ->addViolation();
+        elseif ($this->getMunicipio()->getProvincia()->getId()!=$this->getProvincia()->getId())
+            $context->buildViolation('Seleccione  un municipio que pertenezca a la provincia seleccionada')
+                ->atPath('municipio')
+                ->addViolation();
+
     }
 }

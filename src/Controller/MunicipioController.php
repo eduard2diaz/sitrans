@@ -126,6 +126,7 @@ class MunicipioController extends Controller
         return new JsonResponse(array('mensaje' =>'El municipio fue eliminado satisfactoriamente'));
     }
 
+    //Funcionalidad ajax usada por otras clases
     /**
      * @Route("/{id}/findbyprovincia", name="municipio_findbyprovincia", options={"expose"=true})
      */

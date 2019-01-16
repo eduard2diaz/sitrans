@@ -21,7 +21,7 @@ class CuentaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $cuentas = $this->getDoctrine()->getManager()->createQuery('SELECT c.id, c.nombre, c.codigo, c.naturaleza, c.nae FROM App:Cuenta c')->getResult();
+            $cuentas = $this->getDoctrine()->getManager()->createQuery('SELECT c.id, c.nombre, c.codigo, c.naturaleza, c.nae FROM App:Cuenta c JOIN c.institucion t WHERE t.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($cuentas),
@@ -45,6 +45,7 @@ class CuentaController extends Controller
             throw $this->createAccessDeniedException();
         
         $cuenta = new Cuenta();
+        $cuenta->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(CuentaType::class, $cuenta, array('action' => $this->generateUrl('cuenta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -82,7 +83,8 @@ class CuentaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
+        $this->denyAccessUnlessGranted('EDIT',$cuenta);
         $form = $this->createForm(CuentaType::class, $cuenta, array('action' => $this->generateUrl('cuenta_edit',array('id'=>$cuenta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -122,7 +124,7 @@ class CuentaController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$cuenta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($cuenta);
         $em->flush();

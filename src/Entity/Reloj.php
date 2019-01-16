@@ -94,9 +94,21 @@ class Reloj
         return $this;
     }
 
+    public function getKwrestante(): ?int
+    {
+        return $this->kwrestante;
+    }
+
+    public function setKwrestante(int $kwrestante): self
+    {
+        $this->kwrestante = $kwrestante;
+
+        return $this;
+    }
+
     public function __toString()
     {
-     return $this->getCodigo();
+     return "{$this->getCodigo()}-{$this->getArea()}";
     }
 
     /**
@@ -110,15 +122,5 @@ class Reloj
                 ->addViolation();
     }
 
-    public function getKwrestante(): ?int
-    {
-        return $this->kwrestante;
-    }
 
-    public function setKwrestante(int $kwrestante): self
-    {
-        $this->kwrestante = $kwrestante;
-
-        return $this;
-    }
 }

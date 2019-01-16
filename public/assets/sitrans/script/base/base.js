@@ -50,7 +50,20 @@ var base = function () {
         },
 
         Error: function () {
-            bootbox.confirm({
+            Swal({
+                type: 'error',
+                title: 'Lo sentimos ha ocurrido un error...',
+                text: 'Presione f5 o pulse el botón. ',
+                confirmButtonText: 'Refrescar página',
+                confirmButtonClass: "btn btn-primary text-uppercase",
+            }).then((result)=>{
+                if (result.value) {
+                document.location.reload();
+            }
+        }
+        );
+
+          /*  bootbox.confirm({
                 title: 'Error',
                 message: "<p class='m--font-boldest  m--font-danger'><i class='flaticon-danger' style='margin-right: 1%'></i>Lo sentimos, ha ocurrido un error.</h5>",
                 buttons: {
@@ -67,7 +80,7 @@ var base = function () {
                     if (result == true)
                         document.location.reload();
                 }
-            });
+            })*/
         },
     };
 }();

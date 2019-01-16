@@ -23,7 +23,7 @@ class CierremesAreaController extends Controller
     public function index(CierremesKw $cierre, Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $consulta='SELECT c.id , a.nombre as area, c.fecha as fecha, c.restante  FROM App:CierremesArea c JOIN c.cierre c1 JOIN c.area a     WHERE c1.id =:id';
+            $consulta='SELECT c.id , a.nombre as area, c.fecha as fecha, c.restante  FROM App:CierremesArea c JOIN c.cierre c1 JOIN c.area a WHERE c1.id =:id';
             $cierremesareas = $this->getDoctrine()->getManager()
                                                      ->createQuery($consulta)
                                                      ->setParameter('id',$cierre->getId())
@@ -52,13 +52,13 @@ class CierremesAreaController extends Controller
 
         $cierremesarea = new CierremesArea();
         $cierremesarea->setCierre($cierre);
+        $cierremesarea->setUsuario($this->getUser());
         $form = $this->createForm(CierremesAreaType::class, $cierremesarea, array('action' => $this->generateUrl('cierremesarea_new',array('id'=>$cierre->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $cierremesarea->setUsuario($this->getUser());
                 $em->persist($cierremesarea);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El cierre de área fue registrado satisfactoriamente",
@@ -168,9 +168,13 @@ class CierremesAreaController extends Controller
             throw $this->createAccessDeniedException();
 
         $em=$this->getDoctrine()->getManager();
-        $areas=$em->getRepository('App:Area')->findAll();
+        $consulta=$em->createQuery('SELECT a FROM App:Area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :institucion');
+        $consulta->setParameter('institucion',$cierre->getInstitucion()->getId());
+        $areas=$consulta->getResult();
+
         $anno=$cierre->getAnno();
         $mes=$cierre->getMes();
+        $validator=$this->get('validator');
         foreach ($areas as $value) {
             $existeCierre = $em->getRepository('App:CierremesArea')->findBy(['cierre' => $cierre, 'area' => $value]);
             if (!$existeCierre){
@@ -184,7 +188,8 @@ class CierremesAreaController extends Controller
                 $cierrearea->setConsumido($estado['consumido']);
                 $cierrearea->setEfectivoconsumido($estado['efectivoconsumido']);
                 $cierrearea->setEfectivorestante($estado['efectivorestante']);
-                $em->persist($cierrearea);
+                if($validator->validate($cierrearea))
+                    $em->persist($cierrearea);
             }
         }
         $em->flush();

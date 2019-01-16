@@ -22,7 +22,7 @@ class ChipController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $chips = $this->getDoctrine()->getManager()->createQuery('SELECT c.id, t.codigo as tarjeta, c.fecha, c.idfisico, c.idlogico FROM App:Chip c JOIN c.tarjeta t')->getResult();
+            $chips = $this->getDoctrine()->getManager()->createQuery('SELECT c.id, t.codigo as tarjeta, c.fecha, c.idfisico, c.idlogico FROM App:Chip c JOIN c.tarjeta t  JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($chips),
@@ -46,13 +46,13 @@ class ChipController extends Controller
             throw $this->createAccessDeniedException();
 
         $chip = new Chip();
-        $form = $this->createForm(ChipType::class, $chip, array('action' => $this->generateUrl('chip_new')));
+        $chip->setUsuario($this->getUser());
+        $form = $this->createForm(ChipType::class, $chip, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('chip_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $chip->setUsuario($this->getUser());
                 $em->persist($chip);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El chip fue registrado satisfactoriamente",

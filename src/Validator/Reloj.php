@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class Reloj extends Constraint
 {
-    public $message = 'Ya existe un reloj activo en dicha area';
+    public $message = 'Ya existe un reloj activo en dicha área';
     public $service = 'reloj.validator';
     public $em = null;
     public $repositoryMethod = 'findBy';

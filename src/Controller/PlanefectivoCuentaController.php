@@ -46,13 +46,14 @@ class PlanefectivoCuentaController extends Controller
         
         $planefectivocuenta = new PlanefectivoCuenta();
         $planefectivocuenta->setPlanefectivo($planefectivo);
-        $form = $this->createForm(PlanefectivoCuentaType::class, $planefectivocuenta, array('action' => $this->generateUrl('planefectivocuenta_new',['id'=>$planefectivo->getId()])));
+        $planefectivocuenta->setUsuario($this->getUser());
+        $planefectivocuenta->setPlanefectivo($planefectivo);
+        $form = $this->createForm(PlanefectivoCuentaType::class, $planefectivocuenta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('planefectivocuenta_new',['id'=>$planefectivo->getId()])));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $planefectivocuenta->setUsuario($this->getUser());
                 $em->persist($planefectivocuenta);
                 $em->flush();
                 $this->addFlash('success',"El plan de efectivo fue registrado satisfactoriamente");

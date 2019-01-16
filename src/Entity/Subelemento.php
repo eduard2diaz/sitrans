@@ -7,8 +7,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * @ORM\Entity
+ * @UniqueEntity(fields={"codigo","elemento"})
+ * @UniqueEntity(fields={"nombre","elemento"})
  */
 class Subelemento
 {
@@ -167,7 +171,7 @@ class Subelemento
                     ->atPath('elemento')
                     ->addViolation();
             else
-                if(substr($this->getCodigo(),0,strlen(4))!=substr($this->getElemento()->getCodigo(),0,strlen(4)))
+                if((substr($this->getCodigo(),0,strlen($this->getElemento()->getCodigo()))!=$this->getElemento()->getCodigo() ) || ($this->getCodigo()==$this->getElemento()->getCodigo()))
                     $context->buildViolation('Compruebe el código')
                         ->atPath('codigo')
                         ->addViolation();

@@ -7,6 +7,10 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
+/*
+ * Clase que se encarga realmente de definir las condiciones necesarias estructural y semánticamente para la
+ * validación de una determinada Tarifa de Kilowatts
+ */
 class TarifaKwValidator extends ConstraintValidator
 {
     private $registry;
@@ -26,8 +30,6 @@ class TarifaKwValidator extends ConstraintValidator
         }
 
 
-
-
         $total=$value->getRangoTarifaKws()->count();
         if($total==0)
             $this->context->buildViolation("Defina los rangos")
@@ -35,16 +37,6 @@ class TarifaKwValidator extends ConstraintValidator
                 ->addViolation();
         else {
             $array = $value->getRangoTarifaKws()->toArray();
-            /* SE ORDENAN LOS RANGOS
-             * for ($i = 0; $i < $total - 1; $i++)
-                for ($j = $i + 1; $j < $total; $j++)
-                    if ($array[$i]->getInicio() > $array[$j]->getInicio()) {
-                        $aux = $array[$i];
-                        $array[$i] = $array[$j];
-                        $array[$j] = $aux;
-                    }
-
-                    */
             $continue = 0;
             $pos = 0;
             foreach ($array as $value) {

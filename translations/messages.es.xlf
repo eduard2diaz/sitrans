@@ -9,6 +9,10 @@
         <source>Bad credentials.</source>
         <target>Usuario o contraseña incorrectos.</target>
       </trans-unit>
+      <trans-unit id="codigo" resname="codigo">
+        <source>codigo</source>
+        <target>código</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

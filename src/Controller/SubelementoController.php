@@ -22,7 +22,7 @@ class SubelementoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $subelementos = $this->getDoctrine()->getManager()->createQuery('SELECT se.id , se.nombre, se.codigo  FROM  App:Subelemento se')->getResult();
+            $subelementos = $this->getDoctrine()->getManager()->createQuery('SELECT se.id , se.nombre, se.codigo  FROM  App:Subelemento se JOIN se.partida p JOIN p.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($subelementos),
@@ -46,7 +46,7 @@ class SubelementoController extends Controller
             throw $this->createAccessDeniedException();
 
         $subelemento = new Subelemento();
-        $form = $this->createForm(SubelementoType::class, $subelemento, array('action' => $this->generateUrl('subelemento_new')));
+        $form = $this->createForm(SubelementoType::class, $subelemento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('subelemento_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -81,7 +81,7 @@ class SubelementoController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('VIEW',$subelemento);
     return $this->render('subelemento/_show.html.twig',['subelemento'=>$subelemento]);
     }
 
@@ -93,8 +93,8 @@ class SubelementoController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
-        $form = $this->createForm(SubelementoType::class, $subelemento, array('action' => $this->generateUrl('subelemento_edit',array('id'=>$subelemento->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$subelemento);
+        $form = $this->createForm(SubelementoType::class, $subelemento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('subelemento_edit',array('id'=>$subelemento->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -131,13 +131,14 @@ class SubelementoController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$subelemento);
         $em = $this->getDoctrine()->getManager();
         $em->remove($subelemento);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El subelemento fue eliminado satisfactoriamente'));
     }
 
+    //Funcionalidad ajax utilizada por otras clases
     /**
      * @Route("/{cuenta}/searchbycuenta",options={"expose"=true}, name="subelemento_searchbycuenta")
      */

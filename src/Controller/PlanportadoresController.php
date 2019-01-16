@@ -21,7 +21,7 @@ class PlanportadoresController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $planportadoress = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.anno, p.mes FROM App:Planportadores p')->getResult();
+            $planportadoress = $this->getDoctrine()->getManager()->createQuery('SELECT p.id , p.anno, p.mes FROM App:Planportadores p JOIN p.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($planportadoress),
@@ -45,6 +45,7 @@ class PlanportadoresController extends Controller
             throw $this->createAccessDeniedException();
 
         $planportadores = new Planportadores();
+        $planportadores->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(PlanportadoresType::class, $planportadores, array('action' => $this->generateUrl('planportadores_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();

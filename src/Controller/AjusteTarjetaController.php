@@ -21,7 +21,7 @@ class AjusteTarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $ajustetarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.monto as cantidadlitros, r.cantefectivo as cantidadefectivo FROM App:AjusteTarjeta r JOIN r.tarjeta t')->getResult();
+            $ajustetarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.monto as cantidadlitros, r.cantefectivo as cantidadefectivo FROM App:AjusteTarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($ajustetarjetas),
@@ -45,13 +45,13 @@ class AjusteTarjetaController extends Controller
             throw $this->createAccessDeniedException();
 
         $ajustetarjeta = new AjusteTarjeta();
-        $form = $this->createForm(AjusteTarjetaType::class, $ajustetarjeta, array('action' => $this->generateUrl('ajustetarjeta_new')));
+        $ajustetarjeta->setUsuario($this->getUser());
+        $form = $this->createForm(AjusteTarjetaType::class, $ajustetarjeta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('ajustetarjeta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $ajustetarjeta->setUsuario($this->getUser());
                 $em->persist($ajustetarjeta);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El ajuste fue registrado satisfactoriamente",

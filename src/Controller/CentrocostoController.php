@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Centrocosto;
+use App\Entity\Cuenta;
 use App\Form\CentrocostoType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class CentrocostoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $centrocostos = $this->getDoctrine()->getManager()->createQuery('SELECT sc.id , sc.nombre, sc.codigo, c.nombre as cuenta FROM App:Centrocosto sc JOIN sc.cuenta c')->getResult();
+            $centrocostos = $this->getDoctrine()->getManager()->createQuery('SELECT sc.id , sc.nombre, sc.codigo, c.nombre as cuenta FROM App:Centrocosto sc JOIN sc.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($centrocostos),
@@ -45,7 +46,7 @@ class CentrocostoController extends Controller
             throw $this->createAccessDeniedException();
 
         $centrocosto = new Centrocosto();
-        $form = $this->createForm(CentrocostoType::class, $centrocosto, array('action' => $this->generateUrl('centrocosto_new')));
+        $form = $this->createForm(CentrocostoType::class, $centrocosto, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('centrocosto_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -81,8 +82,8 @@ class CentrocostoController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
-        $form = $this->createForm(CentrocostoType::class, $centrocosto, array('action' => $this->generateUrl('centrocosto_edit',array('id'=>$centrocosto->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$centrocosto);
+        $form = $this->createForm(CentrocostoType::class, $centrocosto, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('centrocosto_edit',array('id'=>$centrocosto->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -92,6 +93,7 @@ class CentrocostoController extends Controller
                 return new JsonResponse(array('mensaje' =>"El centro de costo fue actualizado satisfactoriamente",
                     'nombre' => $centrocosto->getNombre(),
                     'codigo' => $centrocosto->getCodigo(),
+                    'cuenta' => $centrocosto->getCuenta()->getNombre(),
                     'id' => $centrocosto->getId(),
                 ));
             } else {
@@ -119,10 +121,29 @@ class CentrocostoController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$centrocosto);
         $em = $this->getDoctrine()->getManager();
         $em->remove($centrocosto);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El centro de costo fue eliminado satisfactoriamente'));
+    }
+
+    /**
+     * @Route("/{cuenta}/searchbycuenta",options={"expose"=true}, name="centrocosto_searchbycuenta")
+     */
+    public function searchbycuenta(Request $request, Cuenta $cuenta): Response
+    {
+        if (!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $em=$this->getDoctrine()->getManager();
+        $consulta=$em->createQuery('SELECT cc FROM App:Centrocosto cc JOIN cc.cuenta c WHERE c.id= :id');
+        $consulta->setParameter('id',$cuenta->getId());
+        $ccostos=$consulta->getResult();
+        $array=array();
+        foreach ($ccostos as $value)
+            $array[]=['id'=>$value->getId(),'nombre'=>$value->getNombre()];
+
+        return new Response(json_encode($array));
     }
 }

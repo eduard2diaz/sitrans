@@ -23,22 +23,22 @@ class CierreMesTarjetaController extends Controller
      */
     public function index(CierreMesCombustible $cierre, Request $request): Response
     {
-        if($request->isXmlHttpRequest()) {
-            $consulta='SELECT c.id , t.codigo as tarjeta, c.fecha, c.restantecombustible as combustiblerestante, c.restanteefectivo as efectivorestante
+        if ($request->isXmlHttpRequest()) {
+            $consulta = 'SELECT c.id , t.codigo as tarjeta, c.fecha, c.restantecombustible as combustiblerestante, c.restanteefectivo as efectivorestante
                         FROM App:CierreMesTarjeta c JOIN c.cierre c1  JOIN c.tarjeta t   WHERE c1.id =:id';
             $cierremestarjetas = $this->getDoctrine()->getManager()
-                                                     ->createQuery($consulta)
-                                                     ->setParameter('id',$cierre->getId())
-                                                     ->getResult();
+                ->createQuery($consulta)
+                ->setParameter('id', $cierre->getId())
+                ->getResult();
             return new JsonResponse(
                 $result = [
-                    'iTotalRecords'        => count($cierremestarjetas),
+                    'iTotalRecords' => count($cierremestarjetas),
                     'iTotalDisplayRecords' => 10,
-                    'sEcho'                => 0,
-                    'sColumns'             => '',
-                    'aaData'               => $cierremestarjetas,
+                    'sEcho' => 0,
+                    'sColumns' => '',
+                    'aaData' => $cierremestarjetas,
                 ]
-                );
+            );
         }
 
         return $this->render('cierremestarjeta/index.html.twig');
@@ -49,12 +49,12 @@ class CierreMesTarjetaController extends Controller
      */
     public function new(CierreMesCombustible $cierre, Request $request): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
         $cierremestarjeta = new CierreMesTarjeta();
         $cierremestarjeta->setCierre($cierre);
-        $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_new',array('id'=>$cierre->getId()))));
+        $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_new', array('id' => $cierre->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -63,7 +63,7 @@ class CierreMesTarjetaController extends Controller
                 $cierremestarjeta->setUsuario($this->getUser());
                 $em->persist($cierremestarjeta);
                 $em->flush();
-                return new JsonResponse(array('mensaje' =>"El cierre de tarjeta fue registrado satisfactoriamente",
+                return new JsonResponse(array('mensaje' => "El cierre de tarjeta fue registrado satisfactoriamente",
                     'fecha' => $cierremestarjeta->getFecha(),
                     'combustiblerestante' => $cierremestarjeta->getRestantecombustible(),
                     'efectivorestante' => $cierremestarjeta->getRestanteefectivo(),
@@ -89,7 +89,7 @@ class CierreMesTarjetaController extends Controller
      */
     public function show(Request $request, CierreMesTarjeta $cierremestarjeta): Response
     {
-        return $this->render('cierremestarjeta/_show.html.twig',['cierre'=>$cierremestarjeta]);
+        return $this->render('cierremestarjeta/_show.html.twig', ['cierre' => $cierremestarjeta]);
     }
 
     /**
@@ -97,10 +97,10 @@ class CierreMesTarjetaController extends Controller
      */
     public function edit(Request $request, CierreMesTarjeta $cierremestarjeta): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_edit',array('id'=>$cierremestarjeta->getId()))));
+        $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_edit', array('id' => $cierremestarjeta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -108,7 +108,7 @@ class CierreMesTarjetaController extends Controller
                 $cierremestarjeta->setUsuario($this->getUser());
                 $em->persist($cierremestarjeta);
                 $em->flush();
-                return new JsonResponse(array('mensaje' =>"El cierre de tarjeta fue actualizado satisfactoriamente",
+                return new JsonResponse(array('mensaje' => "El cierre de tarjeta fue actualizado satisfactoriamente",
                     'fecha' => $cierremestarjeta->getFecha()->format('d-m-Y h:i a'),
                     'combustiblerestante' => $cierremestarjeta->getRestantecombustible(),
                     'efectivorestante' => $cierremestarjeta->getRestanteefectivo(),
@@ -144,20 +144,20 @@ class CierreMesTarjetaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->remove($cierremestarjeta);
         $em->flush();
-        return new JsonResponse(array('mensaje' =>'El cierre de tarjeta fue eliminado satisfactoriamente'));
+        return new JsonResponse(array('mensaje' => 'El cierre de tarjeta fue eliminado satisfactoriamente'));
     }
 
     /**
      * @Route("/{cierre}/ajax/{tarjeta}", name="cierremestarjeta_ajax", options={"expose"=true})
      */
-    public function ajax(Request $request,CierreMesCombustible $cierre, Tarjeta $tarjeta): Response
+    public function ajax(Request $request, CierreMesCombustible $cierre, Tarjeta $tarjeta): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $anno=$cierre->getAnno();
-        $mes=$cierre->getMes();
-        return new JsonResponse($this->get('energia.service')->estadoCombustible($tarjeta->getId(),$anno,$mes));
+        $anno = $cierre->getAnno();
+        $mes = $cierre->getMes();
+        return new JsonResponse($this->get('energia.service')->estadoCombustible($tarjeta->getId(), $anno, $mes));
     }
 
     /**
@@ -165,17 +165,20 @@ class CierreMesTarjetaController extends Controller
      */
     public function cierremesTarjeta(Request $request, CierreMesCombustible $cierre): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $em=$this->getDoctrine()->getManager();
-        $tarjetas=$em->getRepository('App:Tarjeta')->findBy(['activo'=>true]);
-        $mes=$cierre->getMes();
-        $anno=$cierre->getAnno();
+        $em = $this->getDoctrine()->getManager();
+        $consulta = $em->createQuery('Select t FROM App:Tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :institucion AND t.activo= :activo');
+        $consulta->setParameters(['activo' => true, 'institucion' => $cierre->getInstitucion()->getId()]);
+        $tarjetas = $consulta->getResult();
+        $mes = $cierre->getMes();
+        $anno = $cierre->getAnno();
+        $validator = $this->get('validator');
         foreach ($tarjetas as $value) {
             $existeCierre = $em->getRepository('App:CierreMesTarjeta')->findOneBy(['cierre' => $cierre, 'tarjeta' => $value]);
-            if (!$existeCierre){
-                $estado = $this->get('energia.service')->estadoCombustible($value->getId(),$anno,$mes);
+            if (!$existeCierre) {
+                $estado = $this->get('energia.service')->estadoCombustible($value->getId(), $anno, $mes);
                 $cierretarjeta = new CierreMesTarjeta();
                 $cierretarjeta->setTarjeta($value);
                 $cierretarjeta->setCierre($cierre);
@@ -185,11 +188,12 @@ class CierreMesTarjetaController extends Controller
                 $cierretarjeta->setRestanteefectivo($estado['restante']['efectivo']);
                 $cierretarjeta->setCombustibleconsumido($estado['consumido'][0]['litros']);
                 $cierretarjeta->setEfectivoconsumido($estado['consumido'][0]['efectivo']);
-                $em->persist($cierretarjeta);
+                if ($validator->validate($cierretarjeta))
+                    $em->persist($cierretarjeta);
             }
         }
         $em->flush();
-        return new JsonResponse(['mensaje'=>'El cierre finalizó exitosamente']);
+        return new JsonResponse(['mensaje' => 'El cierre finalizó exitosamente']);
 
     }
 }

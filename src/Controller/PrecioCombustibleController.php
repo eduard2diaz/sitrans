@@ -137,19 +137,26 @@ class PrecioCombustibleController extends Controller
         return new JsonResponse(array('mensaje' =>'El precio de combustible fue eliminado satisfactoriamente'));
     }
 
+    //Conjunto de funcionalidades ajax utilizadas por otras clases
     /**
      * @Route("/findbytarjeta", name="preciocombustible_findbytarjeta", options={"expose"=true})
      */
     public function findByTarjeta(Request $request): Response
     {
-        if(!$request->isXmlHttpRequest())
+        /*
+         *Funcionalidad que devuelve a que precio se encuentra el combustible en un determinado momento
+         */
+        if(!$request->isXmlHttpRequest() || $request->request->has('litros') || $request->request->has('fecha') || $request->request->has('tarjeta'))
             throw $this->createAccessDeniedException();
 
+        $em=$this->getDoctrine()->getManager();
         $precio=$request->get('litros');
         $fecha=$request->get('fecha');
-        $em=$this->getDoctrine()->getManager();
         $tarjeta=$request->get('tarjeta');
         $tarjeta=$em->getRepository('App:Tarjeta')->find($tarjeta);
+        if(!$tarjeta || $this->getUser()->getInstitucion()->getId()!=$tarjeta->getTipoTarjeta()->getInstitucion()->getId())
+            throw new \Exception("La tarjeta indicada no existe o usted no tiene acceso a la misma");
+
         $tipocombustible=$tarjeta->getTipocombustible();
         $importe=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha) ;
 
@@ -164,7 +171,7 @@ class PrecioCombustibleController extends Controller
      */
     public function findByVehiculo(Request $request): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if(!$request->isXmlHttpRequest()  || $request->request->has('litros') || $request->request->has('fecha') || $request->request->has('vehiculo'))
             throw $this->createAccessDeniedException();
 
         $precio=$request->get('litros');
@@ -172,6 +179,10 @@ class PrecioCombustibleController extends Controller
         $em=$this->getDoctrine()->getManager();
         $vehiculo=$request->get('vehiculo');
         $vehiculo=$em->getRepository('App:Vehiculo')->find($vehiculo);
+
+        if(!$vehiculo || $this->getUser()->getInstitucion()->getId()!=$vehiculo->getInstitucion()->getId())
+            throw new \Exception("El vehículo indicado no existe o usted no tiene acceso al mismo");
+
         $tipocombustible=$vehiculo->getResponsable()->getTarjetas()->first()->getTipocombustible();
         $importe=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha);
 

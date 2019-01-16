@@ -22,7 +22,7 @@ class RecargaKwController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $recargakws = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , re.codigo as reloj, r.fecha, r.asignacion, r.folio00 FROM App:RecargaKw r JOIN r.reloj re')->getResult();
+            $recargakws = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , re.codigo as reloj, r.fecha, r.asignacion, r.folio00 FROM App:RecargaKw r JOIN r.reloj  re JOIN re.area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($recargakws),
@@ -46,13 +46,13 @@ class RecargaKwController extends Controller
             throw $this->createAccessDeniedException();
 
         $recargakw = new RecargaKw();
-        $form = $this->createForm(RecargaKwType::class, $recargakw, array('action' => $this->generateUrl('recargakw_new')));
+        $recargakw->setUsuario($this->getUser());
+        $form = $this->createForm(RecargaKwType::class, $recargakw, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('recargakw_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $recargakw->setUsuario($this->getUser());
                 $recargakw->getReloj()->setKwrestante($recargakw->getReloj()->getKwrestante()+$recargakw->getAsignacion());
                 $em->persist($recargakw);
                 $em->flush();

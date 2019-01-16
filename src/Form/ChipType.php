@@ -19,20 +19,26 @@ class ChipType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $tarjeta=$options['data']->getTarjeta();
+        $institucion=$options['institucion'];
 
         $builder
             ->add('numerocomprobante', IntegerType::class, array('label'=>'Número de comprobante','attr' => array(
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
+
             ->add('tarjeta',EntityType::class,array(
+                'required'=>true,
                 'auto_initialize'=>false,
                 'class'         =>'App:Tarjeta',
-                'query_builder'=>function(EntityRepository $repository) use($tarjeta){
+                'query_builder'=>function(EntityRepository $repository) use($tarjeta,$institucion){
                     $qb=$repository->createQueryBuilder('t');
                     $qb->join('t.responsable','r');
-                    $qb->where('t.activo = :activo AND t.cantlitros > 0 AND r.activo = :activo')
-                        ->setParameter('activo',true);
+                    $qb->join('t.tipotarjeta','tt');
+                    $qb->join('tt.institucion','i');
+                    $qb->where('t.activo = :activo AND t.cantlitros > 0 AND r.activo = :activo AND i.id= :id')->setParameters(['activo'=>true,'id'=>$institucion]);
+                    if(null!=$tarjeta)
+                        $qb->orWhere('t.id = :tarjeta')->setParameter('tarjeta',$tarjeta);
                     return $qb;
                 }
             ))
@@ -88,5 +94,6 @@ class ChipType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Chip::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

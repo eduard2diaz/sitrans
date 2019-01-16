@@ -90,7 +90,7 @@ class Elemento
 
     public function __toString()
     {
-     return $this->getNombre();
+        return "{$this->getCodigo()}-{$this->getNombre()}";
     }
 
     /**

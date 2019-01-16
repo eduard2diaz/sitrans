@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="122" height="122">
+  <defs>
+    <circle id="a" cx="60" cy="60" r="60"/>
+    <linearGradient id="b" x1="88.081%" x2="26.195%" y1="89.849%" y2="4.032%">
+      <stop offset="0%" stop-color="#FFE474" stop-opacity=".131"/>
+      <stop offset="100%" stop-color="#FFC540"/>
+    </linearGradient>
+    <circle id="d" cx="60" cy="60" r="60"/>
+    <linearGradient id="e" x1="0%" y1="50%" y2="50%">
+      <stop offset="0%" stop-color="#5B79A2"/>
+      <stop offset="100%" stop-color="#2E4469"/>
+    </linearGradient>
+    <linearGradient id="f" x1="45.117%" x2="0%" y1="168.048%" y2="5.569%">
+      <stop offset="0%" stop-color="#C4D6EB" stop-opacity=".676"/>
+      <stop offset="100%" stop-color="#91ACD2" stop-opacity=".3"/>
+    </linearGradient>
+    <linearGradient id="g" x1="93.643%" x2="50.613%" y1="28.654%" y2="49.683%">
+      <stop offset="0%" stop-color="#FFE474" stop-opacity=".131"/>
+      <stop offset="100%" stop-color="#FFC540"/>
+    </linearGradient>
+    <linearGradient id="h" x1="132.142%" x2="3.4%" y1="-34.684%" y2="93.842%">
+      <stop offset="0%" stop-opacity="0"/>
+      <stop offset="100%" stop-opacity=".372"/>
+    </linearGradient>
+    <filter id="i" width="117.4%" height="118.6%" x="-8.7%" y="-9.3%" filterUnits="objectBoundingBox">
+      <feGaussianBlur in="SourceGraphic" stdDeviation=".9"/>
+    </filter>
+    <linearGradient id="j" x1="356.292%" x2="0%" y1="-38.36%" y2="89.849%">
+      <stop offset="0%" stop-color="#FFE474" stop-opacity=".131"/>
+      <stop offset="100%" stop-color="#FFC540"/>
+    </linearGradient>
+    <filter id="k" width="192.3%" height="192.3%" x="-46.2%" y="-46.2%" filterUnits="objectBoundingBox">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <g transform="translate(1 1)">
+      <mask id="c" fill="#fff">
+        <use xlink:href="#a"/>
+      </mask>
+      <use fill="#000" fill-opacity=".152" xlink:href="#a"/>
+      <path stroke="url(#b)" stroke-width="2" d="M106.326 124.3L86.844 11.511" mask="url(#c)"/>
+      <use stroke="url(#b)" stroke-width="2" xlink:href="#d"/>
+    </g>
+    <g fill-rule="nonzero">
+      <path fill="url(#e)" d="M43 0l43 24.489v48.989L43 97.966 0 73.478v-48.99z" transform="translate(18 12)"/>
+      <path fill="#2E4469" stroke="url(#f)" stroke-width=".54" d="M77.78 71.786L65.542 64.67l-20.85 11.551v14.412l33.089-18.847zm2.594-2.581V29.769l-11.86 6.901v25.644l11.86 6.89zm-72.288 2.58l33.088 18.848V76.221l-20.86-11.55-12.228 7.115zm-2.594-2.58l11.86-6.891V36.67l-11.86-6.9v39.436zm1.727-42.52L18.99 33.54l.045-.025 22.138-12.263V7.345L7.22 26.685zm71.429-.001L44.692 7.344v13.91l22.141 12.252.043.024 11.772-6.846zM41.174 72.18V50.51L20.87 38.707v22.227L41.174 72.18zm3.518 0l20.305-11.235V38.707L44.692 50.51v21.672zM22.558 35.604l20.375 11.843 20.375-11.843-20.375-11.275-20.375 11.275z" transform="translate(18 12)"/>
+      <path stroke="url(#g)" stroke-width="1.123" d="M41.444 72.639L20.6 61.093V38.238l20.844 12.116v22.285zm2.978 0l20.845-11.534V38.238L44.422 50.354v22.285zm-22.41-37.041l20.921-11.58 20.923 11.58-20.923 12.16-20.922-12.16z" transform="translate(18 12)"/>
+    </g>
+    <path fill="url(#h)" d="M83.435 24L91 28.955 60 53l3.941-7.612z" filter="url(#i)" opacity=".5" transform="rotate(-7 84.175 30.825)"/>
+    <g transform="translate(54 9)">
+      <path stroke="url(#j)" stroke-width="2" d="M33.347 3l-18.674 7.34-7.64 42.247"/>
+      <circle cx="34" cy="3" r="3" fill="#FAC446"/>
+      <path fill="#FFF" fill-opacity=".2" d="M32.111 5A2.778 2.778 0 1 1 36 1.111 2.778 2.778 0 0 0 32.111 5z"/>
+      <g transform="translate(11 7)">
+        <circle cx="3.5" cy="3.5" r="3.5" fill="#FAC446"/>
+        <path fill="#FFF" fill-opacity=".2" d="M1.333 6A3.333 3.333 0 1 1 6 1.333 3.333 3.333 0 0 0 1.333 6z"/>
+      </g>
+      <path fill="#FFF" fill-opacity=".2" d="M12.333 13A3.333 3.333 0 1 1 17 8.333 3.333 3.333 0 0 0 12.333 13z"/>
+      <g transform="translate(0 45)">
+        <circle cx="7" cy="7" r="6.5" fill="#C08D17" filter="url(#k)"/>
+        <circle cx="7" cy="7" r="3" fill="#FAC446"/>
+      </g>
+      <path fill="#FFF" fill-opacity=".2" d="M5.143 54.143a2.857 2.857 0 1 1 4-4 2.857 2.857 0 0 0-4 4z"/>
+    </g>
+  </g>
+</svg>

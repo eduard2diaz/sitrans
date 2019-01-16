@@ -6,9 +6,6 @@ var provincia = function () {
         table = $("table#provincia_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('provincia_index'),
                 "language": {
                     url: datatable_translation
@@ -62,7 +59,7 @@ var provincia = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -101,7 +98,6 @@ var provincia = function () {
                             toastr.success(data['mensaje']);
 
                         $('div#basicmodal').modal('hide');
-                     //   total += 1;
                         var pagina = table.page();
                         objeto = table.row.add({
                             "id": data['id'],
@@ -169,20 +165,19 @@ var provincia = function () {
 
            bootbox.confirm({
                 title: "Eliminar provincia",
-                message: "<p>¿Está seguro que desea eliminar esta provincia?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar esta provincia?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentprovincia porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

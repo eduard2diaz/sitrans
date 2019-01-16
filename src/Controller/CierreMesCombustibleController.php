@@ -21,7 +21,7 @@ class CierreMesCombustibleController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $cierremescombustibles = $this->getDoctrine()->getManager()->createQuery('SELECT c.id , c.anno, c.mes FROM App:CierreMesCombustible c')->getResult();
+            $cierremescombustibles = $this->getDoctrine()->getManager()->createQuery('SELECT c.id , c.anno, c.mes FROM App:CierreMesCombustible c join c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($cierremescombustibles),
@@ -45,6 +45,7 @@ class CierreMesCombustibleController extends Controller
             throw $this->createAccessDeniedException();
 
         $cierremescombustible = new CierreMesCombustible();
+        $cierremescombustible->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(CierreMesCombustibleType::class, $cierremescombustible, array('action' => $this->generateUrl('cierremescombustible_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();

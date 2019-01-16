@@ -31,8 +31,6 @@ services:
     usuario_subscriber:
         class: App\EventSubscriber\UsuarioSubscriber
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: doctrine.event_subscriber,  connection: default }
 
@@ -40,8 +38,6 @@ services:
     recargatarjeta_subscriber:
         class: App\EventSubscriber\RecargaTarjetaSubscriber
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: doctrine.event_subscriber,  connection: default }
         arguments: ['@service_container']
@@ -49,8 +45,6 @@ services:
     chip_subscriber:
         class: App\EventSubscriber\ChipSubscriber
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: doctrine.event_subscriber,  connection: default }
         arguments: ['@service_container']
@@ -58,8 +52,6 @@ services:
     hojaruta_subscriber:
         class: App\EventSubscriber\HojarutaSubscriber
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: doctrine.event_subscriber,  connection: default }
         arguments: ['@service_container']
@@ -67,8 +59,6 @@ services:
     ajustetarjeta_subscriber:
         class: App\EventSubscriber\AjusteTarjetaSubscriber
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: doctrine.event_subscriber,  connection: default }
         arguments: ['@service_container']
@@ -145,11 +135,34 @@ services:
             - { name: validator.constraint_validator, alias: tarifakw.validator }
         arguments: ['@doctrine']
 
+    centrocosto.validator:
+        class: App\Validator\CentrocostoValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: centrocosto.validator }
+#        arguments: ['@doctrine']
+
+    tarjeta.validator:
+        class: App\Validator\TarjetaValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: tarjeta.validator }
+
+    partida.validator:
+        class: App\Validator\PartidaValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: partida.validator }
+
+    area.validator:
+        class: App\Validator\AreaValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: area.validator }
+
     cierrekw.validator:
         class: App\Validator\CierreKwValidator
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: validator.constraint_validator, alias: cierrekw.validator }
         arguments: ['@energia.service']
@@ -157,8 +170,6 @@ services:
     cierrecombustible.validator:
         class: App\Validator\CierreCombustibleValidator
         public: true
-        autowire: true
-        autoconfigure: true
         tags:
             - { name: validator.constraint_validator, alias: cierrecombustible.validator }
         arguments: ['@energia.service']
@@ -166,8 +177,6 @@ services:
     energia.service:
         class: App\Tools\EnergiaService
         public: true
-        autowire: true
-        autoconfigure: true
         arguments: ['@doctrine']
 
     traza.service:
@@ -177,4 +186,21 @@ services:
         autoconfigure: true
         arguments: ['@doctrine']
 
+    app.form.type.chofer:
+        class: App\Form\ChoferType
+        arguments: ["@doctrine"]
+        tags:
+            - { name: form.type }
+
+    app.form.type.responsable:
+        class: App\Form\ResponsableType
+        arguments: ["@doctrine"]
+        tags:
+            - { name: form.type }
+
+    app.form.type.vehiculo:
+        class: App\Form\VehiculoType
+        arguments: ["@doctrine"]
+        tags:
+            - { name: form.type }
 

@@ -13,26 +13,46 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\EntityRepository;
 
 class UsuarioType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $esAdmin = $options['esAdmin'];
+        $esSuper = $options['esSuper'];
         $disabled = $options['disab'];
         $auxdisabled = $options['disab'];
         if ($esAdmin)
             $auxdisabled = false;
+        if ($esSuper) {
+            $builder
+                ->add('institucion', null, array('label' => 'Institución', 'required' => false, 'disabled' => $disabled, 'attr' => array('class' => 'form-control input-medium')))
+                ->add('idrol', null, array('label'=>'Permisos', 'required' => true,'disabled' => $disabled, 'attr' => array('class' => 'form-control input-medium')));
+        }else{
+            $builder->add('idrol',null,array(
+                'required'=>true,
+                'label'=>'Permisos',
+                'disabled' => $disabled,
+                'auto_initialize'=>false,
+                'class'         =>'App:Rol',
+                'query_builder'=>function(EntityRepository $repository){
+                    $qb=$repository->createQueryBuilder('r');
+                    $qb->where('r.nombre<> :super')->setParameter('super','ROLE_SUPERADMIN');
+                    return $qb;
+                }
+            ));
+        }
+
 
         $builder
             ->add('usuario', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large')))
 
-//            ->add('salt')
             ->add('activo',null,['disabled' => $disabled,])
             ->add('nombre', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
             ->add('apellidos', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
-            ->add('correo', EmailType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern'=>'^[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$')))
-            ->add('idrol', null, array('label'=>'Permisos', 'required' => true,'disabled' => $disabled, 'attr' => array('class' => 'form-control input-medium')))
+            ->add('correo', EmailType::class, array('label'=>'Correo electrónico','attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern'=>'^[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$')))
+
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $obj) {
@@ -60,7 +80,8 @@ class UsuarioType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Usuario::class,
+            'disab' => false,
         ]);
-        $resolver->setRequired(['esAdmin', 'disab']);
+        $resolver->setRequired(['esAdmin','esSuper']);
     }
 }

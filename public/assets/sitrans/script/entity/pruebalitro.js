@@ -15,7 +15,7 @@ var pruebalitro = function () {
             rules:{
                 'pruebalitro[vehiculo]': {required:true},
                 'pruebalitro[kmrecorrido]': {required:true, min: 0.5},
-                'pruebalitro[fechasalida]': {required:true},
+                'pruebalitro[fecha]': {required:true},
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');

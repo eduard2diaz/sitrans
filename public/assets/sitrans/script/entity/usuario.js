@@ -7,6 +7,9 @@ var usuario = function () {
                   dropdownParent: $("#basicmodal"),
             //allowClear: true
         });
+        $('select#usuario_institucion').select2({
+                  dropdownParent: $("#basicmodal"),
+        });
         $("div#basicmodal form#usuario_new").validate({
             rules:{
                 'usuario[nombre]': {required:true},

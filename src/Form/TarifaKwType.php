@@ -28,9 +28,7 @@ class TarifaKwType extends AbstractType
                 'by_reference'   => true,
                 'prototype_data' => new RangoTarifaKw(),
                 'label'          => ' ',
-                'entry_options' => array(
-                   // 'attr' => array('style' => 'color: red'),
-                )
+
             ))
         ;
 

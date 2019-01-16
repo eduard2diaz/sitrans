@@ -18,6 +18,7 @@ class RecargaKwType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $reloj=$options['data']->getReloj();
+        $institucion=$options['institucion'];
 
         $builder
             ->add('fecha', TextType::class, array('attr' => array(
@@ -41,9 +42,14 @@ class RecargaKwType extends AbstractType
                 'choice_label'=>function($value){
                     return $value->getCodigo().'--'.$value->getArea()->getNombre();
                 },
-                'query_builder'=>function(EntityRepository $repository) use($reloj){
+                'query_builder'=>function(EntityRepository $repository) use($reloj,$institucion){
                     $qb=$repository->createQueryBuilder('r');
-                    $qb->where('r.activo = :activo')->setParameter('activo',true);
+                    $qb->join('r.area','a');
+                    $qb->join('a.ccosto','cc');
+                    $qb->join('cc.cuenta','c');
+                    $qb->join('c.institucion','i');
+                    $qb->where('r.activo = :activo AND i.id= :institucion')
+                        ->setParameters(['activo'=>true,'institucion'=>$institucion]);
                     if(null!=$reloj)
                         $qb->orWhere('r.id= :id')->setParameter('id',$reloj);
                     return $qb;
@@ -62,5 +68,6 @@ class RecargaKwType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RecargaKw::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

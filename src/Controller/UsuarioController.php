@@ -22,8 +22,15 @@ class UsuarioController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-             $consulta= $this->getDoctrine()->getManager()->createQuery('SELECT u.id, u.nombre, u.apellidos, u.activo FROM App:Usuario u WHERE u.id<> :id');
-             $consulta->setParameter('id', $this->getUser()->getId());
+             $em=$this->getDoctrine()->getManager();
+             if($this->isGranted('ROLE_SUPERADMIN')) {
+                 $consulta = $em->createQuery('SELECT u.id, u.nombre, u.apellidos, u.activo FROM App:Usuario u WHERE u.id<> :id');
+                 $consulta->setParameter('id', $this->getUser()->getId());
+             }else
+             {
+                 $consulta = $em->createQuery('SELECT u.id, u.nombre, u.apellidos, u.activo FROM App:Usuario u JOIN u.institucion i WHERE u.id<> :id AND i.id= :institucion');
+                 $consulta->setParameters(['id'=> $this->getUser()->getId(),'institucion'=>$this->getUser()->getInstitucion()->getId()]);
+             }
              $usuarios=$consulta->getResult();
             return new JsonResponse(
                 $result = [
@@ -48,9 +55,12 @@ class UsuarioController extends Controller
             throw $this->createAccessDeniedException();
 
         $usuario = new Usuario();
-        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_new'), 'esAdmin' => $this->isGranted('ROLE_ADMIN'), 'disab' => false));
+        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_new'), 'esAdmin' => $this->isGranted('ROLE_ADMIN'),'esSuper' => $this->isGranted('ROLE_SUPERADMIN')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
+
+        if(!$this->isGranted('ROLE_SUPERADMIN'))
+            $usuario->setInstitucion($this->getUser()->getInstitucion());
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
@@ -92,11 +102,11 @@ class UsuarioController extends Controller
     */
     public function edit(Request $request, Usuario $usuario): Response
     {
-       // if(!$request->isXmlHttpRequest())
-        //    throw $this->createAccessDeniedException();
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
 
         $disabled = $this->getUser()->getId() == $usuario->getId();
-        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_edit', array('id' => $usuario->getId())), 'esAdmin' => $this->isGranted('ROLE_ADMIN'), 'disab' => $disabled));
+        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_edit', array('id' => $usuario->getId())),'esSuper' => $this->isGranted('ROLE_SUPERADMIN'), 'esAdmin' => $this->isGranted('ROLE_ADMIN'), 'disab' => $disabled));
         $passwordOriginal = $form->getData()->getPassword();
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();

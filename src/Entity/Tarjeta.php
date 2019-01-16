@@ -5,16 +5,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Tarjeta as TarjetaConstraint;
 
 /**
  * Tarjeta
  *
  * @ORM\Table(name="tarjeta", indexes={@ORM\Index(name="IDX_AE90B786C21AA61D", columns={"tipotarjeta"}), @ORM\Index(name="IDX_AE90B786892BFD1A", columns={"tipocombustible"})})
  * @ORM\Entity
- * @UniqueEntity(fields={"codigo"})
+ * @TarjetaConstraint(codigo="codigo",tipotarjeta="tipotarjeta")
  */
 class Tarjeta
 {
@@ -156,26 +156,6 @@ class Tarjeta
         return $this;
     }
 
-    public function __toString(){
-        return $this->getCodigo();
-    }
-
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
-        if(null==$this->getTipocombustible())
-            $context->buildViolation('Seleccione el tipo de combustible')
-                ->atPath('tipocombustible')
-                ->addViolation();
-
-        if(null==$this->getTipotarjeta())
-            $context->buildViolation('Seleccione el tipo de tarjeta')
-                ->atPath('tipotarjeta')
-                ->addViolation();
-    }
-
     public function getCantlitros(): ?int
     {
         return $this->cantlitros;
@@ -200,4 +180,23 @@ class Tarjeta
         return $this;
     }
 
+    public function __toString(){
+        return $this->getCodigo();
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if(null==$this->getTipocombustible())
+            $context->buildViolation('Seleccione el tipo de combustible')
+                ->atPath('tipocombustible')
+                ->addViolation();
+
+        if(null==$this->getTipotarjeta())
+            $context->buildViolation('Seleccione el tipo de tarjeta')
+                ->atPath('tipotarjeta')
+                ->addViolation();
+    }
 }

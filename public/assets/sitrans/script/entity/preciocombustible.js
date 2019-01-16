@@ -6,7 +6,6 @@ var preciocombustible = function () {
     var configurarFormulario=function(){
         $('select#precio_combustible_tipocombustible').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $('input#precio_combustible_fecha').datetimepicker();
@@ -31,9 +30,6 @@ var preciocombustible = function () {
         table = $("table#preciocombustible_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('preciocombustible_index'),
                 "language": {
                     url: datatable_translation
@@ -50,7 +46,6 @@ var preciocombustible = function () {
 
                     {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm preciocombustible_show" data-href="'+Routing.generate('preciocombustible_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
                             '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('preciocombustible_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
                             '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_preciocombustible" data-href="'+Routing.generate('preciocombustible_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
                 }],
@@ -81,7 +76,7 @@ var preciocombustible = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -113,7 +108,7 @@ var preciocombustible = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -223,7 +218,7 @@ var preciocombustible = function () {
 
            bootbox.confirm({
                 title: "Eliminar precio de combustible",
-                message: "<p>¿Está seguro que desea eliminar este precio?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este precio?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
@@ -235,8 +230,7 @@ var preciocombustible = function () {
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcambiopreciocombustible porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

@@ -95,14 +95,23 @@ class Rol extends Role
     public function __toString()
     {
         $value=$this->getNombre();
-        if($value=='ROLE_CAJERO')
-            $value='Cajero/a';
-        if($value=='ROLE_JEFETRANSPORTE')
-            $value='Jefe/a de Transporte';
-        if($value=='ROLE_ADMIN')
-            $value='Administrador/a';
-        if($value=='ROLE_SUPER')
-            $value='Super administrador/a';
+        switch ($this->getNombre()){
+            case 'ROLE_CAJERO':
+                $value= 'Cajero/a';
+            break;
+            case 'ROLE_JEFETRANSPORTE':
+                $value= 'Jefe/a de Transporte';
+            break;
+            case 'ROLE_ELECTRICIDAD':
+                $value= 'Responsable de la red eléctrica';
+            break;
+            case 'ROLE_ADMIN':
+                $value= 'Administrador/a';
+            break;
+            case 'ROLE_SUPERADMIN':
+                $value= 'Super-administrador/a';
+            break;
+        }
      return $value;
     }
 

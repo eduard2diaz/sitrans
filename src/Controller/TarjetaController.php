@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\QueryBuilder;
+use App\Entity\Institucion;
 
 /**
  * @Route("/tarjeta")
@@ -22,7 +23,7 @@ class TarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $tarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.codigo,tt.nombre as tipotarjeta, tc.nombre as tipocombustible,t.activo FROM App:Tarjeta t JOIN t.tipotarjeta tt JOIN t.tipocombustible tc')->getResult();
+            $tarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.codigo,tt.nombre as tipotarjeta, tc.nombre as tipocombustible,t.activo FROM App:Tarjeta t JOIN t.tipotarjeta tt JOIN t.tipocombustible tc JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($tarjetas),
@@ -46,7 +47,7 @@ class TarjetaController extends Controller
             throw $this->createAccessDeniedException();
 
         $tarjeta = new Tarjeta();
-        $form = $this->createForm(TarjetaType::class, $tarjeta, array('action' => $this->generateUrl('tarjeta_new')));
+        $form = $this->createForm(TarjetaType::class, $tarjeta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('tarjeta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -94,7 +95,7 @@ class TarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(TarjetaType::class, $tarjeta, array('action' => $this->generateUrl('tarjeta_edit',array('id'=>$tarjeta->getId()))));
+        $form = $this->createForm(TarjetaType::class, $tarjeta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('tarjeta_edit',array('id'=>$tarjeta->getId()))));
         $activoOriginal=$form->get('activo')->getData();
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -143,6 +144,78 @@ class TarjetaController extends Controller
         $em->remove($tarjeta);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La tarjeta fue eliminada satisfactoriamente'));
+    }
+
+    /**
+     * @Route("/{id}/findbyinstitucion", name="tarjeta_findbyinstitucion", options={"expose"=true})
+     */
+    public function findbyinstitucion(Request $request, Institucion $institucion)
+    {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+        $id=$request->get('responsable');
+        $repository=$this->getDoctrine()->getManager();
+        $qb = $repository->createQueryBuilder('tarjeta');
+        $qb->distinct(true);
+        $qb->select('t')->from('App:Tarjeta', 't');
+        $qb->join('t.responsable', 'r');
+        $qb->join('t.tipotarjeta', 'tt');
+        $qb->join('tt.institucion', 'i');
+        $qb->where('i.id= :institucion')->setParameter('institucion', $institucion);
+
+        $result = $qb->getQuery()->getResult();
+
+        if (count($result) > 0) {
+            $qb = $repository->createQueryBuilder('tarjeta');
+            $qb->select('t')->from('App:Tarjeta', 't');
+            $qb->join('t.tipotarjeta', 'tt');
+            $qb->join('tt.institucion', 'i');
+            $qb->where('t.activo = true AND i.id= :institucion AND t.id NOT IN (:responsable)')
+                ->setParameters(['responsable' => $result, 'institucion' => $institucion]);
+            $result = $qb->getQuery()->getResult();
+        } else {
+            //Si ningua tarjeta tiene responsable devuelve el listado de tarjetas activas
+            $qb = $repository->createQueryBuilder('tarjeta');
+            $qb->select('t')->from('App:Tarjeta', 't');
+            $qb->join('t.tipotarjeta', 'tt');
+            $qb->join('tt.institucion', 'i');
+            $qb->where('t.activo = true AND i.id= :institucion ')
+                ->setParameter('institucion', $institucion);
+            $result = $qb->getQuery()->getResult();
+        }
+
+        //Si estamos modificando un responsable, devuelveme ademas todas mis tarjetas
+        if (null != $id) {
+            $qb = $repository->createQueryBuilder('tarjeta');
+            $qb->select('t')->from('App:Tarjeta', 't');
+            $qb->join('t.responsable', 'r');
+            $qb->join('t.tipotarjeta', 'tt');
+            $qb->join('tt.institucion', 'i');
+            $qb->where('r.id = :id AND i.id= :institucion');
+            $qb->setParameters(['id' => $id, 'institucion' => $institucion]);
+            $mias = $qb->getQuery()->getResult();
+        }
+
+        $parameters=['responsable' => $result, 'institucion' => $institucion];
+        $qb = $repository->createQueryBuilder('tarjeta');
+        $qb->select('t')->from('App:Tarjeta', 't');
+        $qb->join('t.tipotarjeta', 'tt');
+        $qb->join('tt.institucion', 'i');
+        $qb->where('t.activo = true AND i.id= :institucion AND t.id IN (:responsable)');
+        if (null != $id) {
+            $qb->orWhere('i.id= :institucion AND t.id IN (:mias)');
+            $parameters['mias']=$mias;
+        }
+        $qb->setParameters($parameters);
+
+        $tarjetas=$qb->getQuery()->getResult();
+
+
+        $array=[];
+        foreach ($tarjetas as $value){
+            $array[]=['id'=>$value->getId(),'nombre'=>$value->getCodigo()];
+        }
+        return new JsonResponse($array);
     }
 
 }

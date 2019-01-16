@@ -21,7 +21,7 @@ class RecargatarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $recargatarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.cantidadlitros, r.cantidadefectivo FROM App:Recargatarjeta r JOIN r.tarjeta t')->getResult();
+            $recargatarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.cantidadlitros, r.cantidadefectivo FROM App:Recargatarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($recargatarjetas),
@@ -45,13 +45,13 @@ class RecargatarjetaController extends Controller
             throw $this->createAccessDeniedException();
         
         $recargatarjeta = new Recargatarjeta();
-        $form = $this->createForm(RecargatarjetaType::class, $recargatarjeta, array('action' => $this->generateUrl('recargatarjeta_new')));
+        $recargatarjeta->setUsuario($this->getUser());
+        $form = $this->createForm(RecargatarjetaType::class, $recargatarjeta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('recargatarjeta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $recargatarjeta->setUsuario($this->getUser());
                 $em->persist($recargatarjeta);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La recarga fue registrada satisfactoriamente",
@@ -84,7 +84,6 @@ class RecargatarjetaController extends Controller
             throw $this->createAccessDeniedException();
 
         $tarjeta=$recargatarjeta->getTarjeta()->getId();
-
         $mes=$recargatarjeta->getFecha()->format('m');
         $anno=$recargatarjeta->getFecha()->format('Y');
         $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);

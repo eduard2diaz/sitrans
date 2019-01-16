@@ -4,6 +4,9 @@ var configurarFormularioUsuario = function () {
         dropdownParent: $("#basicmodal"),
         //allowClear: true
     });
+    $('select#usuario_institucion').select2({
+        dropdownParent: $("#basicmodal"),
+    });
 }
 
 //VALIDACION DE LOS CAMPOS DE EDICION DE USUARIOS

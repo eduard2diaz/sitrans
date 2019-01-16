@@ -5,11 +5,9 @@ var subelemento = function () {
     var configurarFormulario=function(){
         $('select#subelemento_partida').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#subelemento_elemento').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
 
@@ -33,9 +31,6 @@ var subelemento = function () {
         table = $("table#subelemento_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('subelemento_index'),
                 "language": {
                     url: datatable_translation
@@ -58,12 +53,12 @@ var subelemento = function () {
 
             if ($(this).val() > 0)
                 $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    type: 'get',
                     dataType: 'html',
                     url: Routing.generate('elemento_searchbypartida', {'partida': $(this).val()}),
                     beforeSend: function (data) {
                         mApp.block("div#basicmodal div.modal-body",
-                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                            {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando elementos..."});
                     },
                     success: function (data) {
                         var cadena="";
@@ -105,7 +100,7 @@ var subelemento = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -122,7 +117,7 @@ var subelemento = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -136,7 +131,7 @@ var subelemento = function () {
                 },
                 error: function ()
                 {
-                    // base.Error();
+                     base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -203,7 +198,7 @@ var subelemento = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -244,7 +239,7 @@ var subelemento = function () {
 
            bootbox.confirm({
                 title: "Eliminar subelemento",
-                message: "<p>¿Está seguro que desea eliminar este subelemento?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este subelemento?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
@@ -256,8 +251,7 @@ var subelemento = function () {
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentsubelemento porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

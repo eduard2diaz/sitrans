@@ -7,6 +7,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Municipio;
 
+/*
+ * Clase que carga todos los municipios de Cuba
+ */
 class MunicipioFixtures extends Fixture implements OrderedFixtureInterface {
 
     public function load(ObjectManager $manager) {

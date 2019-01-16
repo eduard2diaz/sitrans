@@ -21,7 +21,7 @@ class CierremesKwController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $cierremeskws = $this->getDoctrine()->getManager()->createQuery('SELECT c.id , c.anno, c.mes FROM App:CierremesKw c')->getResult();
+            $cierremeskws = $this->getDoctrine()->getManager()->createQuery('SELECT c.id , c.anno, c.mes FROM App:CierremesKw c JOIN c.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($cierremeskws),
@@ -45,6 +45,7 @@ class CierremesKwController extends Controller
             throw $this->createAccessDeniedException();
 
         $cierremeskw = new CierremesKw();
+        $cierremeskw->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(CierremesKwType::class, $cierremeskw, array('action' => $this->generateUrl('cierremeskw_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();

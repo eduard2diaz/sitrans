@@ -21,7 +21,7 @@ class LecturaRelojController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $lecturarelojs = $this->getDoctrine()->getManager()->createQuery('SELECT l.id, r.codigo as reloj,a.nombre as area, l.fecha, l.lectura FROM App:LecturaReloj l JOIN l.reloj r JOIN r.area a')->getResult();
+            $lecturarelojs = $this->getDoctrine()->getManager()->createQuery('SELECT l.id, re.codigo as reloj,a.nombre as area, l.fecha, l.lectura FROM App:LecturaReloj l JOIN l.reloj re JOIN re.area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($lecturarelojs),
@@ -45,13 +45,13 @@ class LecturaRelojController extends Controller
             throw $this->createAccessDeniedException();
         
         $lecturareloj = new LecturaReloj();
-        $form = $this->createForm(LecturaRelojType::class, $lecturareloj, array('action' => $this->generateUrl('lecturareloj_new')));
+        $lecturareloj->setUsuario($this->getUser());
+        $form = $this->createForm(LecturaRelojType::class, $lecturareloj, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('lecturareloj_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-                $lecturareloj->setUsuario($this->getUser());
                 $lecturareloj->getReloj()->setKwrestante($lecturareloj->getReloj()->getKwrestante()-$lecturareloj->getLectura());
                 $em->persist($lecturareloj);
                 $em->flush();

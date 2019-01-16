@@ -103,6 +103,6 @@ class RangoTarifaKw
 
     public function __toString()
     {
-     return $this->getTarifas();
+     return "{$this->getInicio()}-{$this->getFin()}:{$this->getValor()}";
     }
 }

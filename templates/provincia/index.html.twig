@@ -2,7 +2,7 @@
  {% block page_title %}Provincia{% endblock page_title %}
 {% block body %}
 
-        <div class="m-portlet m-portlet--mobile">
+    <div class="m-portlet m-portlet--mobile">
         <div class="m-portlet__head">
             <div class="m-portlet__head-caption">
                 <div class="m-portlet__head-title">
@@ -16,7 +16,8 @@
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
                     <li class="m-portlet__nav-item">
-                        <a data-href="{{ path('provincia_new') }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Agregar una nueva provincia">
+                        <a data-href="{{ path('provincia_new') }}" class="btn btn-sm edicion" data-toggle="m-tooltip"
+                           data-placement="top" title="" data-original-title="Registrar una nueva provincia">
                             <span><i class="flaticon-add"></i></span> Nuevo
                         </a>
                     </li>
@@ -26,7 +27,7 @@
         </div>
 
         <div class="m-portlet__body">
-                       <!--begin: Datatable -->
+            <!--begin: Datatable -->
             <div class="" id="local_data">
             </div>
             <table class="table table-hover m-table m-table--head-separator-brand" id="provincia_table">
@@ -64,7 +65,7 @@
 {% block javascripts %}
     {{ parent() }}
 
-<script src="{{ asset('script/entity/provincia.js','sitrans') }}"></script>
+    <script src="{{ asset('script/entity/provincia.js','sitrans') }}"></script>
     <script>
         provincia.init();
     </script>

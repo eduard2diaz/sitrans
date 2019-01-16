@@ -21,7 +21,7 @@ class PruebalitroController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $pruebalitros = $this->getDoctrine()->getManager()->createQuery('SELECT p.id, v.matricula as vehiculo, p.fecha FROM App:Pruebalitro p JOIN p.vehiculo v')->getResult();
+            $pruebalitros = $this->getDoctrine()->getManager()->createQuery('SELECT p.id, v.matricula as vehiculo, p.fecha FROM App:Pruebalitro p JOIN p.vehiculo v JOIN p.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($pruebalitros),
@@ -45,7 +45,8 @@ class PruebalitroController extends Controller
             throw $this->createAccessDeniedException();
 
         $pruebalitro = new Pruebalitro();
-        $form = $this->createForm(PruebalitroType::class, $pruebalitro, array('action' => $this->generateUrl('pruebalitro_new')));
+        $pruebalitro->setInstitucion($this->getUser()->getInstitucion());
+        $form = $this->createForm(PruebalitroType::class, $pruebalitro, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('pruebalitro_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 

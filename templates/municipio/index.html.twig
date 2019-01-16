@@ -15,7 +15,7 @@
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
                     <li class="m-portlet__nav-item">
-                        <a data-href="{{ path('municipio_new') }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Agregar un municipio">
+                        <a data-href="{{ path('municipio_new') }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Registrar un municipio">
                             <span><i class="flaticon-add"></i></span> Nuevo
                         </a>
                     </li>
@@ -65,7 +65,6 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-
 <script src="{{ asset('script/entity/municipio.js','sitrans') }}"></script>
     <script>
         municipio.init();

@@ -21,7 +21,7 @@ class TipoactividadController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $tipoactividads = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.nombre FROM App:Tipoactividad t')->getResult();
+            $tipoactividads = $this->getDoctrine()->getManager()->createQuery('SELECT t.id, t.nombre FROM App:Tipoactividad t JOIN t.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($tipoactividads),
@@ -45,6 +45,7 @@ class TipoactividadController extends Controller
             throw $this->createAccessDeniedException();
 
         $tipoactividad = new Tipoactividad();
+        $tipoactividad->setInstitucion($this->getUser()->getInstitucion());
         $form = $this->createForm(TipoactividadType::class, $tipoactividad, array('action' => $this->generateUrl('tipoactividad_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -79,7 +80,7 @@ class TipoactividadController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('EDIT',$tipoactividad);
         $form = $this->createForm(TipoactividadType::class, $tipoactividad, array('action' => $this->generateUrl('tipoactividad_edit',array('id'=>$tipoactividad->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -117,6 +118,7 @@ class TipoactividadController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$tipoactividad);
         $em = $this->getDoctrine()->getManager();
         $em->remove($tipoactividad);
         $em->flush();

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Institucion;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Area;
 use App\Form\AreaType;
@@ -21,7 +22,7 @@ class AreaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $areas = $this->getDoctrine()->getManager()->createQuery('SELECT a.id, a.nombre, a.codigo, cc.nombre as centrocosto FROM App:Area a JOIN a.ccosto cc')->getResult();
+            $areas = $this->getDoctrine()->getManager()->createQuery('SELECT a.id, a.nombre, a.codigo, cc.nombre as centrocosto FROM App:Area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($areas),
@@ -45,7 +46,7 @@ class AreaController extends Controller
             throw $this->createAccessDeniedException();
         
         $area = new Area();
-        $form = $this->createForm(AreaType::class, $area, array('action' => $this->generateUrl('area_new')));
+        $form = $this->createForm(AreaType::class, $area, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('area_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -81,7 +82,8 @@ class AreaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
+        $this->denyAccessUnlessGranted('VIEW',$area);
         return $this->render('area/_show.html.twig',['area'=>$area]);
     }
     /**
@@ -91,8 +93,8 @@ class AreaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
-        $form = $this->createForm(AreaType::class, $area, array('action' => $this->generateUrl('area_edit',array('id'=>$area->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$area);
+        $form = $this->createForm(AreaType::class, $area, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('area_edit',array('id'=>$area->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -130,10 +132,30 @@ class AreaController extends Controller
     {
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-
+        $this->denyAccessUnlessGranted('DELETE',$area);
         $em = $this->getDoctrine()->getManager();
         $em->remove($area);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El área fue eliminada satisfactoriamente'));
+    }
+
+    //Funcionalidad ajax utilizada por otras clases
+    /**
+     * @Route("/{id}/findbyinstitucion", name="area_findbyinstitucion", options={"expose"=true})
+     */
+    public function findbyinstitucion(Request $request, Institucion $institucion)
+    {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $em=$this->getDoctrine()->getManager();
+        $consulta=$em->createQuery('SELECT a FROM App:Area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :id');
+        $consulta->setParameter('id',$institucion->getId());
+        $areas=$consulta->getResult();
+        $array=[];
+        foreach ($areas as $value){
+                $array[]=['id'=>$value->getId(),'nombre'=>$value->getNombre()];
+        }
+        return new JsonResponse($array);
     }
 }

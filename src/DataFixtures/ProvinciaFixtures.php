@@ -7,6 +7,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/*
+ * Clase que carga todas las provincias de Cuba
+ */
 class ProvinciaFixtures extends Fixture  implements OrderedFixtureInterface{
 
     public function load(ObjectManager $manager) {

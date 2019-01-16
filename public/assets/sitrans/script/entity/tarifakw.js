@@ -207,7 +207,7 @@ var tarifakw = function () {
 
            bootbox.confirm({
                 title: "Eliminar tarifa de kilowatts",
-                message: "<p>¿Está seguro que desea eliminar esta tarifa?</p>",
+                message: "<div class='text-center'><i class='flaticon-warning-2' style='font-size: 200%;display: block;'></i><b class='text-uppercase'>Esta acción no se podrá deshacer.</b><p>¿Está seguro que desea eliminar esta tarifa?</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',

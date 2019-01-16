@@ -15,9 +15,9 @@ button.bootbox-close-button{
 }
 
 /*Mi personalizacion*/
-/*div.m-body{
-    background-color: #f5f6f7;
-}*/
+div.m-body{
+    background-color: #f2f3f8;
+}
 div.m-portlet{
     border-radius: 0.3%;
 }
@@ -70,15 +70,6 @@ div#m_header_menu{
     margin-left: 20%;
 }
 
-.margin-top-10{
-    margin-top:2%;
-}
-.margin-bottom-10{
-    margin-bottom:2%;
-}
-.margin-top-20{
-    margin-top:4%;
-}
 .modal-full{
     min-width: 80% !important;
 }
@@ -193,4 +184,12 @@ div#usertopmenu_header
     z-index: 2;
     left: 2%;
     top: 76%;
+}
+
+div.bootbox-body p.confirm_message{
+    color: #000 !important;
+    margin-bottom: 1%;
+}
+div.bootbox-body p.confirm_detail{
+    font-size:  90%;
 }

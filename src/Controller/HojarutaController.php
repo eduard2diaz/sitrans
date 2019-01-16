@@ -21,16 +21,16 @@ class HojarutaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $hojarutas = $this->getDoctrine()->getManager()->createQuery('SELECT h.id, v.matricula as vehiculo, h.codigo, h.fechasalida, h.fechallegada FROM App:Hojaruta h JOIN h.vehiculo v')->getResult();
+            $hojarutas = $this->getDoctrine()->getManager()->createQuery('SELECT h.id, v.matricula as vehiculo, h.codigo, h.fechasalida, h.fechallegada FROM App:Hojaruta h JOIN h.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
-                    'iTotalRecords'        => count($hojarutas),
+                    'iTotalRecords' => count($hojarutas),
                     'iTotalDisplayRecords' => 10,
-                    'sEcho'                => 0,
-                    'sColumns'             => '',
-                    'aaData'               => $hojarutas,
+                    'sEcho' => 0,
+                    'sColumns' => '',
+                    'aaData' => $hojarutas,
                 ]
-                );
+            );
         }
 
         return $this->render('hojaruta/index.html.twig');
@@ -41,11 +41,12 @@ class HojarutaController extends Controller
      */
     public function new(Request $request): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
         $hojaruta = new Hojaruta();
-        $form = $this->createForm(HojarutaType::class, $hojaruta, array('action' => $this->generateUrl('hojaruta_new')));
+        $hojaruta->setInstitucion($this->getUser()->getInstitucion());
+        $form = $this->createForm(HojarutaType::class, $hojaruta, array('institucion'=>$this->getUser()->getInstitucion(),'action' => $this->generateUrl('hojaruta_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -54,7 +55,7 @@ class HojarutaController extends Controller
                 $hojaruta->setUsuario($this->getUser());
                 $em->persist($hojaruta);
                 $em->flush();
-                return new JsonResponse(array('mensaje' =>"La hoja de ruta fue registrada satisfactoriamente",
+                return new JsonResponse(array('mensaje' => "La hoja de ruta fue registrada satisfactoriamente",
                     'vehiculo' => $hojaruta->getVehiculo()->getMatricula(),
                     'codigo' => $hojaruta->getCodigo(),
                     'fechasalida' => $hojaruta->getFechasalida(),
@@ -81,17 +82,17 @@ class HojarutaController extends Controller
      */
     public function show(Request $request, Hojaruta $hojaruta): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $em=$this->getDoctrine()->getManager();
-        $trazahruta=$em->getRepository('App:Traza')->findOneBy(['identificador'=>$hojaruta->getId(),'entity'=>get_class($hojaruta)]);
-        $tarjeta=$trazahruta->getTarjeta();
-        $mes=$hojaruta->getFechasalida()->format('m');
-        $anno=$hojaruta->getFechasalida()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
+        $em = $this->getDoctrine()->getManager();
+        $trazahruta = $em->getRepository('App:Traza')->findOneBy(['identificador' => $hojaruta->getId(), 'entity' => get_class($hojaruta)]);
+        $tarjeta = $trazahruta->getTarjeta();
+        $mes = $hojaruta->getFechasalida()->format('m');
+        $anno = $hojaruta->getFechasalida()->format('Y');
+        $cierre = $this->get('energia.service')->existeCierreCombustible($anno, $mes, $tarjeta);
 
-        return $this->render('hojaruta/_show.html.twig',['hojaruta'=>$hojaruta,'cierre'=>$cierre]);
+        return $this->render('hojaruta/_show.html.twig', ['hojaruta' => $hojaruta, 'cierre' => $cierre]);
     }
 
     /**
@@ -99,10 +100,10 @@ class HojarutaController extends Controller
      */
     public function edit(Request $request, Hojaruta $hojaruta): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(HojarutaType::class, $hojaruta, array('action' => $this->generateUrl('hojaruta_edit',array('id'=>$hojaruta->getId()))));
+        $form = $this->createForm(HojarutaType::class, $hojaruta, array('institucion'=>$this->getUser()->getInstitucion(),'action' => $this->generateUrl('hojaruta_edit', array('id' => $hojaruta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -110,7 +111,7 @@ class HojarutaController extends Controller
                 $hojaruta->setUsuario($this->getUser());
                 $em->persist($hojaruta);
                 $em->flush();
-                return new JsonResponse(array('mensaje' =>"La hoja de ruta fue actualizada satisfactoriamente",
+                return new JsonResponse(array('mensaje' => "La hoja de ruta fue actualizada satisfactoriamente",
                     'vehiculo' => $hojaruta->getVehiculo()->getMatricula(),
                     'codigo' => $hojaruta->getCodigo(),
                     'fechasalida' => $hojaruta->getFechasalida()->format('d-m-Y h:i a'),
@@ -146,6 +147,6 @@ class HojarutaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->remove($hojaruta);
         $em->flush();
-        return new JsonResponse(array('mensaje' =>'La hoja de ruta fue eliminada satisfactoriamente'));
+        return new JsonResponse(array('mensaje' => 'La hoja de ruta fue eliminada satisfactoriamente'));
     }
 }

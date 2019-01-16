@@ -7,6 +7,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Cupet;
 
+/*
+ * Clase que carga algunos de los cupets de la provincia Mayabeque
+ */
 class CupetFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)

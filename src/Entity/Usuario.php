@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -31,28 +32,29 @@ class Usuario implements UserInterface
     /**
      * @var string|null
      *
-     * @ORM\Column(name="usuario", type="string", nullable=true)
+     * @ORM\Column(name="usuario", type="string", nullable=false)
+     * @Assert\Regex("/^([a-zA-Z]((\.|_|-)?[a-zA-Z0-9]+){3})*$/")
      */
     private $usuario;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="password", type="string", nullable=true)
+     * @ORM\Column(name="password", type="string", nullable=false)
      */
     private $password;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="salt", type="string", nullable=true)
+     * @ORM\Column(name="salt", type="string", nullable=false)
      */
     private $salt;
 
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="activo", type="boolean", nullable=true)
+     * @ORM\Column(name="activo", type="boolean", nullable=false)
      */
     private $activo;
 
@@ -97,11 +99,18 @@ class Usuario implements UserInterface
     private $correo;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     */
+    private $institucion;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->idrol = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->activo=true;
+        $this->setSalt(uniqid());
     }
 
     public function getId(): ?int
@@ -240,5 +249,43 @@ class Usuario implements UserInterface
     public function __toString()
     {
      return $this->getNombre().' '.$this->getApellidos();
+    }
+
+    public function getInstitucion(): ?Institucion
+    {
+        return $this->institucion;
+    }
+
+    public function setInstitucion(?Institucion $institucion): self
+    {
+        $this->institucion = $institucion;
+
+        return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $roles=$this->getRoles();
+        if($this->getIdrol()->isEmpty())
+            $context->buildViolation('Seleccione al menos uno de los permisos')
+                ->atPath('idrol')
+                ->addViolation();
+        elseif(in_array('ROLE_SUPERADMIN',$roles)) {
+            if ($this->getInstitucion() != null)
+                $context->buildViolation('Un superadministrador no puede tener institución')
+                    ->atPath('idrol')
+                    ->addViolation();
+            elseif (count($roles) > 1)
+                $context->buildViolation('Un superadministrador no puede otro rol')
+                    ->atPath('idrol')
+                    ->addViolation();
+        }
+        elseif ($this->getInstitucion() == null)
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
+                ->addViolation();
     }
 }

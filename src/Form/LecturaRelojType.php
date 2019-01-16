@@ -17,6 +17,7 @@ class LecturaRelojType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $reloj=$options['data']->getReloj();
+        $institucion=$options['institucion'];
         $disabled=$reloj!= null  ? true : false;
 
         $builder
@@ -26,22 +27,25 @@ class LecturaRelojType extends AbstractType
             )))
             ->add('reloj',EntityType::class,array(
                 'required'=>true,
-                'disabled'=>$disabled,
+                'placeholder'=>'Seleccione un reloj',
                 'auto_initialize'=>false,
                 'class'         =>'App:Reloj',
                 'choice_label'=>function($value){
                     return $value->getCodigo().'--'.$value->getArea()->getNombre();
                 },
-                'query_builder'=>function(EntityRepository $repository) use($reloj){
+                'query_builder'=>function(EntityRepository $repository) use($reloj,$institucion){
                     $qb=$repository->createQueryBuilder('r');
-                    $qb->where('r.activo = :activo')->setParameter('activo',true);
-                    $qb->andWhere('r.kwrestante> 0');
+                    $qb->join('r.area','a');
+                    $qb->join('a.ccosto','cc');
+                    $qb->join('cc.cuenta','c');
+                    $qb->join('c.institucion','i');
+                    $qb->where('r.activo = :activo AND i.id= :institucion')
+                        ->setParameters(['activo'=>true,'institucion'=>$institucion]);
                     if(null!=$reloj)
                         $qb->orWhere('r.id= :id')->setParameter('id',$reloj);
                     return $qb;
                 }
             ))
-
             ->add('lectura', IntegerType::class, array('attr' => array(
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
@@ -56,5 +60,6 @@ class LecturaRelojType extends AbstractType
         $resolver->setDefaults([
             'data_class' => LecturaReloj::class,
         ]);
+        $resolver->setRequired('institucion');
     }
 }

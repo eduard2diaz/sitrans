@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Responsable as ResponsableConstraint;
+
 /**
  * Responsable
  *
@@ -85,6 +86,12 @@ class Responsable
      */
     private $tarjetas;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
     public function __construct()
     {
         $this->tarjetas = new ArrayCollection();
@@ -155,7 +162,7 @@ class Responsable
         return $this;
     }
 
-   /**
+    /**
      * @return bool|null
      */
     public function getActivo(): ?bool
@@ -203,27 +210,48 @@ class Responsable
         return $this;
     }
 
-        public function __toString(){
-         return $this->getNombre().' '.$this->getApellidos();
-        }
+    /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre() . ' ' . $this->getApellidos();
+    }
 
     /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if(null==$this->getArea())
+        if (null == $this->getArea())
             $context->buildViolation('Seleccione el área')
                 ->atPath('area')
                 ->addViolation();
+        if (null == $this->getInstitucion())
+            $context->buildViolation('Seleccione la institución')
+                ->atPath('institucion')
+                ->addViolation();
         foreach ($this->getTarjetas() as $value)
-            if(!$value->getActivo()){
+            if (!$value->getActivo()) {
                 $context->buildViolation('Solo puede ser responsable de tarjetas activas')
                     ->atPath('tarjetas')
                     ->addViolation();
                 break;
-            }else
-                if((null!=$value->getResponsable()) && ($this->getId()!=$value->getResponsable()->getId())){
+            } else
+                if ((null != $value->getResponsable()) && ($this->getId() != $value->getResponsable()->getId())) {
                     $context->buildViolation('Solo puede ser responsable que no posean responsables')
                         ->atPath('tarjetas')
                         ->addViolation();

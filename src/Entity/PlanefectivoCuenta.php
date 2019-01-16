@@ -172,28 +172,6 @@ class PlanefectivoCuenta
         $this->planefectivo = $planefectivo;
     }
 
-
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
-       if($this->getSubelemento()->isEmpty())
-            $context->buildViolation('Seleccione al menos un subelemento')
-                ->atPath('subelemento')
-                ->addViolation();
-
-       if($this->getCentrocosto()->isEmpty())
-            $context->buildViolation('Seleccione al menos un centro de costo')
-                ->atPath('centrocosto')
-                ->addViolation();
-
-        if(null==$this->getCuenta())
-            $context->buildViolation('Seleccione una cuenta')
-                ->atPath('cuenta')
-                ->addViolation();
-    }
-
     public function getUsuario(): ?Usuario
     {
         return $this->usuario;
@@ -205,4 +183,57 @@ class PlanefectivoCuenta
 
         return $this;
     }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if ($this->getSubelemento()->isEmpty())
+            $context->buildViolation('Seleccione al menos un subelemento')
+                ->atPath('subelemento')
+                ->addViolation();
+
+        if ($this->getCentrocosto()->isEmpty())
+            $context->buildViolation('Seleccione al menos un centro de costo')
+                ->atPath('centrocosto')
+                ->addViolation();
+
+        if (null==$this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')
+                ->atPath('usuario')
+                ->addViolation();
+
+        if (null == $this->getCuenta())
+            $context->buildViolation('Seleccione una cuenta')
+                ->atPath('cuenta')
+                ->addViolation();
+        elseif (null == $this->getPlanefectivo())
+            $context->buildViolation('Seleccione un plan')
+                ->atPath('planefectivo')
+                ->addViolation();
+        elseif ($this->getCuenta()->getInstitucion() != $this->getPlanefectivo()->getInstitucion())
+            $context->buildViolation('Seleccione una cuenta válida')
+                ->atPath('cuenta')
+                ->addViolation();
+        else {
+            foreach ($this->getCentrocosto() as $ccosto)
+                if ($ccosto->getCuenta()->getId() != $this->getCuenta()->getId()) {
+                    $context->buildViolation('Seleccione un centro de costo válido')
+                        ->atPath('cuenta')
+                        ->addViolation();
+                    break;
+                }
+            foreach ($this->getSubelemento() as $sub)
+                if ($sub->getPartida()->getCuenta()->getId() != $this->getCuenta()->getId()) {
+                    $context->buildViolation('Seleccione un subelemento válido')
+                        ->atPath('subelemento')
+                        ->addViolation();
+                    break;
+                }
+
+        }
+    }
+
+
 }

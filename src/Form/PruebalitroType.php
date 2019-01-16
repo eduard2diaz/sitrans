@@ -17,6 +17,7 @@ class PruebalitroType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $data=$options['data'];
+        $institucion=$options['institucion'];
         $vehiculo=$options['data']->getVehiculo();
         $disabled=false;
         if($data->getId()!=null)
@@ -43,11 +44,15 @@ class PruebalitroType extends AbstractType
                 'auto_initialize'=>false,
                 'class'         =>'App:Vehiculo',
                 'disabled'=>$disabled,
-                'query_builder'=>function(EntityRepository $repository) use($vehiculo){
+                'query_builder'=>function(EntityRepository $repository) use($vehiculo,$institucion){
                     $qb=$repository->createQueryBuilder('v');
                     $qb->join('v.responsable','r');
                     $qb->join('r.tarjetas','t');
-                    $qb->where('v.estado= 0 AND t.activo = :activo AND r.activo = :activo')->setParameters(['activo'=>true]);
+                    $qb->join('v.institucion','i');
+                    $qb->where('v.estado= 0 AND t.activo = TRUE AND r.activo = TRUE AND i= :institucion')->setParameter('institucion', $institucion);
+                    if(null!=$vehiculo)
+                        $qb->orWhere('v.id= :vehiculo')->setParameter('vehiculo',$vehiculo);
+
                     return $qb;
                 }
             ))
@@ -62,5 +67,7 @@ class PruebalitroType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Pruebalitro::class,
         ]);
+        $resolver->setRequired('institucion');
+
     }
 }

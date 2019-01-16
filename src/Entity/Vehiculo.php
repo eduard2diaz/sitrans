@@ -116,8 +116,18 @@ class Vehiculo
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 4,
+     * )
      */
     private $estado;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
 
     public function __construct()
     {
@@ -252,6 +262,22 @@ class Vehiculo
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
     public function getEstado(): ?int
     {
         return $this->estado;
@@ -318,13 +344,6 @@ class Vehiculo
                 ->atPath('responsable')
                 ->addViolation();
         }
-
-        if($this->getEstado()>4 || $this->getEstado()<0)
-            $context->buildViolation('Compruebe el estado del vehículo')
-                ->atPath('estado')
-                ->addViolation();
-
-
     }
 
 

@@ -59,7 +59,7 @@ class RecargaKw
      */
     private $folio00;
 
-   /**
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -135,35 +135,6 @@ class RecargaKw
         return $this;
     }
 
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
-        $path=$this->getId()==null ? 'reloj' : null;
-        if(null==$this->getReloj())
-            $context->buildViolation('Seleccione un reloj')
-                ->atPath($path)
-                ->addViolation();
-        if(!$this->getReloj()->getActivo())
-            $context->buildViolation('Seleccione un reloj activo')
-                ->atPath($path)
-                ->addViolation();
-
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
-                ->addViolation();
-    }
-
     public function getUsuario(): ?Usuario
     {
         return $this->usuario;
@@ -174,6 +145,38 @@ class RecargaKw
         $this->usuario = $usuario;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $path = $this->getId() == null ? 'reloj' : null;
+        if (null == $this->getReloj())
+            $context->buildViolation('Seleccione un reloj')
+                ->atPath($path)
+                ->addViolation();
+        if (!$this->getReloj()->getActivo())
+            $context->buildViolation('Seleccione un reloj activo')
+                ->atPath($path)
+                ->addViolation();
+
+        $hoy = new \DateTime('today');
+
+        $anno = $hoy->format('y');
+        if ($this->getFecha()->format('y') != $anno)
+            $context->buildViolation('Seleccione una fecha dentro del año actual')
+                ->atPath('fecha')
+                ->addViolation();
+        $mes = $hoy->format('m');
+        if ($this->getFecha()->format('m') != $mes)
+            $context->buildViolation('Seleccione una fecha dentro del mes actual')
+                ->atPath('fecha')
+                ->addViolation();
+
+        if (null == $this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
     }
 
 

@@ -52,6 +52,4 @@ class Tipocombustible
     {
         return $this->nombre;
     }
-
-
 }

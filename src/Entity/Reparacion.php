@@ -41,6 +41,12 @@ class Reparacion
      */
     private $descripcion;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $institucion;
+
     public function getId()
     {
         return $this->id;
@@ -95,17 +101,38 @@ class Reparacion
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $path=$this->getId() ? null : 'vehiculo';
+        if(null==$this->getInstitucion())
+            $context->buildViolation('Seleccione la institución')
+                ->atPath('institucion')
+                ->addViolation();
+
         if(null==$this->getVehiculo())
             $context->buildViolation('Seleccione el vehículo')
                 ->atPath($path)
                 ->addViolation();
         elseif(1!=$this->getVehiculo()->getEstado())
-            $context->buildViolation('Seleccione un vehículo que se encuentre en reparación')
+            $context->buildViolation('Seleccione el vehículo que se encuentre en mantenimiento')
                 ->atPath($path)
                 ->addViolation();
         elseif(null==$this->getVehiculo()->getResponsable())
@@ -113,7 +140,7 @@ class Reparacion
                 ->atPath($path)
                 ->addViolation();
         elseif(!$this->getVehiculo()->getResponsable()->getActivo())
-            $context->buildViolation('Seleccione un vehículo con responsable activo')
+            $context->buildViolation('Seleccione el vehículo con responsable activo')
                 ->atPath($path)
                 ->addViolation();
 

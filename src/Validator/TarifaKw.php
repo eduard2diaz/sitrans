@@ -4,8 +4,9 @@ namespace App\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
+/*
+ * Validador que es empleado por la entidad TarifaKw para comprobar si un tarifa de kilowatts determinada es correcta,
+ * la validación es llevada a cabo en la clase TarifaKwValidator
  */
 class TarifaKw extends Constraint
 {

@@ -21,7 +21,7 @@ class MantenimientoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $mantenimientos = $this->getDoctrine()->getManager()->createQuery('SELECT m.id, v.matricula as vehiculo, m.fechainicio, m.fechafin FROM App:Mantenimiento m JOIN m.vehiculo v')->getResult();
+            $mantenimientos = $this->getDoctrine()->getManager()->createQuery('SELECT m.id, v.matricula as vehiculo, m.fechainicio, m.fechafin FROM App:Mantenimiento m JOIN m.vehiculo v JOIN m.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($mantenimientos),
@@ -45,7 +45,8 @@ class MantenimientoController extends Controller
             throw $this->createAccessDeniedException();
 
         $mantenimiento = new Mantenimiento();
-        $form = $this->createForm(MantenimientoType::class, $mantenimiento, array('action' => $this->generateUrl('mantenimiento_new')));
+        $mantenimiento->setInstitucion($this->getUser()->getInstitucion());
+        $form = $this->createForm(MantenimientoType::class, $mantenimiento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('mantenimiento_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -93,7 +94,7 @@ class MantenimientoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(MantenimientoType::class, $mantenimiento, array('action' => $this->generateUrl('mantenimiento_edit',array('id'=>$mantenimiento->getId()))));
+        $form = $this->createForm(MantenimientoType::class, $mantenimiento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('mantenimiento_edit',array('id'=>$mantenimiento->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())

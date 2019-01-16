@@ -14,8 +14,6 @@ class LicenciaType extends AbstractType
     {
         $builder
             ->add('nombre',TextType::class,array('attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba el nombre','class'=>'form-control input-medium')))
-         //   ->add('idtipovehiculo')
-         //   ->add('idchofer')
         ;
     }
 

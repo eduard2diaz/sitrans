@@ -38,6 +38,10 @@ class PlanportadoresArea
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 1,
+     * )
      */
     private $categoria;
 
@@ -140,22 +144,6 @@ class PlanportadoresArea
         $this->planportadores = $planportadores;
     }
 
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
-        if($this->getCategoria()!=0 && $this->getCategoria()!=1)
-            $context->buildViolation('Seleccione una categoría correcta')
-                ->atPath('categoria')
-                ->addViolation();
-
-        if($this->getAreas()->isEmpty())
-            $context->buildViolation('Seleccione un área')
-                ->atPath('areas')
-                ->addViolation();
-    }
-
     public function getUsuario(): ?Usuario
     {
         return $this->usuario;
@@ -166,5 +154,31 @@ class PlanportadoresArea
         $this->usuario = $usuario;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if($this->getAreas()->isEmpty())
+            $context->buildViolation('Seleccione un área')
+                ->atPath('areas')
+                ->addViolation();
+
+        if(null==$this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')
+                ->atPath('usuario')
+                ->addViolation();
+
+        foreach($this->getAreas() as $area){
+            if($area->getCcosto()->getCuenta()->getInstitucion()!=$this->getPlanportadores()->getInstitucion()){
+                $context->buildViolation('Compruebe las áreas seleccionadas')
+                    ->atPath('areas')
+                    ->addViolation();
+                break;
+            }
+
+        }
     }
 }

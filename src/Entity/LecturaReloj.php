@@ -87,6 +87,18 @@ class LecturaReloj
         return $this;
     }
 
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
@@ -119,19 +131,9 @@ class LecturaReloj
             $context->buildViolation('Seleccione una fecha dentro del mes actual')
                 ->atPath('fecha')
                 ->addViolation();
+
+        if (null == $this->getUsuario())
+            $context->buildViolation('Seleccione un usuario')->addViolation();
     }
-
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
-
-    public function setUsuario(?Usuario $usuario): self
-    {
-        $this->usuario = $usuario;
-
-        return $this;
-    }
-
 
 }

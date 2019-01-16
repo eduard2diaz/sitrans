@@ -6,6 +6,10 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Licencia;
+
+/*
+ * Clase que carga los tipos de licencia disponibles
+ */
 class LicenciaFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
