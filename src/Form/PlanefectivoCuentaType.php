@@ -3,8 +3,8 @@
 namespace App\Form;
 
 use App\Entity\PlanefectivoCuenta;
-use App\Form\Subscriber\AddSubElementoFieldSubscriber;
-use App\Form\Subscriber\AddCentrocostoFieldSubscriber;
+use App\Form\Subscriber\AddPlanEfectivoSubElementoFieldSubscriber;
+use App\Form\Subscriber\AddPlanEfectivoCentrocostoFieldSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,7 +16,7 @@ class PlanefectivoCuentaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $institucion=$options['institucion'];
+        $institucion=$options['data']->getPlanefectivo()->getInstitucion()->getId();
         $builder
             ->add('valor',NumberType::class,array(
                 'attr'=>array('autocomplete'=>'off','class'=>'form-control')
@@ -38,8 +38,8 @@ class PlanefectivoCuentaType extends AbstractType
         ;
 
         $factory=$builder->getFormFactory();
-        $builder->addEventSubscriber(new AddSubElementoFieldSubscriber($factory));
-        $builder->addEventSubscriber(new AddCentrocostoFieldSubscriber($factory));
+        $builder->addEventSubscriber(new AddPlanEfectivoSubElementoFieldSubscriber($factory));
+        $builder->addEventSubscriber(new AddPlanEfectivoCentrocostoFieldSubscriber($factory));
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -47,6 +47,5 @@ class PlanefectivoCuentaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PlanefectivoCuenta::class,
         ]);
-        $resolver->setRequired('institucion');
     }
 }

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Tools\Util;
 
 /**
  * @ORM\Entity
@@ -35,8 +36,12 @@ class Planportadores
     private $anno;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
@@ -51,8 +56,7 @@ class Planportadores
     }
 
     public function getMesToString(){
-        $meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        return $meses[$this->getMes()-1];
+        return Util::getMesKey($this->getMes());
     }
 
     public function setMes(int $mes): self

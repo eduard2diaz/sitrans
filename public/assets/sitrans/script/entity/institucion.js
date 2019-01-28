@@ -44,9 +44,9 @@ var institucion = function () {
                 columnDefs:[
                     {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm institucion_show" data-href="'+Routing.generate('institucion_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('institucion_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_institucion" data-href="'+Routing.generate('institucion_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm text-uppercase institucion_show" data-href="'+Routing.generate('institucion_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm text-uppercase edicion" data-href="'+Routing.generate('institucion_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> Editar</a></li></ul>';
+                    }
                 }],
 
             });
@@ -81,8 +81,6 @@ var institucion = function () {
         });
     }
 
-
-
     var show = function () {
         $('body').on('click', 'a.institucion_show', function (evento)
         {
@@ -91,7 +89,7 @@ var institucion = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -117,12 +115,11 @@ var institucion = function () {
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
-
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -156,7 +153,7 @@ var institucion = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -205,7 +202,7 @@ var institucion = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -239,11 +236,11 @@ var institucion = function () {
         });
     }
     var eliminar = function () {
-        $('table#institucion_table').on('click', 'a.eliminar_institucion', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_institucion', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
+            $('div#basicmodal').modal('hide');
 
            bootbox.confirm({
                 title: "Desea eliminar esta institución?",

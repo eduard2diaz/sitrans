@@ -117,7 +117,8 @@ class CupetController extends Controller
             'form' => $form->createView(),
             'form_id' => 'cupet_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar cupet'
+            'title' => 'Editar cupet',
+            'eliminable'=>$this->esEliminable($cupet)
         ]);
     }
 
@@ -126,12 +127,21 @@ class CupetController extends Controller
      */
     public function delete(Request $request, Cupet $cupet): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($cupet))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($cupet);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El cupet fue eliminado satisfactoriamente'));
+    }
+
+    /*
+     *Funcion que devuelve un booleano indicando si un cupet es o no eliminable
+     */
+    private function esEliminable(Cupet $cupet){
+        $em=$this->getDoctrine()->getManager();
+        $hoja=$em->getRepository('App:Chip')->findOneByCupet($cupet);
+        return null==$hoja;
     }
 }

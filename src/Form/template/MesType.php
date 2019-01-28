@@ -14,7 +14,7 @@ class MesType extends AbstractType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults(array(
-            'choices'=>Util::meses,'attr'=>array('class'=>'form-control input-medium')
+            'choices'=>Util::LISTADO_MESES,'attr'=>array('class'=>'form-control input-medium')
         ));
     }
 
@@ -23,7 +23,6 @@ class MesType extends AbstractType
     {
         return ChoiceType::class;
     }
-
 
     /**
      * @return string

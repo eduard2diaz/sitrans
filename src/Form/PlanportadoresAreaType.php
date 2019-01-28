@@ -16,7 +16,7 @@ class PlanportadoresAreaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $institucion=$options['institucion'];
+        $institucion=$options['data']->getPlanportadores()->getInstitucion()->getId();
 
         $builder
             ->add('valor',NumberType::class,array(
@@ -52,6 +52,5 @@ class PlanportadoresAreaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PlanportadoresArea::class,
         ]);
-        $resolver->setRequired('institucion');
     }
 }

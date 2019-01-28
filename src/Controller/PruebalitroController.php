@@ -21,7 +21,7 @@ class PruebalitroController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $pruebalitros = $this->getDoctrine()->getManager()->createQuery('SELECT p.id, v.matricula as vehiculo, p.fecha FROM App:Pruebalitro p JOIN p.vehiculo v JOIN p.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
+            $pruebalitros = $this->getDoctrine()->getManager()->createQuery('SELECT p.id, v.matricula as vehiculo, p.fechainicio FROM App:Pruebalitro p JOIN p.vehiculo v JOIN p.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($pruebalitros),
@@ -56,7 +56,7 @@ class PruebalitroController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La prueba fue registrada satisfactoriamente",
                     'vehiculo' => $pruebalitro->getVehiculo()->getMatricula(),
-                    'fecha' => $pruebalitro->getFecha(),
+                    'fechainicio' => $pruebalitro->getFechainicio(),
                     'id' => $pruebalitro->getId(),
                 ));
             } else {
@@ -65,7 +65,6 @@ class PruebalitroController extends Controller
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
-
 
         return $this->render('pruebalitro/new.html.twig', [
             'pruebalitro' => $pruebalitro,
@@ -82,6 +81,7 @@ class PruebalitroController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$pruebalitro);
         return $this->render('pruebalitro/_show.html.twig',['pruebalitro'=>$pruebalitro]);
     }
 
@@ -93,6 +93,7 @@ class PruebalitroController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$pruebalitro);
         $em = $this->getDoctrine()->getManager();
         $em->remove($pruebalitro);
         $em->flush();

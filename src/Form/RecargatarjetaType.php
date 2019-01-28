@@ -25,13 +25,8 @@ class RecargatarjetaType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('cantidadlitros', IntegerType::class, array('label'=>'Cantidad de litros','attr' => array(
-                'autocomplete' => 'off',
-                'class' => 'form-control input-medium'
-            )))
             ->add('cantidadefectivo', NumberType::class, array('label'=>'Cantidad de efectivo','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
             ->add('tarjeta',EntityType::class,array(

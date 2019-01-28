@@ -1,0 +1,35 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles de la provincia
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th style="width: 10%">Nombre</th>
+                    <td>{{ provincia.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Municipios</th>
+                    <td>
+                        <ul class="list-inline">
+                        {% for municipio in provincia.municipios %}
+                            <li class="list-inline-item">{{ municipio.nombre }}{{ loop.last==false ? ',' }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>

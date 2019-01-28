@@ -11,7 +11,6 @@ var reparacion = function () {
 
         $('select#reparacion_vehiculo').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $('input#reparacion_fechainicio').datetimepicker();
@@ -37,9 +36,6 @@ var reparacion = function () {
         table = $("table#reparacion_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('reparacion_index'),
                 "language": {
                     url: datatable_translation
@@ -78,7 +74,7 @@ var reparacion = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -92,7 +88,7 @@ var reparacion = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -108,7 +104,7 @@ var reparacion = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -123,7 +119,7 @@ var reparacion = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -142,7 +138,7 @@ var reparacion = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -162,7 +158,6 @@ var reparacion = function () {
                             toastr.success(data['mensaje']);
 
                         $('div#basicmodal').modal('hide');
-                     //   total += 1;
                         var pagina = table.page();
                         objeto = table.row.add({
                             "id": data['id'],
@@ -192,7 +187,7 @@ var reparacion = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -233,21 +228,20 @@ var reparacion = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar esta reparación?",
-                message: "<p>¿Está seguro que desea eliminar esta reparación?</p>",
+                title: "Eliminar reparación",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar esta reparación?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentreparacion porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

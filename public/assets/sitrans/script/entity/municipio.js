@@ -33,8 +33,9 @@ var municipio = function () {
                 ],
                 columnDefs:[{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('municipio_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_municipio" data-href="'+Routing.generate('municipio_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-metal m-btn m-btn--icon btn-sm municipio_show text-uppercase" data-href="'+Routing.generate('municipio_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>'+
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion text-uppercase" data-href="'+Routing.generate('municipio_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> Editar</a></li></ul>';
+                }
                 }]
             });
     }
@@ -43,12 +44,11 @@ var municipio = function () {
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
-
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -81,7 +81,7 @@ var municipio = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -90,8 +90,8 @@ var municipio = function () {
                 },
                 success: function (data) {
                       if ($('div#basicmodal').html(data)) {
+                          $('table#municipio_show').DataTable();
                          $('div#basicmodal').modal('show');
-
                     }
                 },
                 error: function ()
@@ -115,7 +115,7 @@ var municipio = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -163,7 +163,7 @@ var municipio = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -196,12 +196,11 @@ var municipio = function () {
         });
     }
     var eliminar = function () {
-        $('table#municipio_table').on('click', 'a.eliminar_municipio', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_municipio', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
-
+            $('div#basicmodal').modal('hide');
            bootbox.confirm({
                 title: "Eliminar municipio",
                 message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este municipio?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
@@ -216,8 +215,7 @@ var municipio = function () {
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentmunicipio porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

@@ -21,8 +21,12 @@ class Reparacion
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Vehiculo")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Vehiculo
+     *
+     * @ORM\ManyToOne(targetEntity="Vehiculo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vehiculo", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $vehiculo;
 
@@ -42,8 +46,12 @@ class Reparacion
     private $descripcion;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
@@ -121,6 +129,10 @@ class Reparacion
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
+        /*
+         * Al igual que con los mantenimientos las reparaciones pueden ser programadas para dentro o fuera del mes en
+         * curso
+         */
         $path=$this->getId() ? null : 'vehiculo';
         if(null==$this->getInstitucion())
             $context->buildViolation('Seleccione la institución')
@@ -149,17 +161,5 @@ class Reparacion
                 ->atPath('fechainicio')
                 ->addViolation();
 
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFechainicio()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fechainicio')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFechainicio()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fechainicio')
-                ->addViolation();
     }
 }

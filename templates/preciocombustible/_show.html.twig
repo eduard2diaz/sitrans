@@ -24,7 +24,11 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                {% if editable %}
+                    <a class="btn btn-info btn-sm edicion" data-href="{{ path('preciocombustible_edit',{'id':preciocombustible.id}) }}"><i class="flaticon-edit-1"></i> Editar</a>
+                    <a class="btn btn-danger btn-sm eliminar_preciocombustible" data-href="{{ path('preciocombustible_delete',{'id':preciocombustible.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
+                {% endif %}
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

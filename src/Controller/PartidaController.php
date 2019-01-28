@@ -119,6 +119,7 @@ class PartidaController extends Controller
             'form_id' => 'partida_edit',
             'action' => 'Actualizar',
             'title' => 'Editar partida',
+            'eliminable'=>$this->esEliminable($partida)
         ]);
     }
 
@@ -127,12 +128,18 @@ class PartidaController extends Controller
      */
     public function delete(Request $request, Partida $partida): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($partida))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$partida);
         $em = $this->getDoctrine()->getManager();
         $em->remove($partida);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La partida fue eliminada satisfactoriamente'));
+    }
+
+    private function esEliminable(Partida $partida){
+        $em=$this->getDoctrine()->getManager();
+        $elemento=$em->getRepository('App:Elemento')->findOneByPartida($partida);
+        return null==$elemento;
     }
 }

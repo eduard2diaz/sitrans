@@ -19,9 +19,6 @@ var tarifakw = function () {
         table = $("table#tarifakw_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('tarifakw_index'),
                 "language": {
                     url: datatable_translation
@@ -37,9 +34,8 @@ var tarifakw = function () {
                     }
                     ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm tarifakw_show" data-href="'+Routing.generate('tarifakw_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('tarifakw_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_tarifakw" data-href="'+Routing.generate('tarifakw_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm tarifakw_show" data-href="'+Routing.generate('tarifakw_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li></ul>'
+                    }
                 }],
 
             });
@@ -54,7 +50,7 @@ var tarifakw = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -80,16 +76,17 @@ var tarifakw = function () {
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
-
             evento.preventDefault();
             var link = $(this).attr('data-href');
-            obj = $(this);
+            var padre="body";
+            if($(this).parent('div#basicmodal'))
+                padre='div#basicmodal';
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
-                    mApp.block("body",
+                    mApp.block(padre,
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
                 },
                 success: function (data) {
@@ -103,7 +100,7 @@ var tarifakw = function () {
                     base.Error();
                 },
                 complete: function () {
-                    mApp.unblock("body")
+                    mApp.unblock(padre)
                 }
             });
         });
@@ -119,7 +116,7 @@ var tarifakw = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -156,75 +153,37 @@ var tarifakw = function () {
         });
     }
 
-    var edicionAction = function () {
-        $('div#basicmodal').on('submit', 'form#tarifakw_edit', function (evento)
-        {
-            evento.preventDefault();
-            var padre = $(this).parent();
-            var l = Ladda.create(document.querySelector( '.ladda-button' ) );
-            l.start();
-            $.ajax({
-                url: $(this).attr("action"),
-                type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
-                beforeSend: function () {
-                    mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
-                },
-                complete: function () {
-                    l.stop();
-                    mApp.unblock("body");
-                },
-                success: function (data) {
-                    if (data['error']) {
-                        padre.html(data['form']);
-                        configurarFormulario();
-                    }
-                    else
-                    {
-                       if (data['mensaje'])
-                           toastr.success(data['mensaje']);
-
-                        $('div#basicmodal').modal('hide');
-                        var pagina = table.page();
-                        obj.parents('tr').children('td:nth-child(2)').html(data['fecha']);
-                    }
-                },
-                error: function ()
-                {
-                    base.Error();
-                }
-            });
-        });
-    }
-
     var eliminar = function () {
-        $('table#tarifakw_table').on('click', 'a.eliminar_tarifakw', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_tarifakw', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
+            $('div#basicmodal').modal('hide');
 
            bootbox.confirm({
                 title: "Eliminar tarifa de kilowatts",
-                message: "<div class='text-center'><i class='flaticon-warning-2' style='font-size: 200%;display: block;'></i><b class='text-uppercase'>Esta acción no se podrá deshacer.</b><p>¿Está seguro que desea eliminar esta tarifa?</p></div>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar esta tarifa?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comenttarifakw porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",
-                                    {overlayColor:"#000000",type:"loader",state:"success",message:"Eliminando..."});
+                                    {
+                                        overlayColor: "#000000",
+                                        type: "loader",
+                                        state: "success",
+                                        message: "Eliminando..."
+                                    });
                             },
                             complete: function () {
                                 mApp.unblock("body")
@@ -235,8 +194,7 @@ var tarifakw = function () {
                                     .draw('page');
                                 toastr.success(data['mensaje']);
                             },
-                            error: function ()
-                            {
+                            error: function () {
                                 base.Error();
                             }
                         });
@@ -258,7 +216,7 @@ var tarifakw = function () {
                 '            <input id="tarifa_kw_rangoTarifaKws_'+cantidadrangos+'_valor" name="tarifa_kw[rangoTarifaKws]['+cantidadrangos+'][valor]" required="required" class="form-control" type="text">' +
                 '</td>\n' +
                 '    <td>\n' +
-                '        <a class="btn btn-danger btn-sm eliminar_rangotarjeta pull-right" data-href=""><i class="flaticon flaticon-delete-1"></i></a>\n' +
+                '        <a class="btn btn-danger btn-sm eliminar_rangotarifa pull-right"><i class="flaticon flaticon-delete-1"></i></a>\n' +
                 '    </td>\n' +
                 '</tr>';
             cantidadrangos++;
@@ -267,48 +225,11 @@ var tarifakw = function () {
     }
 
     var eliminarRango = function () {
-        $('div#basicmodal').on('click', 'a.eliminar_rangotarjeta', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_rangotarifa', function (evento)
         {
             evento.preventDefault();
             var obj = $(this);
-            var link = $(this).attr('data-href');
-
-            bootbox.confirm({
-                title: "Eliminar rango",
-                message: "<p>¿Está seguro que desea eliminar este rango?</p>",
-                buttons: {
-                    confirm: {
-                        label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
-                    cancel: {
-                        label: 'Cancelar',
-                        className: 'btn btn-metal'}
-                },
-                callback: function (result) {
-                    if (result == true)
-                        if(link)
-                        $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comenttarifakw porque lo k estamos mandando es un json y no un html plano
-                            url: link,
-                            beforeSend: function () {
-                                mApp.block("body",
-                                    {overlayColor:"#000000",type:"loader",state:"success",message:"Eliminando..."});
-                            },
-                            complete: function () {
-                                mApp.unblock("body")
-                            },
-                            success: function (data) {
-                                toastr.success(data['mensaje']);
-                            },
-                            error: function ()
-                            {
-                                base.Error();
-                            }
-                        });
-                             obj.parents('tr').remove();
-                }
-            });
+            obj.parents('tr').remove();
         });
     }
 
@@ -319,7 +240,6 @@ var tarifakw = function () {
                     newAction();
                     edicion();
                     show();
-                    edicionAction();
                     eliminar();
                     agregarRango();
                     eliminarRango();

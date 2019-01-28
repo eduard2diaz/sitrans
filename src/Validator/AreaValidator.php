@@ -7,7 +7,10 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
-
+/*
+ * Validador que comprueba que no existan 2 o mas areas en una misma institucion las cuales posean el mismo nombre o
+ * codigo
+ */
 class AreaValidator extends ConstraintValidator
 {
     private $registry;
@@ -40,7 +43,7 @@ class AreaValidator extends ConstraintValidator
             }
         }
         /*
-         *Esta validador funciona similar a CentrocostoValidator con la diferencia que obtenemos la institución a traves
+         *Este validador funciona similar a CentrocostoValidator con la diferencia que obtenemos la institución a traves
          * del atributo ccosto(centrocosto) que posse la entidad área y luego de tener el centro de costo obtenermos la
          * institucion a través de un atributo cuenta que posee la clase centro de costo y nuevamente a partir de dicho
          * atributo obtenemos la institución.

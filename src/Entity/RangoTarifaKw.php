@@ -48,6 +48,11 @@ class RangoTarifaKw
      */
     private $tarifas;
 
+    public function __construct()
+    {
+        $this->pendienteeliminacion=false;
+    }
+
     public function getId()
     {
         return $this->id;

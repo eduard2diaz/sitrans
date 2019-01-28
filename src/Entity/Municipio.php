@@ -29,7 +29,12 @@ class Municipio
     private $nombre;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Provincia", inversedBy="municipios")
+     * @var \Tarjeta
+     *
+     * @ORM\ManyToOne(targetEntity="Provincia", inversedBy="municipios")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="provincia", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $provincia;
 

@@ -121,6 +121,7 @@ class RelojController extends Controller
             'form_id' => 'reloj_edit',
             'action' => 'Actualizar',
             'title' => 'Editar reloj',
+            'eliminable'=>$this->esEliminable($reloj)
         ]);
     }
 
@@ -129,12 +130,23 @@ class RelojController extends Controller
      */
     public function delete(Request $request, Reloj $reloj): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($reloj))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$reloj);
         $em = $this->getDoctrine()->getManager();
         $em->remove($reloj);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El reloj fue eliminado satisfactoriamente'));
+    }
+
+    private function esEliminable(Reloj $reloj){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['LecturaReloj','RecargaKw'];
+        foreach ($entidades as $value){
+            $obj=$em->getRepository("App:$value")->findOneByReloj($reloj);
+            if(null!=$obj)
+                return false;
+        }
+        return true;
     }
 }

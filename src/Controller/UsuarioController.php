@@ -22,16 +22,7 @@ class UsuarioController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-             $em=$this->getDoctrine()->getManager();
-             if($this->isGranted('ROLE_SUPERADMIN')) {
-                 $consulta = $em->createQuery('SELECT u.id, u.nombre, u.apellidos, u.activo FROM App:Usuario u WHERE u.id<> :id');
-                 $consulta->setParameter('id', $this->getUser()->getId());
-             }else
-             {
-                 $consulta = $em->createQuery('SELECT u.id, u.nombre, u.apellidos, u.activo FROM App:Usuario u JOIN u.institucion i WHERE u.id<> :id AND i.id= :institucion');
-                 $consulta->setParameters(['id'=> $this->getUser()->getId(),'institucion'=>$this->getUser()->getInstitucion()->getId()]);
-             }
-             $usuarios=$consulta->getResult();
+            $usuarios=$this->get('institucion.service')->obtenerUsuariosSubordinados();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($usuarios),
@@ -55,13 +46,12 @@ class UsuarioController extends Controller
             throw $this->createAccessDeniedException();
 
         $usuario = new Usuario();
-        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_new'), 'esAdmin' => $this->isGranted('ROLE_ADMIN'),'esSuper' => $this->isGranted('ROLE_SUPERADMIN')));
-        $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
-
-        if(!$this->isGranted('ROLE_SUPERADMIN'))
+        if($this->isGranted('ROLE_ADMIN'))
             $usuario->setInstitucion($this->getUser()->getInstitucion());
 
+        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_new')));
+        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
             if ($form->isValid()) {
                 $em->persist($usuario);
@@ -95,8 +85,10 @@ class UsuarioController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$usuario);
         return $this->render('usuario/_show.html.twig',['usuario'=>$usuario]);
     }
+
     /**
      * @Route("/{id}/edit", name="usuario_edit", methods="GET|POST",options={"expose"=true})
     */
@@ -105,8 +97,8 @@ class UsuarioController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $disabled = $this->getUser()->getId() == $usuario->getId();
-        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_edit', array('id' => $usuario->getId())),'esSuper' => $this->isGranted('ROLE_SUPERADMIN'), 'esAdmin' => $this->isGranted('ROLE_ADMIN'), 'disab' => $disabled));
+        $this->denyAccessUnlessGranted('EDIT',$usuario);
+        $form = $this->createForm(UsuarioType::class, $usuario, array('action' => $this->generateUrl('usuario_edit', array('id' => $usuario->getId()))));
         $passwordOriginal = $form->getData()->getPassword();
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -138,7 +130,8 @@ class UsuarioController extends Controller
             'form' => $form->createView(),
             'form_id' => 'usuario_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar usuario'
+            'title' => 'Editar usuario',
+            'eliminable'=>$usuario->getId()!=$this->getUser()->getId() ? $this->esEliminable($usuario) : false
         ]);
     }
 
@@ -147,12 +140,28 @@ class UsuarioController extends Controller
      */
     public function delete(Request $request, Usuario $usuario): Response
     {
-        if (!$request->isXmlHttpRequest() || $usuario->getId()==$this->getUser()->getId())
+        if (!$request->isXmlHttpRequest() || $usuario->getId()==$this->getUser()->getId() || false==$this->esEliminable($usuario))
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$usuario);
         $em = $this->getDoctrine()->getManager();
         $em->remove($usuario);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El usuario fue eliminado satisfactoriamente'));
+    }
+
+    /*
+     * Funcion que retorna un booleano true o false indicando si un usuario puede o no ser eliminado teniendo en cuenta
+     * si el ha realizado o no operaciones en el sistema
+     */
+    private function esEliminable(Usuario $usuario){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['AjusteTarjeta','Hojaruta','LecturaReloj','PlanefectivoCuenta','CierreMesTarjeta','CierremesArea','PlanportadoresArea'];
+        foreach ($entidades as $value){
+            $objeto=$em->getRepository("App:$value")->findOneBy(['usuario'=>$usuario]);
+            if(null!=$objeto)
+                return false;
+        }
+        return true;
     }
 }

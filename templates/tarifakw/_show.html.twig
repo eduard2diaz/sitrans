@@ -19,18 +19,19 @@
                         <th>Valor</th>
                     </tr>
                     {% for obj in tarifa.rangoTarifaKws%}
-                    <tr>
-                        <td>{{ obj.inicio }}</td>
-                        <td>{{ obj.fin }}</td>
-                        <td>{{ obj.valor }}</td>
-                    </tr>
+                            <tr>
+                                <td>{{ obj.inicio }}</td>
+                                <td>{{ obj.fin }}</td>
+                                <td>{{ obj.valor }}</td>
+                            </tr>
                     {% endfor %}
                 </table>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
-                <a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href=""><i class="flaticon-edit-1"></i> EDITAR</a>
-                <a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_tarifakw" data-href="/marlin/public/index.php/tarifakw/1/delete"><i class="flaticon-delete-1"></i> ELIMINAR</a>
+                {% if editable %}
+                <a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_tarifakw" data-href="{{ path('tarifakw_delete',{'id':tarifa.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
+                {% endif %}
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

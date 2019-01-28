@@ -1,0 +1,41 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                Detalles del somatón
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div>
+            <div class="modal-body" id="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Vehículo</th>
+                        <td>{{ somaton.vehiculo }}</td>
+                        <th>Aprobado</th>
+                        <td>{{ somaton.aprobado|colorear }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de inicio</th>
+                        <td>{{ somaton.fechainicio|date('d-m-Y H:i') }}</td>
+                        <th>Fecha de fin</th>
+                        <td>{{ somaton.fechainicio|date('d-m-Y H:i')  }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <b>Descripción</b>
+                            <p>{{ somaton.descripcion }}</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

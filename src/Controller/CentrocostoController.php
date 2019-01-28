@@ -111,6 +111,7 @@ class CentrocostoController extends Controller
             'form_id' => 'centrocosto_edit',
             'action' => 'Actualizar',
             'title' => 'Editar centro de costo',
+            'eliminable'=>$this->esEliminable($centrocosto)
         ]);
     }
 
@@ -119,7 +120,7 @@ class CentrocostoController extends Controller
      */
     public function delete(Request $request, Centrocosto $centrocosto): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($centrocosto))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$centrocosto);
         $em = $this->getDoctrine()->getManager();
@@ -127,6 +128,26 @@ class CentrocostoController extends Controller
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El centro de costo fue eliminado satisfactoriamente'));
     }
+
+    private function esEliminable(Centrocosto $centrocosto){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=[
+            ['nombre'=>'Area','llave'=>'ccosto'],
+            ['nombre'=>'PlanefectivoCuenta','llave'=>'centrocosto']
+        ];
+        foreach ($entidades as $value){
+            $entidad=$value['nombre'];
+            $llave=$value['llave'];
+            $consulta=$em->createQuery("SELECT count(o.id) FROM App:$entidad o JOIN o.$llave a WHERE a.id= :id");
+            $consulta->setParameter('id',$centrocosto->getId());
+            $consulta->setMaxResults(1);
+            $result=$consulta->getResult();
+            if($result[0][1]>0)
+                return false;
+        }
+        return true;
+    }
+
 
     /**
      * @Route("/{cuenta}/searchbycuenta",options={"expose"=true}, name="centrocosto_searchbycuenta")

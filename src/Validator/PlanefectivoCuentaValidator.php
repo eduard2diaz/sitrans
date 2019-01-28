@@ -7,7 +7,10 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Debug\Debug;
-
+/*
+ *Este validaddor se encarga de comprobar que en un mismo centro de costo no realicen 2 planifificaciones de efectivi
+ * para un mimso subelemento en un mes determinado
+ */
 class PlanefectivoCuentaValidator extends ConstraintValidator
 {
     private $registry;

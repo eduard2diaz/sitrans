@@ -42,9 +42,9 @@ var cupet = function () {
                     }},
                     {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm cupet_show" data-href="'+Routing.generate('cupet_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('cupet_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_cupet" data-href="'+Routing.generate('cupet_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm text-uppercase cupet_show" data-href="'+Routing.generate('cupet_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm text-uppercase edicion" data-href="'+Routing.generate('cupet_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> Editar</a></li></ul>';
+                    }
                 }]
             });
     }
@@ -86,7 +86,7 @@ var cupet = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -234,12 +234,11 @@ var cupet = function () {
         });
     }
     var eliminar = function () {
-        $('table#cupet_table').on('click', 'a.eliminar_cupet', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_cupet', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
-
+            $('div#basicmodal').modal('hide');
            bootbox.confirm({
                 title: "Eliminar cupet",
                 message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este cupet?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
@@ -254,8 +253,7 @@ var cupet = function () {
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcupet porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

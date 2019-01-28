@@ -5,11 +5,9 @@ var planportadores = function () {
     var configurarFormulario=function(){
         $('select#planportadores_mes').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#planportadores_anno').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $("div#basicmodal form").validate({
@@ -30,9 +28,6 @@ var planportadores = function () {
         table = $("table#planportadores_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('planportadores_index'),
                 "language": {
                     url: datatable_translation
@@ -48,8 +43,8 @@ var planportadores = function () {
                     }
                     ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm" href="'+Routing.generate('planportadores_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_planportadores" data-href="'+Routing.generate('planportadores_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn text-uppercase m-btn--icon btn-sm" href="'+Routing.generate('planportadores_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class=" m--font-boldest btn text-uppercase btn-danger m-btn m-btn--icon btn-sm eliminar_planportadores" data-href="'+Routing.generate('planportadores_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> Eliminar</a></li>\n '}
                 }]
             });
     }
@@ -63,7 +58,7 @@ var planportadores = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -77,7 +72,7 @@ var planportadores = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -93,7 +88,7 @@ var planportadores = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -127,7 +122,7 @@ var planportadores = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -174,20 +169,19 @@ var planportadores = function () {
 
            bootbox.confirm({
                 title: "Eliminar plan de portadores",
-                message: "<p>¿Está seguro que desea eliminar este plan de portadores?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este plan de portadores?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentplanportadores porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

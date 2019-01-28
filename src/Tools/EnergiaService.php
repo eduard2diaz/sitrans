@@ -7,6 +7,7 @@
  */
 
 namespace App\Tools;
+
 use App\Entity\Chip;
 use App\Entity\Hojaruta;
 use App\Tools\Util;
@@ -33,54 +34,18 @@ class EnergiaService
     }
 
     /*
-     * Funcionalidad que devuelve el importe o precio de un determinado tipo de combustible en una fecha dada
+     *Ordena Ascendentemente los rangos de una determinada tarifa  partir del valor inicial, se utiliza en la validacion
+     * de las tarifas de kilowatts
      */
-    public function importeCombustible($tipocombustible,$fecha){
-        $consulta=$this->getEm()->getManager()->createQuery('SELECT pc.importe FROM App:PrecioCombustible pc JOIN pc.tipocombustible tc WHERE tc.id= :id AND pc.fecha<= :fecha ORDER BY pc.fecha DESC');
-        $consulta->setParameters(['id'=>$tipocombustible,'fecha'=>$fecha]);
-        $consulta->setMaxResults(1);
-        return $consulta->getResult();
-    }
-
-    public function importeKilowatts($importe,$fecha){
-        $consulta=$this->getEm()->getManager()->createQuery('SELECT tk FROM App:TarifaKw tk WHERE tk.fecha<= :fecha ORDER BY tk.fecha DESC');
-        $consulta->setParameters(['fecha'=>$fecha]);
-        $consulta->setMaxResults(1);
-        $tarifa=$consulta->getResult();
-        if(!$tarifa)
+    public function ordenarRangotarifasKw($tarifa)
+    {
+        $consulta = $this->getEm()->getManager()->createQuery('SELECT tk FROM App:TarifaKw tk WHERE tk.id= :id');
+        $consulta->setParameters(['id' => $tarifa]);
+        $tarifa = $consulta->getSingleResult();
+        if (!$tarifa)
             throw new \LogicException("No existe la tarifa");
 
-        $array = $this->ordenarRangotarifasKw($tarifa[0]->getId());
-
-        $suma=0;
-        $total=0;
-        foreach ($array as $value){
-            $diferencia=$value->getFin()-$total;
-            if(($diferencia>=$importe) || (null==$value->getFin())) {
-                $suma += $importe * $value->getValor();
-                $importe=0;
-                break;
-            }
-            else {
-                $suma +=  $diferencia* $value->getValor();
-                $importe-=$diferencia;
-                $total=$value->getFin();
-            }
-        }
-        return $suma;
-    }
-
-    /*
-     *Ordena Ascendentemente los rangos de una determinada tarifa  partir del valor inicial
-     */
-    public function ordenarRangotarifasKw($tarifa){
-        $consulta=$this->getEm()->getManager()->createQuery('SELECT tk FROM App:TarifaKw tk WHERE tk.id= :id');
-        $consulta->setParameters(['id'=>$tarifa]);
-        $tarifa=$consulta->getSingleResult();
-        if(!$tarifa)
-            throw new \LogicException("No existe la tarifa");
-
-        $total=$tarifa->getRangoTarifaKws()->count();
+        $total = $tarifa->getRangoTarifaKws()->count();
         $array = $tarifa->getRangoTarifaKws()->toArray();
         for ($i = 0; $i < $total - 1; $i++)
             for ($j = $i + 1; $j < $total; $j++)
@@ -90,14 +55,44 @@ class EnergiaService
                     $array[$j] = $aux;
                 }
 
-         return $array;
+        return $array;
     }
 
 
+
+    /*
+        public function importeKilowatts($importe,$fecha){
+            $consulta=$this->getEm()->getManager()->createQuery('SELECT tk FROM App:TarifaKw tk WHERE tk.fecha<= :fecha ORDER BY tk.fecha DESC');
+            $consulta->setParameters(['fecha'=>$fecha]);
+            $consulta->setMaxResults(1);
+            $tarifa=$consulta->getResult();
+            if(!$tarifa)
+                throw new \LogicException("No existe la tarifa");
+
+            $array = $this->ordenarRangotarifasKw($tarifa[0]->getId());
+
+            $suma=0;
+            $total=0;
+            foreach ($array as $value){
+                $diferencia=$value->getFin()-$total;
+                if(($diferencia>=$importe) || (null==$value->getFin())) {
+                    $suma += $importe * $value->getValor();
+                    $importe=0;
+                    break;
+                }
+                else {
+                    $suma +=  $diferencia* $value->getValor();
+                    $importe-=$diferencia;
+                    $total=$value->getFin();
+                }
+            }
+            return $suma;
+        }
+    */
     /*
      * Devuelve los litros y efectivo consumido y restanes de una determinada tarjeta
      * para un determinado cierre de tarjeta
-     */
+
     public function estadoCombustible($tarjeta,$anno,$mes){
         $firstday = new \DateTime("01-$mes-$anno");
         $maxday=$this->maxDays($mes,$anno);
@@ -137,12 +132,12 @@ class EnergiaService
             ]
         ];
     }
-
+     */
 
     /*
      * Devuelve los kw restanes de una determinada area en el mes anterior
      * (SE UTILIZA PARA EL CIERRE DE AREA)
-     */
+
     public function estadoKw($area,$anno,$mes){
         $firstday = new \DateTime("01-$mes-$anno");
         $maxday=$this->maxDays($mes,$anno);
@@ -176,8 +171,9 @@ class EnergiaService
         $efectivorestante=$efectivototal-$efectivoconsumido;
         return ['consumido'=>$lectura,'restante'=>$restante,'cierreanterior'=>$cierreanterior,'efectivoconsumido'=>(String)$efectivoconsumido,'efectivorestante'=>(String)$efectivorestante];
     }
+*/
 
-
+    /*
     public function combustibleConsumoMesArea($anno,$mes)
     {
         $em = $this->getEm()->getManager();
@@ -247,17 +243,10 @@ class EnergiaService
         $cierre = $consulta->getResult();
         return empty($cierre) ? null : $cierre[0]['id'];
     }
+*/
 
-    public function existeCierreCombustible($anno,$mes,$tarjeta)
-    {
-        $em = $this->getEm()->getManager();
-        $consulta = $em->createQuery('SELECT ct.id FROM App:CierreMesTarjeta ct join ct.tarjeta t JOIN ct.cierre c WHERE t.id= :tarjeta AND c.mes= :mes AND c.anno= :anno');
-        $consulta->setParameters(['tarjeta' => $tarjeta, 'mes'=>$mes,'anno'=>$anno]);
-        $consulta->setMaxResults(1);
-        $cierre = $consulta->getResult();
-        return empty($cierre) ? null : $cierre[0]['id'];
-    }
 
+    /*
     public function combustibleConsumoMesVehiculo($anno,$mes)
     {
         $em = $this->getEm()->getManager();
@@ -291,10 +280,10 @@ class EnergiaService
         }
         return $tipocombustible_array;
     }
-
+*/
     /*
      * Devuelve los kms recorridos por un auto en un periodo señalado a partir de su hoja de ruta
-    */
+
     public function kmRecorridosMes($anno,$mes,$auto_id=null){
         $firstday = new \DateTime("01-$mes-$anno");
         $maxday=$this->maxDays($mes,$anno);
@@ -302,10 +291,10 @@ class EnergiaService
 
         return $this->kmRecorridosPeriodo($firstday,$lastday,$auto_id);
     }
-
+*/
     /*
      * Devuelve los kms recorridos por un auto en un periodo señalado a partir de su hoja de ruta
-    */
+
     public function kmRecorridosPeriodo($firstday,$lastday,$auto_id=null){
         $conn = $this->getEm()->getConnection();
         //PARA HACER CONSULTAS EN SQL EN CASO DE QUE NO EXISTAN LAS MISMAS PALABRAS RESERVADAS DE SQL EN DQL , PODEMOS UTILIZAR:
@@ -331,10 +320,10 @@ class EnergiaService
 
         return ['data'=>$data,'totalkms'=>$totalkms,'totallitros'=>$totallitros];
     }
-
+  */
     /*
      * Devuelve la diferencia entre el consumo a partir del indice de consumo y el que se refleja en la hoja de ruta
-    */
+
     public function diferenciaConsumo($firstday,$lastday,$auto_id=null){
 
         $conn = $this->getEm()->getConnection();
@@ -353,20 +342,20 @@ class EnergiaService
 
         return $data;
     }
-
+*/
     /*
      * Devuelve el remanente actual:
      * es el remanente anterior(LA CANTIDAD DE COMBUSTIBLE EN TANQUE) mas el abastecido
-    */
+
     public function remanenteActual(){
         $em=$this->getEm()->getManager();
         $consulta=$em->createQuery('SELECT v.matricula, v.litrosentanque FROM App:Vehiculo v WHERE v.estado= 0 ');
         return $consulta->getResult();
     }
-
+  */
     /*
      * Devuelve el porciento de desviacion de un vehiculo en un determinado periodo
-    */
+
     public function porcientoDesviacion($firstday,$lastday,$auto_id=null){
 
         $conn = $this->getEm()->getConnection();
@@ -391,10 +380,10 @@ class EnergiaService
 
         return $result;
     }
-
+*/
     /*
      * Devuelve el porciento de desviacion de un vehiculo en un determinado periodo
-    */
+
     public function pendienteMantenimiento(){
         $em = $this->getEm()->getManager();
         $vehiculos=$em->createQuery('SELECT v FROM App:Vehiculo v WHERE v.estado= 0')->getResult();
@@ -427,10 +416,10 @@ class EnergiaService
         }
         return $result;
     }
-
+  */
     /*
      * Devuelve el consumo de kw para un area en un mes-anno determinado
-    */
+
     public function consumoKw($mes,$anno)
     {
         $em = $this->getEm()->getManager();
@@ -487,10 +476,10 @@ class EnergiaService
         }
         return $result;
     }
-
+*/
     /*
      * Funcion que devuelve el estado de un portador en un determinado año
-     */
+
     public function analisisportadores($anno,$categoria){
         $conn = $this->getEm()->getConnection();
         $meses=Util::getMesKey();
@@ -517,10 +506,10 @@ class EnergiaService
         }
         return $result;
     }
-
+   */
     /*
      * Devuelve el porciento de desviacion de un vehiculo en un determinado periodo
-    */
+
     private function porcientoDesviacionAuto($firstday,$lastday,$auto_id){
         $kmconsumo=$this->kmRecorridosPeriodo($firstday,$lastday,$auto_id);
 
@@ -533,10 +522,10 @@ class EnergiaService
 
         return (1-$kmconsumo['totalkms']/$kmconsumo['totallitros']/$data[0]['litrosextraidos'])*100;
     }
-
+*/
     /*
      * Devuelve la fecha del ultimo mantenimiento que recibio un vehiculo, NULL si no existe
-     */
+
     private function ultimoMantenimiento($vehiculo_id){
         $em = $this->getEm()->getManager();
         $consulta=$em->createQuery('SELECT m.fechainicio as fecha FROM App:Mantenimiento m join m.vehiculo v WHERE v.id= :id ORDER BY m.fechafin');
@@ -545,11 +534,11 @@ class EnergiaService
         $mantenimiento=$consulta->getResult();
         return $mantenimiento[0]['fecha'] ?? null;
     }
-
+*/
     /*
      * Devuelve los kms recorridos por un vehiculo despues de una determinada fecha,
      * o de manera general si no se indica la fecha
-     */
+
     private function kmsVehiculo($vehiculo_id,$fecha=null){
         $em = $this->getEm()->getManager();
         $parameters=['id'=>$vehiculo_id];
@@ -604,4 +593,5 @@ class EnergiaService
         }
         return $last;
     }
+     */
 }

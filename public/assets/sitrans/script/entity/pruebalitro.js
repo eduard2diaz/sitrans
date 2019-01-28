@@ -4,18 +4,24 @@ var pruebalitro = function () {
 
 
     var configurarFormulario=function(){
+        jQuery.validator.addMethod("greaterThan",
+            function(value, element, params) {
+                return moment(value)> moment($(params).val());
+            },'Tiene que ser superior a la fecha de inicio');
+
         $('select#pruebalitro_vehiculo').select2({
-      //      dropdownParent: $("#basicmodal"),
-            //allowClear: true
+            dropdownParent: $("#basicmodal"),
         });
 
-        $('input#pruebalitro_fecha').datetimepicker();
+        $('input#pruebalitro_fechainicio').datetimepicker();
+        $('input#pruebalitro_fechafin').datetimepicker();
 
         $("div#basicmodal form").validate({
             rules:{
                 'pruebalitro[vehiculo]': {required:true},
                 'pruebalitro[kmrecorrido]': {required:true, min: 0.5},
-                'pruebalitro[fecha]': {required:true},
+                'pruebalitro[fechainicio]': {required:true},
+                'pruebalitro[fechafin]': {required:true,  greaterThan: "#pruebalitro_fechainicio" },
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');
@@ -32,9 +38,6 @@ var pruebalitro = function () {
         table = $("table#pruebalitro_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('pruebalitro_index'),
                 "language": {
                     url: datatable_translation
@@ -45,7 +48,8 @@ var pruebalitro = function () {
                 columnDefs:[
                     {
                         targets: 2, title: " Fecha", orderable: !1, render: function (a, e, t, n) {
-                            return moment(t.fecha.date).format('DD-MM-YYYY h:mm a');
+                            console.log(t);
+                            return moment(t.fechainicio.date).format('DD-MM-YYYY h:mm a');
                         }
                     }
                     ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
@@ -69,7 +73,7 @@ var pruebalitro = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -83,7 +87,7 @@ var pruebalitro = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -100,7 +104,7 @@ var pruebalitro = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -115,7 +119,7 @@ var pruebalitro = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -134,7 +138,7 @@ var pruebalitro = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -158,7 +162,7 @@ var pruebalitro = function () {
                         objeto = table.row.add({
                             "id": data['id'],
                             "vehiculo": data['vehiculo'],
-                            "fecha": data['fecha'],
+                            "fechainicio": data['fechainicio'],
                         });
                         objeto.draw();
                         table.page(pagina).draw('page');
@@ -176,26 +180,25 @@ var pruebalitro = function () {
         $('table#pruebalitro_table').on('click', 'a.eliminar_pruebalitro', function (evento)
         {
             evento.preventDefault();
+            var obj = $(this);
             var link = $(this).attr('data-href');
-            $('div#basicmodal').modal('hide');
 
-            setTimeout(function(){
+
                 bootbox.confirm({
                     title: "Eliminar prueba de litro",
-                    message: "<p>¿Está seguro que desea eliminar esta prueba de litro?</p>",
+                    message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar esta prueba?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                     buttons: {
                         confirm: {
                             label: 'Sí, estoy seguro',
-                            className: 'btn btn-primary'},
+                            className: 'btn btn-primary btn-sm'},
                         cancel: {
                             label: 'Cancelar',
-                            className: 'btn btn-metal'}
+                            className: 'btn btn-metal btn-sm'}
                     },
                     callback: function (result) {
                         if (result == true)
                             $.ajax({
-                                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                                // dataType: 'html', esta url se comentpruebalitro porque lo k estamos mandando es un json y no un html plano
+                                type: 'get',
                                 url: link,
                                 beforeSend: function () {
                                     mApp.block("body",
@@ -217,7 +220,7 @@ var pruebalitro = function () {
                             });
                     }
                 });
-            },500);
+
 
         });
     }

@@ -78,6 +78,7 @@ class PlanportadoresController extends Controller
      */
     public function show(Request $request, Planportadores $planportadores): Response
     {
+        $this->denyAccessUnlessGranted('VIEW',$planportadores);
         return $this->render('planportadores/_show.html.twig',['plan'=>$planportadores]);
     }
 
@@ -89,6 +90,7 @@ class PlanportadoresController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$planportadores);
         $em = $this->getDoctrine()->getManager();
         $em->remove($planportadores);
         $em->flush();

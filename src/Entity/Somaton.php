@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Period as PeriodConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SomatonRepository")
+ * @ORM\Entity
+ * @PeriodConstraint(from="fechainicio",to="fechafin",foreign="vehiculo",message="Ya existe un somatón para el período indicado")
  */
 class Somaton
 {
@@ -17,13 +21,22 @@ class Somaton
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
-    private $fecha;
+    private $fechainicio;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Vehiculo")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="datetime")
+     */
+    private $fechafin;
+
+    /**
+     * @var \Vehiculo
+     *
+     * @ORM\ManyToOne(targetEntity="Vehiculo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vehiculo", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $vehiculo;
 
@@ -37,21 +50,51 @@ class Somaton
      */
     private $aprobado;
 
+    /**
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     */
+    private $institucion;
+
     public function getId()
     {
         return $this->id;
     }
 
-    public function getFecha(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getFechainicio()
     {
-        return $this->fecha;
+        return $this->fechainicio;
     }
 
-    public function setFecha(\DateTimeInterface $fecha): self
+    /**
+     * @param mixed $fechainicio
+     */
+    public function setFechainicio($fechainicio): void
     {
-        $this->fecha = $fecha;
+        $this->fechainicio = $fechainicio;
+    }
 
-        return $this;
+    /**
+     * @return mixed
+     */
+    public function getFechafin()
+    {
+        return $this->fechafin;
+    }
+
+    /**
+     * @param mixed $fechafin
+     */
+    public function setFechafin($fechafin): void
+    {
+        $this->fechafin = $fechafin;
     }
 
     public function getVehiculo(): ?Vehiculo
@@ -88,5 +131,66 @@ class Somaton
         $this->aprobado = $aprobado;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param mixed $institucion
+     */
+    public function setInstitucion($institucion): void
+    {
+        $this->institucion = $institucion;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if(null==$this->getInstitucion())
+            $context->buildViolation('Seleccione la institución')
+                ->atPath('institucion')
+                ->addViolation();
+
+        if(null==$this->getVehiculo())
+            $context->buildViolation('Seleccione el vehículo')
+                ->atPath('vehiculo')
+                ->addViolation();
+        elseif(0!=$this->getVehiculo()->getEstado())
+            $context->buildViolation('Seleccione el vehículo que se encuentre activo')
+                ->atPath('vehiculo')
+                ->addViolation();
+        elseif(null==$this->getVehiculo()->getResponsable())
+            $context->buildViolation('Seleccione un vehículo con responsable')
+                ->atPath('vehiculo')
+                ->addViolation();
+        elseif(!$this->getVehiculo()->getResponsable()->getActivo())
+            $context->buildViolation('Seleccione el vehículo con responsable activo')
+                ->atPath('vehiculo')
+                ->addViolation();
+        if($this->getFechainicio()>=$this->getFechafin())
+            $context->buildViolation('Compruebe las fecha de inicio y fin')
+                ->atPath('fechafin')
+                ->addViolation();
+
+        $hoy=new \DateTime('today');
+        $anno=$hoy->format('y');
+        $mes=$hoy->format('m');
+        if($this->getFechainicio()->format('y')!=$anno)
+            $context->buildViolation('Seleccione una fecha dentro del año actual')
+                ->atPath('fechainicio')
+                ->addViolation();
+
+        if($this->getFechainicio()->format('m')!=$mes)
+            $context->buildViolation('Seleccione una fecha dentro del mes actual')
+                ->atPath('fechainicio')
+                ->addViolation();
     }
 }

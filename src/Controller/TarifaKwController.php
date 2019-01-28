@@ -83,58 +83,15 @@ class TarifaKwController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        return $this->render('tarifakw/_show.html.twig',['tarifa'=>$tarifakw]);
+        return $this->render('tarifakw/_show.html.twig',['tarifa'=>$tarifakw,'editable'=>$this->esEditable($tarifakw)]);
     }
-
-    /**
-     * @Route("/{id}/edit", name="tarifakw_edit", methods="GET|POST",options={"expose"=true})
-     */
-    public function edit(Request $request, TarifaKw $tarifakw): Response
-    {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
-
-        $form = $this->createForm(TarifaKwType::class, $tarifakw, array('action' => $this->generateUrl('tarifakw_edit',array('id'=>$tarifakw->getId()))));
-        $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted())
-            if ($form->isValid()) {
-                foreach ($form->get('rangoTarifaKws')->getData() as $value){
-                    $value->setTarifas($tarifakw);
-                    $em->persist($tarifakw);
-                }
-
-                $em->persist($tarifakw);
-                $em->flush();
-                return new JsonResponse(array('mensaje' =>"La tarifa fue actualizada satisfactoriamente",
-                    'fecha' => $tarifakw->getFecha()->format('d-m-Y'),
-                    'id' => $tarifakw->getId(),
-                ));
-            } else {
-                $page = $this->renderView('tarifakw/_form.html.twig', array(
-                    'form' => $form->createView(),
-                    'form_id' => 'tarifakw_edit',
-                    'action' => 'Actualizar'
-                ));
-                return new JsonResponse(array('form' => $page, 'error' => true,));
-            }
-
-        return $this->render('tarifakw/new.html.twig', [
-            'tarifakw' => $tarifakw,
-            'form' => $form->createView(),
-            'form_id' => 'tarifakw_edit',
-            'action' => 'Actualizar',
-            'title' => 'Editar tarifa de kw',
-        ]);
-    }
-
 
     /**
      * @Route("/{id}/delete", name="tarifakw_delete", options={"expose"=true})
      */
     public function delete(Request $request, TarifaKw $tarifakw): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEditable($tarifakw))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
@@ -143,19 +100,11 @@ class TarifaKwController extends Controller
         return new JsonResponse(array('mensaje' =>'La tarifa fue eliminada satisfactoriamente'));
     }
 
-    /**
-     * @Route("/{id}/deleterango", name="rango_tarifa_kw_delete",options={"expose"=true} )
-     */
-    public function deleteRango(Request $request, RangoTarifaKw $rangoTarifaKw): Response
-    {
-        if(!$request->isXmlHttpRequest())
-            throw $this->createAccessDeniedException();
-
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($rangoTarifaKw);
-        $em->flush();
-
-        return new JsonResponse(array('mensaje' =>'El rango fue eliminado satisfactoriamente'));
+    private function esEditable(TarifaKw $tarifaKw){
+        $em=$this->getDoctrine()->getManager();
+        $cadena = "SELECT COUNT(r) FROM App:RecargaKw r WHERE r.fecha>= :fecha";
+        $consulta = $em->createQuery($cadena);
+        $consulta->setParameter('fecha', $tarifaKw->getFecha());
+        return $consulta->getResult()[0][1]==0;
     }
-
 }

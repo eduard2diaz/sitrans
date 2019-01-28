@@ -21,7 +21,7 @@ class RecargatarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $recargatarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.cantidadlitros, r.cantidadefectivo FROM App:Recargatarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
+            $recargatarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.cantidadefectivo FROM App:Recargatarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($recargatarjetas),
@@ -56,7 +56,6 @@ class RecargatarjetaController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La recarga fue registrada satisfactoriamente",
                     'fecha' => $recargatarjeta->getFecha(),
-                    'cantidadlitros' => $recargatarjeta->getCantidadlitros(),
                     'cantidadefectivo' => $recargatarjeta->getCantidadefectivo(),
                     'tarjeta' => $recargatarjeta->getTarjeta()->getCodigo(),
                     'id' => $recargatarjeta->getId(),
@@ -83,12 +82,13 @@ class RecargatarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$recargatarjeta);
         $tarjeta=$recargatarjeta->getTarjeta()->getId();
         $mes=$recargatarjeta->getFecha()->format('m');
         $anno=$recargatarjeta->getFecha()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
+        $esEliminable=$this->get('tarjeta.service')->esPosibleEliminarRecarga($tarjeta,$recargatarjeta->getFecha());
 
-        return $this->render('recargatarjeta/_show.html.twig',['recarga'=>$recargatarjeta,'cierre'=>$cierre]);
+        return $this->render('recargatarjeta/_show.html.twig',['recarga'=>$recargatarjeta,'eliminable'=>$esEliminable]);
     }
 
     /**
@@ -96,9 +96,10 @@ class RecargatarjetaController extends Controller
      */
     public function delete(Request $request, Recargatarjeta $recargatarjeta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || $this->get('tarjeta.service')->esPosibleEliminarRecarga($recargatarjeta->getTarjeta()->getId(),$recargatarjeta->getFecha())==false)
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$recargatarjeta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($recargatarjeta);
         $em->flush();

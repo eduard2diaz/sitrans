@@ -8,6 +8,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
+/*
+ *Se encarga de comprobar se cumplan las condiciones necesarias para que un vehiculo sea valido
+ */
 class VehiculoValidator extends ConstraintValidator
 {
     private $registry;

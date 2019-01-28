@@ -8,32 +8,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use App\Tools\InstitucionService;
 
 class ChoferType extends AbstractType
 {
-    private $doctrine;
+    private $institucion_service;
 
-    /**
-     * ChoferType constructor.
-     * @param $doctrine
-     */
-    public function __construct($doctrine)
+    public function __construct(InstitucionService $institucion_service)
     {
-        $this->doctrine = $doctrine;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDoctrine()
-    {
-        return $this->doctrine;
+        $this->institucion_service=$institucion_service;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $hijas=$this->obtenerInstitucionHijas($options['institucion']);
-
+        $hijas=$this->institucion_service->obtenerArbolInstitucional();
         $builder
             ->add('nombre',TextType::class,array('attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba el nombre','class'=>'form-control input-medium','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
             ->add('apellido',TextType::class,array('label'=>'Apellidos','attr'=>array('autocomplete'=>'off','placeholder'=>'Escriba los apellidos','class'=>'form-control input-medium','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
@@ -45,22 +33,10 @@ class ChoferType extends AbstractType
         ;
     }
 
-    private function obtenerInstitucionHijas($institucion){
-        $em=$this->getDoctrine()->getManager();
-        $current=$em->getRepository('App:Institucion')->find($institucion);
-        $array=[$current];
-        $instituciones=$em->createQuery('SELECT i FROM App:Institucion i JOIN i.institucionpadre p WHERE p.id= :padre')->setParameter('padre',$institucion)->getResult();
-        foreach ($instituciones as $value){
-            $array=array_merge($array,$this->obtenerInstitucionHijas($value->getId()));
-        }
-        return $array;
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Chofer::class,
         ]);
-        $resolver->setRequired('institucion');
     }
 }

@@ -113,7 +113,8 @@ class CuentaController extends Controller
             'form' => $form->createView(),
             'form_id' => 'cuenta_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar cuenta'
+            'title' => 'Editar cuenta',
+            'eliminable'=>$this->esEliminable($cuenta)
         ]);
     }
 
@@ -122,12 +123,23 @@ class CuentaController extends Controller
      */
     public function delete(Request $request, Cuenta $cuenta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($cuenta))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$cuenta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($cuenta);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La cuenta fue eliminada satisfactoriamente'));
+    }
+
+    private function esEliminable(Cuenta $cuenta){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['Partida','Centrocosto'];
+        foreach ($entidades as $value){
+            $objeto=$em->getRepository("App:$value")->findOneByCuenta($cuenta);
+            if(null!=$objeto)
+                return false;
+        }
+        return true;
     }
 }

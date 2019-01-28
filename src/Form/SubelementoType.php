@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use App\Form\Subscriber\AddElementoFieldSubscriber;
+use App\Form\Subscriber\AddSubElementoElementoFieldSubscriber;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
 
@@ -37,7 +37,7 @@ class SubelementoType extends AbstractType
         ;
 
         $factory=$builder->getFormFactory();
-        $builder->addEventSubscriber(new AddElementoFieldSubscriber ($factory));
+        $builder->addEventSubscriber(new AddSubElementoElementoFieldSubscriber ($factory));
     }
 
     public function configureOptions(OptionsResolver $resolver)

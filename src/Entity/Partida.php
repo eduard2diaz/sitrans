@@ -48,8 +48,12 @@ class Partida
     private $cuenta;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Tipopartida")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Tipopartida
+     *
+     * @ORM\ManyToOne(targetEntity="Tipopartida")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tipopartida", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $tipopartida;
 

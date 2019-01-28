@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Period as PeriodConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PruebalitroRepository")
+ * @ORM\Entity
+ * @PeriodConstraint(from="fechainicio",to="fechafin",foreign="vehiculo",message="Ya existe una prueba de litro para el período indicado")
  */
 class Pruebalitro
 {
@@ -21,7 +23,12 @@ class Pruebalitro
     /**
      * @ORM\Column(type="datetime")
      */
-    private $fecha;
+    private $fechainicio;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $fechafin;
 
     /**
      * @var \Vehiculo
@@ -43,8 +50,12 @@ class Pruebalitro
     private $kmsrecorrido;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
@@ -53,16 +64,20 @@ class Pruebalitro
         return $this->id;
     }
 
-    public function getFecha(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getFechainicio()
     {
-        return $this->fecha;
+        return $this->fechainicio;
     }
 
-    public function setFecha(\DateTimeInterface $fecha): self
+    /**
+     * @param mixed $fechainicio
+     */
+    public function setFechainicio($fechainicio): void
     {
-        $this->fecha = $fecha;
-
-        return $this;
+        $this->fechainicio = $fechainicio;
     }
 
     public function getVehiculo(): ?Vehiculo
@@ -105,6 +120,21 @@ class Pruebalitro
         $this->institucion = $institucion;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFechafin()
+    {
+        return $this->fechafin;
+    }
+
+    /**
+     * @param mixed $fechafin
+     */
+    public function setFechafin($fechafin): void
+    {
+        $this->fechafin = $fechafin;
+    }
 
     /**
      * @Assert\Callback
@@ -132,18 +162,21 @@ class Pruebalitro
             $context->buildViolation('Seleccione el vehículo con responsable activo')
                 ->atPath('vehiculo')
                 ->addViolation();
+        if($this->getFechainicio()>=$this->getFechafin())
+            $context->buildViolation('Compruebe las fecha de inicio y fin')
+                ->atPath('fechafin')
+                ->addViolation();
         $hoy=new \DateTime('today');
         $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
         $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
+        if($this->getFechainicio()->format('y')!=$anno)
+            $context->buildViolation('Seleccione una fecha dentro del año actual')
+                ->atPath('fechainicio')
+                ->addViolation();
+
+        if($this->getFechainicio()->format('m')!=$mes)
             $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
+                ->atPath('fechainicio')
                 ->addViolation();
     }
-
-
 }

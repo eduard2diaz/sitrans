@@ -102,6 +102,7 @@ class ProvinciaController extends Controller
 
         return $this->render('provincia/new.html.twig', [
             'provincia' => $provincia,
+            'eliminable'=>$this->esEliminable($provincia),
             'form' => $form->createView(),
             'form_id' => 'provincia_edit',
             'action' => 'Actualizar',
@@ -110,16 +111,39 @@ class ProvinciaController extends Controller
     }
 
     /**
+     * @Route("/{id}/show", name="provincia_show", methods="GET",options={"expose"=true})
+     */
+    public function show(Request $request, Provincia $provincia): Response
+    {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        return $this->render('provincia/_show.html.twig', [
+            'provincia' => $provincia,
+        ]);
+    }
+
+    /**
      * @Route("/{id}/delete", name="provincia_delete", options={"expose"=true})
      */
     public function delete(Request $request, Provincia $provincia): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($provincia))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($provincia);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La provincia fue eliminada satisfactoriamente'));
+    }
+
+    /*
+     * Funcionalidad que retorna un booleando indicando si una provincia es eliminable,
+     * teniendo en cuenta que no exista ningun municipio asignado a la misma
+     */
+    private function esEliminable(Provincia $provincia){
+        $em=$this->getDoctrine()->getManager();
+        $municipio=$em->getRepository('App:Municipio')->findOneByProvincia($provincia);
+        return $municipio==null;
     }
 }

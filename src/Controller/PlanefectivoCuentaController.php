@@ -24,6 +24,7 @@ class PlanefectivoCuentaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+            $this->denyAccessUnlessGranted('VIEW',$planefectivo);
             $planefectivocuentas = $this->getDoctrine()->getManager()->createQuery('SELECT pe.id , cu.nombre as cuenta, cc.nombre as centrocosto, se.nombre as subelemento FROM App:PlanefectivoCuenta pe JOIN pe.planefectivo p JOIN pe.centrocosto cc JOIN pe.subelemento se JOIN pe.cuenta cu WHERE p.id= :id')->setParameter('id',$planefectivo->getId())->getResult();
             return new JsonResponse(
                 $result = [
@@ -43,12 +44,12 @@ class PlanefectivoCuentaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
+        $this->denyAccessUnlessGranted('VIEW',$planefectivo);
         $planefectivocuenta = new PlanefectivoCuenta();
         $planefectivocuenta->setPlanefectivo($planefectivo);
         $planefectivocuenta->setUsuario($this->getUser());
-        $planefectivocuenta->setPlanefectivo($planefectivo);
-        $form = $this->createForm(PlanefectivoCuentaType::class, $planefectivocuenta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('planefectivocuenta_new',['id'=>$planefectivo->getId()])));
+        $form = $this->createForm(PlanefectivoCuentaType::class, $planefectivocuenta, array('action' => $this->generateUrl('planefectivocuenta_new',['id'=>$planefectivo->getId()])));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
@@ -79,7 +80,8 @@ class PlanefectivoCuentaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
+        $this->denyAccessUnlessGranted('VIEW',$planefectivocuenta->getPlanefectivo());
         return $this->render('planefectivocuenta/_show.html.twig',['plan'=>$planefectivocuenta]);
     }
 
@@ -90,7 +92,8 @@ class PlanefectivoCuentaController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
+        $this->denyAccessUnlessGranted('VIEW',$planefectivocuenta->getPlanefectivo());
         $form = $this->createForm(PlanefectivoCuentaType::class, $planefectivocuenta, array('action' => $this->generateUrl('planefectivocuenta_edit',array('id'=>$planefectivocuenta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -127,6 +130,7 @@ class PlanefectivoCuentaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$planefectivocuenta->getPlanefectivo());
         $em = $this->getDoctrine()->getManager();
         $em->remove($planefectivocuenta);
         $em->flush();

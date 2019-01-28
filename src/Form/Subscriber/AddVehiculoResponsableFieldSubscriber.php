@@ -54,7 +54,7 @@ class AddVehiculoResponsableFieldSubscriber  implements EventSubscriberInterface
 
     protected function addElements($form, $responsable, $institucion) {
         $form->add($this->factory->createNamed('responsable',EntityType::class,null, array(
-            'required'=>true,
+            'required'=>false,
             'auto_initialize'=>false,
             'class'         =>'App:Responsable',
             'query_builder'=>function(EntityRepository $repository) use($responsable,$institucion){
@@ -84,11 +84,11 @@ class AddVehiculoResponsableFieldSubscriber  implements EventSubscriberInterface
         $form = $event->getForm();
 
        if(null==$data->getId()){
-           $form->add('responsable',null,array('required'=>true,'choices'=>array()));
+           $form->add('responsable',null,array('required'=>false,'choices'=>array()));
         }else
        {
            $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
-           $responsable= is_array($data) ? $data['responsable'] : $data->getResponsable()->getId();
+           $responsable= is_array($data) ? $data['responsable'] : $data->getResponsable()!= null ? $data->getResponsable()->getId() : null;
            $this->addElements($event->getForm(), $responsable,$institucion);
        }
 

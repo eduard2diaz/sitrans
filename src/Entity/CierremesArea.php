@@ -64,8 +64,12 @@ class CierremesArea
     private $consumido;
 
     /**
+     * @var \Usuario
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 

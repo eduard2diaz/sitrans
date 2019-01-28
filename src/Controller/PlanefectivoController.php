@@ -78,7 +78,7 @@ class PlanefectivoController extends Controller
      */
     public function show(Request $request, Planefectivo $planefectivo): Response
     {
-
+        $this->denyAccessUnlessGranted('VIEW',$planefectivo);
         return $this->render('planefectivo/_show.html.twig',['plan'=>$planefectivo]);
     }
 
@@ -90,6 +90,7 @@ class PlanefectivoController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$planefectivo);
         $em = $this->getDoctrine()->getManager();
         $em->remove($planefectivo);
         $em->flush();

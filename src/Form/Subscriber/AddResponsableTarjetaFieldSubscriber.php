@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  *
  * @author eduardo
  */
-class AddTarjetaFieldSubscriber  implements EventSubscriberInterface{
+class AddResponsableTarjetaFieldSubscriber  implements EventSubscriberInterface{
 
     private $factory;
     private $id;
@@ -47,7 +47,6 @@ class AddTarjetaFieldSubscriber  implements EventSubscriberInterface{
             return;
         }
         $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
-       // $responsable= is_array($data) ? $data['id'] ?? null : $data->getId() ?? null;
         $responsable= $this->id;
 
         $this->addElements($event->getForm(), $institucion,$responsable);

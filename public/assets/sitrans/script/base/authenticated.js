@@ -137,66 +137,7 @@ var authenticated = function () {
         });
     }
 
-    var importeTarjeta= function(litros, fecha,tarjeta,importe) {
-        $('div#basicmodal').on('change', litros, function (evento) {
-            var value = $(this).val();
-            if (value >= 1 && $(fecha).val()!="")
-                $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                    dataType: 'html',
-                    url: Routing.generate('preciocombustible_findbytarjeta'),
-                    data: {
-                        litros: value,
-                        fecha: $(fecha).val(),
-                        tarjeta: $(tarjeta).val()
-                    },
-                    beforeSend: function (data) {
-                        mApp.block("div#basicmodal div.modal-body",
-                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
-                    },
-                    success: function (data) {
-                        $(importe).val(data);
-                    },
-                    error: function () {
-                        base.Error();
-                    },
-                    complete: function () {
-                        mApp.unblock("div#basicmodal div.modal-body")
-                    }
-                });
-        });
-
-        $('div#basicmodal').on('change', fecha, function (evento) {
-            var value = $(this).val();
-            var litro = $(litros).val();
-            if (litro > 0)
-                $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                    dataType: 'html',
-                    url: Routing.generate('preciocombustible_findbytarjeta'),
-                    data: {
-                        litros: litro,
-                        fecha: value,
-                        tarjeta: $(tarjeta).val()
-                    },
-                    beforeSend: function (data) {
-                        mApp.block("div#basicmodal div.modal-body",
-                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
-                    },
-                    success: function (data) {
-                        $(importe).val(data);
-                    },
-                    error: function () {
-                        base.Error();
-                    },
-                    complete: function () {
-                        mApp.unblock("div#basicmodal div.modal-body")
-                    }
-                });
-        });
-    }
-
-    var importeVehiculo= function(litros, fecha,vehiculo,importe) {
+   /* var importeVehiculo= function(litros, fecha,vehiculo,importe) {
         $('div#basicmodal').on('change', litros, function (evento) {
             var value = $(this).val();
             if (value >= 1 && $(fecha).val()!="")
@@ -253,7 +194,7 @@ var authenticated = function () {
                     }
                 });
         });
-    }
+    }*/
 
     return {
         init: function () {
@@ -263,11 +204,8 @@ var authenticated = function () {
                 edicionCurrentUserAction();
             });
         },
-        importeTarjeta: function (litros, fecha,tarjeta,importe) {
-            importeTarjeta(litros, fecha,tarjeta,importe);
-        }
-        ,importeVehiculo: function (litros, fecha,vehiculo,importe) {
+        /*importeVehiculo: function (litros, fecha,vehiculo,importe) {
             importeVehiculo(litros, fecha,vehiculo,importe);
-        }
+        }*/
     };
 }();

@@ -98,9 +98,14 @@ class Traza
     private $indice_consumo;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
     private $combustibleentanque;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $efectivo;
 
     public function __construct()
     {
@@ -224,14 +229,26 @@ class Traza
         return $this;
     }
 
-    public function getCombustibleentanque(): ?int
+    public function getCombustibleentanque(): ?float
     {
         return $this->combustibleentanque;
     }
 
-    public function setCombustibleentanque(?int $combustibleentanque): self
+    public function setCombustibleentanque(?float $combustibleentanque): self
     {
         $this->combustibleentanque = $combustibleentanque;
+
+        return $this;
+    }
+
+    public function getEfectivo(): ?float
+    {
+        return $this->efectivo;
+    }
+
+    public function setEfectivo(float $efectivo): self
+    {
+        $this->efectivo = $efectivo;
 
         return $this;
     }

@@ -10,12 +10,8 @@
             <div class="modal-body" id="modal-body">
                 <table class="table table-hover">
                     <tr>
-                        <th>Nombre</th>
-                        <td>{{usuario.nombre}}</td>
-                    </tr>
-                    <tr>
-                        <th>Apellidos</th>
-                        <td>{{usuario.apellidos}}</td>
+                        <th>Nombre y apellidos</th>
+                        <td>{{usuario.nombre~' '~usuario.apellidos}}</td>
                     </tr>
                     <tr>
                         <th>Usuario</th>
@@ -25,6 +21,12 @@
                         <th>Correo</th>
                         <td>{{usuario.correo}}</td>
                     </tr>
+                    {% if usuario.institucion is not empty %}
+                    <tr>
+                        <th>Institución</th>
+                        <td>{{usuario.institucion}}</td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <th>Activo</th>
                         <td>{{usuario.activo |colorear}}</td>
@@ -39,16 +41,14 @@
                             </ul>
                         </td>
                     </tr>
-
-
                 </table>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-info mt-ladda-btn ladda-button editar_usuario" data-style="expand-right" data-href="{{ path('usuario_edit',{'id':app.user.id}) }}">
+                <a class="btn btn-info btn-sm mt-ladda-btn ladda-button editar_usuario" data-style="expand-right" data-href="{{ path('usuario_edit',{'id':usuario.id}) }}">
                     <i class="flaticon-edit ladda-label"></i> Editar
                     <span class="ladda-spinner"></span>
                 </a>
-                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

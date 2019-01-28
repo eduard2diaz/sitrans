@@ -26,8 +26,12 @@ class LecturaReloj
     private $fecha;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Reloj")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Reloj
+     *
+     * @ORM\ManyToOne(targetEntity="Reloj")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="reloj", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $reloj;
 
@@ -41,8 +45,12 @@ class LecturaReloj
     private $lectura;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Usuario
+     *
+     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 

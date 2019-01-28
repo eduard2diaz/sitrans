@@ -5,11 +5,9 @@ var planportadoresarea = function () {
     var configurarFormulario=function(){
         $('select#planportadores_area_areas').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#planportadores_area_categoria').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
 
@@ -33,9 +31,6 @@ var planportadoresarea = function () {
         table = $("table#planportadoresarea_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('planportadoresarea_index',{'id':planportador}),
                 "language": {
                     url: datatable_translation
@@ -51,9 +46,9 @@ var planportadoresarea = function () {
                     },
                     {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm planportadores_show" data-href="'+Routing.generate('planportadoresarea_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('planportadoresarea_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_portadores" data-href="'+Routing.generate('planportadoresarea_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm text-uppercase planportadores_show" data-href="'+Routing.generate('planportadoresarea_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm text-uppercase edicion" data-href="'+Routing.generate('planportadoresarea_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> Editar</a></li>' +
+                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm text-uppercase eliminar_portadores" data-href="'+Routing.generate('planportadoresarea_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> Eliminar</a></li>\n '}
                 }]
             });
     }
@@ -61,12 +56,11 @@ var planportadoresarea = function () {
     var show = function () {
         $('body').on('click', 'a.planportadores_show', function (evento)
         {
-
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -80,7 +74,7 @@ var planportadoresarea = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -96,7 +90,7 @@ var planportadoresarea = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -130,7 +124,7 @@ var planportadoresarea = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -165,7 +159,7 @@ var planportadoresarea = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -198,20 +192,19 @@ var planportadoresarea = function () {
 
            bootbox.confirm({
                 title: "Eliminar plan de portadores por área",
-                message: "<p>¿Está seguro que desea eliminar el plan de portadores para esta área?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar el plan de portadores de esta área?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentplanefectivo porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

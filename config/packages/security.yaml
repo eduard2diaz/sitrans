@@ -42,26 +42,31 @@ security:
         - { path: ^/cupet, roles: ROLE_SUPERADMIN }
         - { path: ^/licencia, roles: ROLE_SUPERADMIN }
         - { path: ^/preciocombustible/findbytarjeta, roles: ROLE_CAJERO }
-        - { path: ^/preciocombustible/findbyvehiculo, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/preciocombustible, roles: ROLE_SUPERADMIN }
+        - { path: ^/tabladistancia/new,  roles: ROLE_SUPERADMIN }
+        - { path: ^/tabladistancia/\d+/edit,  roles: ROLE_SUPERADMIN }
+        - { path: ^/tabladistancia/\d+/delete,  roles: ROLE_SUPERADMIN }
         #Rutas de administracion
+        - { path: ^/centrocosto/\d+/searchbycuenta, roles: ROLE_CAJERO }
         - { path: ^/centrocosto, roles: ROLE_ADMIN }
         - { path: ^/cuenta, roles: ROLE_ADMIN }
         - { path: ^/partida, roles: ROLE_ADMIN }
         - { path: ^/reloj, roles: ROLE_ADMIN }
         - { path: ^/tipoactividad, roles: ROLE_ADMIN }
         - { path: ^/tipotarjeta, roles: ROLE_ADMIN }
+        - { path: ^/area/\d+/findbyinstitucion, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/area, roles: ROLE_ADMIN }
-        - { path: ^/elemento\d+/searchbypartida, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/elemento/\d+/searchbypartida, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/elemento, roles: ROLE_ADMIN }
-        - { path: ^/subelemento\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/subelemento/\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/subelemento, roles: ROLE_ADMIN }
-        - { path: ^/subelemento\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/subelemento/\d+/searchbycuenta, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/subelemento, roles: ROLE_ADMIN }
-        - { path: ^/usuario$, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
-        - { path: ^/usuario/new, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
-        - { path: ^/usuario\d+/delete, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
+        - { path: ^/usuario/\d+/show, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/usuario/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/usuario, roles: [ROLE_SUPERADMIN, ROLE_ADMIN] }
         #Rutas de transporte
+        - { path: ^/tabladistancia$, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/chofer/new, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/chofer, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/responsable/new, roles: ROLE_JEFETRANSPORTE }
@@ -73,6 +78,7 @@ security:
         - { path: ^/hojaruta, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/pruebalitro, roles: ROLE_JEFETRANSPORTE }
         #Rutas de cajero
+        - { path: ^/tarjeta/\d+/findbyinstitucion, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/tarjeta, roles: ROLE_CAJERO }
         - { path: ^/chip, roles: ROLE_CAJERO }
         - { path: ^/recargatarjeta, roles: ROLE_CAJERO }
@@ -90,6 +96,6 @@ security:
         - { path: ^/cierremeskw, roles: ROLE_ELECTRICIDAD }
         - { path: ^/cierremesarea, roles: ROLE_ELECTRICIDAD }
         #Se protejen el resto de las ruta
-       # - { path: ^/*, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/*, roles: IS_AUTHENTICATED_FULLY }
 
 

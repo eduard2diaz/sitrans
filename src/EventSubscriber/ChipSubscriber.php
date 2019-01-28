@@ -28,8 +28,6 @@ class ChipSubscriber implements EventSubscriber
         $entity = $args->getEntity();
         if ($entity instanceof Chip){
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()-$entity->getImporte());
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()-$entity->getLitrosextraidos());
-
             $manager=$args->getEntityManager();
             $vehiculo=$this->getServiceContainer()->get('traza.service')->findVehiculo($entity->getTarjeta()->getId());
             if($vehiculo instanceof Vehiculo) {
@@ -49,8 +47,6 @@ class ChipSubscriber implements EventSubscriber
             $traza=$this->getServiceContainer()->get('traza.service')->findTraza(get_class($entity),$entity->getId());
 
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()+$entity->getImporte());
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()+$entity->getLitrosextraidos());
-
             if($traza->getVehiculo() instanceof Vehiculo) {
                 $traza->getVehiculo()->setLitrosentanque($traza->getVehiculo()->getLitrosentanque() - $entity->getLitrosextraidos());
                 $manager->persist($traza->getVehiculo());

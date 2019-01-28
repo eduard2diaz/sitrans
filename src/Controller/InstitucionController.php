@@ -119,7 +119,8 @@ class InstitucionController extends Controller
             'form' => $form->createView(),
             'form_id' => 'institucion_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar institución'
+            'title' => 'Editar institución',
+            'eliminable'=>$this->esEliminable($institucion)
         ]);
     }
 
@@ -128,7 +129,7 @@ class InstitucionController extends Controller
      */
     public function delete(Request $request, Institucion $institucion): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($institucion))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
@@ -136,4 +137,28 @@ class InstitucionController extends Controller
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La institución fue eliminada satisfactoriamente'));
     }
+
+    private function esEliminable(Institucion $institucion){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=[
+            ['entidad'=>'Institucion','llave'=>'institucionpadre'],
+            ['entidad'=>'Chofer','llave'=>'institucion'],
+            ['entidad'=>'Usuario','llave'=>'institucion'],
+            ['entidad'=>'Vehiculo','llave'=>'institucion'],
+            ['entidad'=>'Responsable','llave'=>'institucion'],
+            ['entidad'=>'Tipoactividad','llave'=>'institucion'],
+            ['entidad'=>'Tipotarjeta','llave'=>'institucion'],
+            ['entidad'=>'Planportadores','llave'=>'institucion'],
+            ['entidad'=>'Planefectivo','llave'=>'institucion'],
+            ];
+        foreach ($entidades as $value){
+            $entidad=$value['entidad'];
+            $llave=$value['llave'];
+            $objeto=$em->getRepository("App:$entidad")->findOneBy([$llave=>$institucion]);
+            if(null!=$objeto)
+                return false;
+        }
+        return true;
+    }
+
 }

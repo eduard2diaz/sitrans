@@ -35,8 +35,12 @@ class CierreMesCombustible
     private $anno;
 
     /**
+     * @var \Institucion
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 

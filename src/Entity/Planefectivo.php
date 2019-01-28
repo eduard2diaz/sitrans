@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Tools\Util;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -35,8 +36,12 @@ class Planefectivo
     private $anno;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
@@ -52,8 +57,7 @@ class Planefectivo
 
     public function getMesToString()
     {
-        $meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        return $meses[$this->getMes() - 1];
+        return Util::getMesKey($this->getMes());
     }
 
 

@@ -1,39 +1,75 @@
-<!DOCTYPE html>
-
-<title>Somaton index</title>
-
+{% extends 'layout/autenticado.html.twig' %}
+ {% block page_title %}Somatón{% endblock page_title %}
 {% block body %}
-    <h1>Somaton index</h1>
+        <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon"><i class="flaticon-list-3"></i></span>
+                    <h3 class="m-portlet__head-text">
+                        Listado
+                    </h3>
+                </div>
+            </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Fecha</th>
-                <th>Descripcion</th>
-                <th>Aprobado</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for somaton in somatons %}
-            <tr>
-                <td>{{ somaton.id }}</td>
-                <td>{{ somaton.fecha ? somaton.fecha|date('Y-m-d') : '' }}</td>
-                <td>{{ somaton.descripcion }}</td>
-                <td>{{ somaton.aprobado ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('somaton_show', {'id': somaton.id}) }}">show</a>
-                    <a href="{{ path('somaton_edit', {'id': somaton.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <div class="m-portlet__head-tools">
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a data-href="{{ path('somaton_new') }}" class="btn btn-sm" id="somaton_new"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Registrar un nuevo somatón">
+                            <span><i class="flaticon-add"></i></span> Nuevo
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-    <a href="{{ path('somaton_new') }}">Create new</a>
+        </div>
+        <div class="m-portlet__body">
+                       <!--begin: Datatable -->
+            <div class="" id="local_data">
+            </div>
+            <table class="table table-hover m-table m-table--head-separator-brand" id="somaton_table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Vehículo
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+                    <th>
+                    </th>
+
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Vehículo
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+                </tfoot>
+            </table>
+            <!--end: Datatable -->
+        </div>
+    </div>
+
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+<script src="{{ asset('script/entity/somaton.js','sitrans') }}"></script>
+    <script>
+        somaton.init();
+    </script>
+{% endblock javascripts %}

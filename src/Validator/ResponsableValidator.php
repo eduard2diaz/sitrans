@@ -8,6 +8,10 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Debug\Debug;
 
+/*
+ *Validador creado para evaluar las condiciones necesarias para que un responsable sea valido
+ */
+
 class ResponsableValidator extends ConstraintValidator
 {
     private $registry;
@@ -44,16 +48,19 @@ class ResponsableValidator extends ConstraintValidator
         $repository = $em->getRepository(get_class($value));
 
         $id = $pa->getValue($value, 'id');
-        if(null!=$id){
-        $responsable=$em->getRepository('App:Responsable')->find($id);
-        if(count($responsable->getTarjetas()->toArray())>1){
-            $vehiculo=$em->getRepository('App:Vehiculo')->findByResponsable($responsable);
-            if(null!=$vehiculo)
-                $this->context->buildViolation($constraint->message)
-                    ->atPath('tarjetas')
-                    ->addViolation();
+        if (null != $id) {
+            $responsable = $em->getRepository('App:Responsable')->find($id);
+            $vehiculo = $em->getRepository('App:Vehiculo')->findByResponsable($responsable);
+            if (null != $vehiculo)
+                if (count($responsable->getTarjetas()->toArray()) > 1)
+                    $this->context->buildViolation($constraint->message)
+                        ->atPath('tarjetas')
+                        ->addViolation();
+                elseif(false==$responsable->getActivo())
+                    $this->context->buildViolation('Un responsable inactivo no puede poseer vehículos')
+                        ->addViolation('activo');
+
         }
-    }
 
     }
 }

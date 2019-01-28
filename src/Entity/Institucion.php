@@ -33,21 +33,42 @@ class Institucion
     private $activo;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Municipio", inversedBy="institucions")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Municipio", inversedBy="institucions")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="municipio", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $municipio;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Provincia", inversedBy="institucions")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Provincia", inversedBy="institucions")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="provincia", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $provincia;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucionpadre", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucionpadre;
+
+    /**
+     * Institucion constructor.
+     */
+    public function __construct()
+    {
+        $this->setActivo(true);
+    }
 
 
     public function getId()

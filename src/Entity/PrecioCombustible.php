@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\PrecioCombustible as PrecioCombustibleConstraint;
 
 /**
  * @ORM\Entity
+ * @PrecioCombustibleConstraint(fecha="fecha",tipocombustible="tipocombustible")
  */
 class PrecioCombustible
 {
@@ -19,8 +21,12 @@ class PrecioCombustible
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Tipocombustible")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Tipocombustible
+     *
+     * @ORM\ManyToOne(targetEntity="Tipocombustible")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tipocombustible", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $tipocombustible;
 

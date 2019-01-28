@@ -84,8 +84,12 @@ class Chofer
     private $activo;
 
     /**
+     * @var \Institucion
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
@@ -95,6 +99,7 @@ class Chofer
     public function __construct()
     {
         $this->idlicencia = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setActivo(true);
     }
 
     public function getId(): ?int

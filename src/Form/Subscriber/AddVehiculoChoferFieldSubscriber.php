@@ -56,7 +56,7 @@ class AddVehiculoChoferFieldSubscriber  implements EventSubscriberInterface{
     protected function addElements($form, $tipoVehiculo, $institucion, $chofer) {
 
         $form->add($this->factory->createNamed('chofer',EntityType::class,null,array(
-            'required'=>true,
+            'required'=>false,
             'auto_initialize'=>false,
             'class'         =>'App:Chofer',
             'query_builder'=>function(EntityRepository $repository)use($tipoVehiculo,$institucion, $chofer){
@@ -107,12 +107,12 @@ class AddVehiculoChoferFieldSubscriber  implements EventSubscriberInterface{
         $form = $event->getForm();
 
        if(null==$data->getId()){
-           $form->add('chofer',null,array('required'=>true,'choices'=>array()));
+           $form->add('chofer',null,array('required'=>false,'choices'=>array()));
         }else
        {
            $tipoVehiculo= is_array($data) ? $data['tipovehiculo'] : $data->getTipovehiculo()->getId();
            $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
-           $chofer= is_array($data) ? $data['chofer'] : $data->getChofer()->getId();
+           $chofer= is_array($data) ? $data['chofer'] : $data->getChofer()!=null ? $data->getChofer()->getId() : null;
            $this->addElements($event->getForm(), $tipoVehiculo,$institucion,$chofer);
        }
 

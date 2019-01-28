@@ -75,13 +75,26 @@ class MunicipioController extends Controller
 
 
     /**
+     * @Route("/{id}/show", name="municipio_show", methods="GET",options={"expose"=true})
+     */
+    public function show(Request $request, Municipio $municipio): Response
+    {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+        
+        return $this->render('municipio/_show.html.twig', [
+            'municipio' => $municipio,
+        ]);
+    }
+
+    /**
      * @Route("/{id}/edit", name="municipio_edit", methods="GET|POST",options={"expose"=true})
      */
     public function edit(Request $request, Municipio $municipio): Response
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
+
         $form = $this->createForm(MunicipioType::class, $municipio, array('action' => $this->generateUrl('municipio_edit',array('id'=>$municipio->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -105,6 +118,7 @@ class MunicipioController extends Controller
 
         return $this->render('municipio/new.html.twig', [
             'municipio' => $municipio,
+            'eliminable'=>$this->esEliminable($municipio),
             'form' => $form->createView(),
             'form_id' => 'municipio_edit',
             'action' => 'Actualizar',
@@ -117,13 +131,28 @@ class MunicipioController extends Controller
      */
     public function delete(Request $request, Municipio $municipio): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($municipio))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($municipio);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El municipio fue eliminado satisfactoriamente'));
+    }
+
+    /*
+     * Funcion que devuelve un boolean indicando si es o no eliminable un municipio
+     */
+    private function esEliminable(Municipio $municipio){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['Institucion','Cupet'];
+        foreach ($entidades as $value){
+            $obj=$em->getRepository("App:$value")->findOneByMunicipio($municipio);
+            if(null!=$obj)
+                return false;
+        }
+
+        return true;
     }
 
     //Funcionalidad ajax usada por otras clases

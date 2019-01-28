@@ -4,7 +4,31 @@
 }})}}
 
 <div class="modal-body" id="modal-body">
-    <div class="row">
+    <div class="row m--margin-top-20">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechainicio)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechainicio)}}
+                    {{form_errors(form.fechainicio)}}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechafin)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechafin)}}
+                    {{form_errors(form.fechafin)}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m--margin-top-20">
         <div class="col-md-6">
             <div class="form-group m-form__group">
                 <label>
@@ -16,20 +40,6 @@
                 </div>
             </div>
             {{form_errors(form)}}
-        </div>
-    </div>
-
-    <div class="row margin-top-10">
-        <div class="col-md-6">
-            <div class="form-group m-form__group">
-                <label>
-                    {{form_label(form.fecha)}}
-                </label>
-                <div>
-                    {{form_widget(form.fecha)}}
-                    {{form_errors(form.fecha)}}
-                </div>
-            </div>
         </div>
         <div class="col-md-6">
             <div class="form-group m-form__group">
@@ -43,10 +53,12 @@
             </div>
         </div>
     </div>
+    {{ form_errors(form) }}
+    {{ form_rest(form) }}
 </div>
 <div class="modal-footer">
-    <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
-    <button class="btn btn-primary mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+    <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary btn-sm mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
         <i class="flaticon-edit-1 ladda-label"></i> Guardar
         <span class="ladda-spinner"></span>
     </button>

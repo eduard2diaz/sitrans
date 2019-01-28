@@ -56,8 +56,8 @@ class MantenimientoController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El mantenimiento fue registrado satisfactoriamente",
                     'vehiculo' => $mantenimiento->getVehiculo()->getMatricula(),
-                    'fechainicio' => $mantenimiento->getFechainicio()->format('d-m-Y h:i a'),
-                    'fechafin' => $mantenimiento->getFechafin()->format('d-m-Y h:i a'),
+                    'fechainicio' => $mantenimiento->getFechainicio(),
+                    'fechafin' => $mantenimiento->getFechafin(),
                     'id' => $mantenimiento->getId(),
                 ));
             } else {
@@ -83,6 +83,7 @@ class MantenimientoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$mantenimiento);
         return $this->render('mantenimiento/_show.html.twig',['mantenimiento'=>$mantenimiento]);
     }
 
@@ -94,6 +95,7 @@ class MantenimientoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$mantenimiento);
         $form = $this->createForm(MantenimientoType::class, $mantenimiento, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('mantenimiento_edit',array('id'=>$mantenimiento->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -130,9 +132,16 @@ class MantenimientoController extends Controller
      */
     public function delete(Request $request, Mantenimiento $mantenimiento): Response
     {
+        /*
+         *La eliminacion o edicion de un mantenimiento puede ser llevada a cabo en cualquier momento puesto que la misma
+         * no repercute en la contabilidad ni en la gestion de los portadores energéticos, sino que es mas un mecanismo
+         * para estar informado acerca de la "historia" del vehiculo, ademas no es relevante la fecha de captacion es decir
+         * yo puedo registrar un mantenimiento dias o meses antes de que vaya a realizar
+         */
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$mantenimiento);
         $em = $this->getDoctrine()->getManager();
         $em->remove($mantenimiento);
         $em->flush();

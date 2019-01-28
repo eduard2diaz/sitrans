@@ -101,7 +101,7 @@ class Vehiculo
     private $responsable;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $litrosentanque;
 
@@ -124,14 +124,18 @@ class Vehiculo
     private $estado;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
     public function __construct()
     {
-        $this->litrosentanque=0;
+        $this->litrosentanque = 0;
     }
 
     public function getId(): ?int
@@ -220,7 +224,7 @@ class Vehiculo
         return $this->chofer;
     }
 
-    public function setChofer(?Chofer $chofer): self
+    public function setChofer(?Chofer $chofer = null): self
     {
         $this->chofer = $chofer;
 
@@ -232,19 +236,19 @@ class Vehiculo
         return $this->responsable;
     }
 
-    public function setResponsable(?Responsable $responsable): self
+    public function setResponsable(?Responsable $responsable = null): self
     {
         $this->responsable = $responsable;
 
         return $this;
     }
 
-    public function getLitrosentanque(): ?int
+    public function getLitrosentanque(): ?float
     {
         return $this->litrosentanque;
     }
 
-    public function setLitrosentanque(int $litrosentanque): self
+    public function setLitrosentanque(float $litrosentanque): self
     {
         $this->litrosentanque = $litrosentanque;
 
@@ -283,8 +287,9 @@ class Vehiculo
         return $this->estado;
     }
 
-    public function getEstadoToString(){
-        $estados=['Activo','En mantenimiento o reparación','Inactivo temporalmente','Pendiente a baja','Baja'];
+    public function getEstadoToString()
+    {
+        $estados = ['Activo', 'En mantenimiento o reparación', 'Inactivo temporalmente', 'Pendiente a baja', 'Baja'];
         return $estados[$this->getEstado()];
     }
 
@@ -297,7 +302,7 @@ class Vehiculo
 
     public function __toString()
     {
-        return $this->getMarca().' '.$this->getMatricula();
+        return $this->getMarca() . ' ' . $this->getMatricula();
     }
 
 
@@ -306,46 +311,67 @@ class Vehiculo
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if(null==$this->getChofer())
-            $context->buildViolation('Seleccione un chofer')
-                ->atPath('chofer')
+        /*
+         * Cuando un vehiculo para a baja o pendiente a baja,este deja de poseer un responsable y un chofer, en cualquiera
+         * de los otros estados en los que puede estar un vehiculo se debe cumplir que este tenga un responsable y chofer
+         * activo, ademas el responsable no puede tener 2 o mas tarjetas
+         */
+        if (null == $this->getInstitucion())
+            $context->buildViolation('Seleccione una institución')
+                ->atPath('institucion')
                 ->addViolation();
-        elseif(!$this->getChofer()->getActivo())
-            $context->buildViolation('Seleccione un chofer activo')
-                ->atPath('chofer')
-                ->addViolation();
-        else
-            foreach ($this->getTipovehiculo()->getIdlicencia() as $value){
-                if(!$this->getChofer()->getIdlicencia()->contains($value)){
-                    $context->buildViolation('El chofer seleccionado no posee la licencia necesaria')
-                        ->atPath('chofer')
-                        ->addViolation();
-                    break;
+        elseif ($this->getEstado() >= 3) {
+            if (null != $this->getChofer())
+                $context->buildViolation('Un vehículo de baja o pendiente a baja no puede tener chofer')
+                    ->atPath('chofer')
+                    ->addViolation();
+            if (null != $this->getResponsable())
+                $context->buildViolation('Un vehículo de baja o pendiente a baja no puede tener responsable')
+                    ->atPath('responsable')
+                    ->addViolation();
+        } else {
+            if (null == $this->getChofer())
+                $context->buildViolation('Seleccione un chofer')
+                    ->atPath('chofer')
+                    ->addViolation();
+            elseif (!$this->getChofer()->getActivo())
+                $context->buildViolation('Seleccione un chofer activo')
+                    ->atPath('chofer')
+                    ->addViolation();
+            else
+                foreach ($this->getTipovehiculo()->getIdlicencia() as $value) {
+                    if (!$this->getChofer()->getIdlicencia()->contains($value)) {
+                        $context->buildViolation('El chofer seleccionado no posee la licencia necesaria')
+                            ->atPath('chofer')
+                            ->addViolation();
+                        break;
+                    }
                 }
+
+            if (null == $this->getResponsable())
+                $context->buildViolation('Seleccione un responsable')
+                    ->atPath('responsable')
+                    ->addViolation();
+            elseif (!$this->getResponsable()->getActivo())
+                $context->buildViolation('Seleccione un responsable activo')
+                    ->atPath('responsable')
+                    ->addViolation();
+            else {
+                $total_tarjetas = $this->getResponsable()->getTarjetas()->count();
+
+                if ($total_tarjetas != 1)
+                    $context->buildViolation('Seleccione un responsable que posea una única tarjeta')
+                        ->atPath('responsable')
+                        ->addViolation();
+                elseif (!$this->getResponsable()->getTarjetas()->first()->getActivo())
+                    $context->buildViolation('Seleccione un responsable que posea una tarjeta activa')
+                        ->atPath('responsable')
+                        ->addViolation();
+                elseif ($this->getResponsable()->getTarjetas()->first()->getTipoCOmbustible()->getId() != $this->getTipocombustible()->getId())
+                    $context->buildViolation('La tarjeta del responsable no es de este tipo de combustible')
+                        ->atPath('tipocombustible')
+                        ->addViolation();
             }
-
-        if(null==$this->getResponsable())
-            $context->buildViolation('Seleccione un responsable')
-                ->atPath('responsable')
-                ->addViolation();
-        elseif(!$this->getResponsable()->getActivo())
-            $context->buildViolation('Seleccione un responsable activo')
-                ->atPath('responsable')
-                ->addViolation();
-        else {
-            $total_tarjetas=$this->getResponsable()->getTarjetas()->count();
-
-            if($total_tarjetas!=1 )
-            $context->buildViolation('Seleccione un responsable que posea una única tarjeta')
-                ->atPath('responsable')
-                ->addViolation();
-            elseif(!$this->getResponsable()->getTarjetas()->first()->getActivo())
-            $context->buildViolation('Seleccione un responsable que posea una tarjeta activa')
-                ->atPath('responsable')
-                ->addViolation();
         }
     }
-
-
-
 }

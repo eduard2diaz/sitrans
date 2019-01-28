@@ -7,10 +7,10 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class CierreCombustible extends Constraint
+class EsUltimaOperacionTarjeta extends Constraint
 {
-    public $message = 'Ya la tarjeta %tarjeta% tiene cierre en este mes';
-    public $service = 'cierrecombustible.validator';
+    public $message = 'La tarjeta %tarjeta% tiene operaciones luego de esta fecha';
+    public $service = 'esultimaoperaciontarjeta.validator';
     public $repositoryMethod = 'findBy';
     public $fecha;
     public $foreign;

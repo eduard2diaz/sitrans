@@ -19,7 +19,7 @@ class InstitucionType extends AbstractType
         $id = $data->getId();
 
         $builder
-            ->add('nombre', TextType::class, ['attr' => ['class' => 'form-control']])
+            ->add('nombre', TextType::class, ['attr' => ['autocomplete'=>'off','class' => 'form-control']])
             ->add('activo', null, ['label' => ' '])
             ->add('provincia', null, ['placeholder' => 'Seleccione una provincia',])
             ->add('institucionpadre', EntityType::class, array(

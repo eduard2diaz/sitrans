@@ -121,7 +121,8 @@ class AreaController extends Controller
             'form' => $form->createView(),
             'form_id' => 'area_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar área'
+            'title' => 'Editar área',
+            'eliminable'=>$this->esEliminable($area)
         ]);
     }
 
@@ -130,13 +131,33 @@ class AreaController extends Controller
      */
     public function delete(Request $request, Area $area): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($area))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$area);
         $em = $this->getDoctrine()->getManager();
         $em->remove($area);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El área fue eliminada satisfactoriamente'));
+    }
+
+    private function esEliminable(Area $area){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=[
+            ['nombre'=>'Reloj','llave'=>'area'],
+            ['nombre'=>'Responsable','llave'=>'area'],
+            ['nombre'=>'PlanportadoresArea','llave'=>'areas']
+        ];
+        foreach ($entidades as $value){
+            $entidad=$value['nombre'];
+            $llave=$value['llave'];
+            $consulta=$em->createQuery("SELECT count(o.id) FROM App:$entidad o JOIN o.$llave a WHERE a.id= :id");
+            $consulta->setParameter('id',$area->getId());
+            $consulta->setMaxResults(1);
+            $result=$consulta->getResult();
+            if($result[0][1]>0)
+                return false;
+        }
+        return true;
     }
 
     //Funcionalidad ajax utilizada por otras clases

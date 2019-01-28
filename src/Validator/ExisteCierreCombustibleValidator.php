@@ -10,7 +10,11 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class CierreCombustibleValidator extends ConstraintValidator
+/*
+ *Este validator permite garantizar que solo se pueda realizar un gestionar con una determinada entidad en una fecha determinada
+ * si y solo si aun ese mes no ha cerrado.
+ */
+class ExisteCierreCombustibleValidator extends ConstraintValidator
 {
     private $registry;
 

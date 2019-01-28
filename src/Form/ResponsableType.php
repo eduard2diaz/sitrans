@@ -3,48 +3,34 @@
 namespace App\Form;
 
 use App\Entity\Responsable;
-use App\Form\Subscriber\AddAreaFieldSubscriber;
-use App\Form\Subscriber\AddTarjetaFieldSubscriber;
+use App\Form\Subscriber\AddResponsableAreaFieldSubscriber;
+use App\Form\Subscriber\AddResponsableTarjetaFieldSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\ORM\EntityRepository;
+use App\Tools\InstitucionService;
 
 class ResponsableType extends AbstractType
 {
-    private $doctrine;
+    private $institucion_service;
 
-    /**
-     * ChoferType constructor.
-     * @param $doctrine
-     */
-    public function __construct($doctrine)
+    public function __construct(InstitucionService $institucion_service)
     {
-        $this->doctrine = $doctrine;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDoctrine()
-    {
-        return $this->doctrine;
+        $this->institucion_service=$institucion_service;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $data = $options['data'];
-        $institucion = $options['institucion'];
         if (!$data->getId())
             $id = null;
         else
             $id = $data->getId();
 
 
-        $hijas=$this->obtenerInstitucionHijas($institucion);
+        $hijas=$this->institucion_service->obtenerArbolInstitucional();
 
         $builder
             ->add('nombre', TextType::class, array('attr' => array('autocomplete' => 'off', 'placeholder' => 'Escriba el nombre', 'class' => 'form-control input-medium', 'pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
@@ -57,19 +43,9 @@ class ResponsableType extends AbstractType
             ->add('activo');
 
         $factory=$builder->getFormFactory();
-        $builder->addEventSubscriber(new AddAreaFieldSubscriber($factory));
-        $builder->addEventSubscriber(new AddTarjetaFieldSubscriber($factory,$id));
+        $builder->addEventSubscriber(new AddResponsableAreaFieldSubscriber($factory));
+        $builder->addEventSubscriber(new AddResponsableTarjetaFieldSubscriber($factory,$id));
 
-    }
-    private function obtenerInstitucionHijas($institucion){
-        $em=$this->getDoctrine()->getManager();
-        $current=$em->getRepository('App:Institucion')->find($institucion);
-        $array=[$current];
-        $instituciones=$em->createQuery('SELECT i FROM App:Institucion i JOIN i.institucionpadre p WHERE p.id= :padre')->setParameter('padre',$institucion)->getResult();
-        foreach ($instituciones as $value){
-            $array=array_merge($array,$this->obtenerInstitucionHijas($value->getId()));
-        }
-        return $array;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -77,6 +53,5 @@ class ResponsableType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Responsable::class,
         ]);
-        $resolver->setRequired(['institucion']);
     }
 }

@@ -140,7 +140,12 @@ services:
         public: true
         tags:
             - { name: validator.constraint_validator, alias: centrocosto.validator }
-#        arguments: ['@doctrine']
+
+    preciocombustible.validator:
+        class: App\Validator\PrecioCombustibleValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: preciocombustible.validator }
 
     tarjeta.validator:
         class: App\Validator\TarjetaValidator
@@ -167,17 +172,34 @@ services:
             - { name: validator.constraint_validator, alias: cierrekw.validator }
         arguments: ['@energia.service']
 
-    cierrecombustible.validator:
-        class: App\Validator\CierreCombustibleValidator
+    existecierrecombustible.validator:
+        class: App\Validator\ExisteCierreCombustibleValidator
         public: true
         tags:
-            - { name: validator.constraint_validator, alias: cierrecombustible.validator }
-        arguments: ['@energia.service']
+            - { name: validator.constraint_validator, alias: existecierrecombustible.validator }
+        arguments: ['@tarjeta.service']
+
+    esultimaoperaciontarjeta.validator:
+        class: App\Validator\EsUltimaOperacionTarjetaValidator
+        public: true
+        tags:
+            - { name: validator.constraint_validator, alias: esultimaoperaciontarjeta.validator }
+        arguments: ['@tarjeta.service']
 
     energia.service:
         class: App\Tools\EnergiaService
         public: true
         arguments: ['@doctrine']
+
+    tarjeta.service:
+        class: App\Tools\TarjetaService
+        public: true
+        arguments: ['@doctrine']
+
+    institucion.service:
+        class: App\Tools\InstitucionService
+        public: true
+        arguments: ['@security.token_storage','@security.authorization_checker','@doctrine']
 
     traza.service:
         class: App\Tools\TrazaService
@@ -185,22 +207,3 @@ services:
         autowire: true
         autoconfigure: true
         arguments: ['@doctrine']
-
-    app.form.type.chofer:
-        class: App\Form\ChoferType
-        arguments: ["@doctrine"]
-        tags:
-            - { name: form.type }
-
-    app.form.type.responsable:
-        class: App\Form\ResponsableType
-        arguments: ["@doctrine"]
-        tags:
-            - { name: form.type }
-
-    app.form.type.vehiculo:
-        class: App\Form\VehiculoType
-        arguments: ["@doctrine"]
-        tags:
-            - { name: form.type }
-

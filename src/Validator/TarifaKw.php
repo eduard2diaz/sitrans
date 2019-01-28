@@ -8,6 +8,9 @@ use Symfony\Component\Validator\Constraint;
  * Validador que es empleado por la entidad TarifaKw para comprobar si un tarifa de kilowatts determinada es correcta,
  * la validación es llevada a cabo en la clase TarifaKwValidator
  */
+/**
+ * @Annotation
+ */
 class TarifaKw extends Constraint
 {
     public $message = 'El importe debe ser %importe%';

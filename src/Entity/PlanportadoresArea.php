@@ -56,8 +56,12 @@ class PlanportadoresArea
     private $planportadores;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Usuario
+     *
+     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 

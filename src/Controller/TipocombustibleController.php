@@ -105,7 +105,8 @@ class TipocombustibleController extends Controller
             'form' => $form->createView(),
             'form_id' => 'tipocombustible_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar tipo de combustible'
+            'title' => 'Editar tipo de combustible',
+            'eliminable'=>$this->esEliminable($tipocombustible)
         ]);
     }
 
@@ -114,12 +115,21 @@ class TipocombustibleController extends Controller
      */
     public function delete(Request $request, Tipocombustible $tipocombustible): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($tipocombustible))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($tipocombustible);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El tipo de combustible fue eliminado satisfactoriamente'));
+    }
+
+    /*
+     * Esta funcion deuelve un boolean que indica si el tipo de combustible es o no eliminable
+     */
+    private function esEliminable(Tipocombustible $tipocombustible){
+        $em=$this->getDoctrine()->getManager();
+        $tarjeta=$em->getRepository('App:Tarjeta')->findOneBy(['tipocombustible'=>$tipocombustible]);
+        return null==$tarjeta;
     }
 }

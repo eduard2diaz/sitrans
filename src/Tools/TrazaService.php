@@ -36,6 +36,7 @@ class TrazaService
         $traza->setArea($entity->getVehiculo()->getResponsable()->getArea());
         $traza->setResponsable($entity->getVehiculo()->getResponsable());
         $traza->setTarjeta($entity->getVehiculo()->getResponsable()->getTarjetas()->first());
+        $traza->setEfectivo($entity->getVehiculo()->getResponsable()->getTarjetas()->first()->getCantefectivo());
         $traza->setCombustibleentanque($entity->getVehiculo()->getLitrosentanque());
         $traza->setIndiceConsumo($entity->getVehiculo()->getIndconsumo());
 
@@ -73,7 +74,7 @@ class TrazaService
         $traza->setTarjeta($entity->getTarjeta());
         $traza->setCombustibleentanque($combustibleentanque);
         $traza->setIndiceConsumo($indiceconsumo);
-
+        $traza->setEfectivo($entity->getTarjeta()->getCantefectivo());
         $manager->persist($traza);
         $manager->flush();
     }
@@ -101,6 +102,28 @@ class TrazaService
             $manager->remove($entity);
             $manager->flush();
         }
+
+    }
+
+    /*
+     *Funcionalidad que devuelve la cantidad de efectivo que poseeia una tarjeta en una fecha X, se utiliza para
+     * la generacion de chips
+     */
+    public function cantidadEfectivoTarjetaenFechaX($tarjeta,$fecha=null)
+    {
+        $manager=$this->getEm()->getManager();
+        $tarjeta_obj=$manager->getRepository('App:Tarjeta')->find($tarjeta);
+        if(!$tarjeta_obj)
+            throw new \Exception('La tarjeta no existe');
+
+        if(null==$fecha)
+            return $tarjeta_obj->getCantefectivo();
+
+        $consulta=$manager->createQuery('SELECT t.efectivo FROM App:Traza t WHERE t.tarjeta = :tarjeta AND t.fecha <= :fecha ORDER BY t.fecha DESC');
+        $consulta->setParameters(['tarjeta'=>$tarjeta,'fecha'=>$fecha]);
+        $consulta->setMaxResults(1);
+        $traza=$consulta->getResult();
+        return $traza[0]['efectivo'] ?? null;
 
     }
 

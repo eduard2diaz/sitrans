@@ -46,7 +46,7 @@ class Area
     /**
      * @var \Centrocosto
      *
-     * @ORM\ManyToOne(targetEntity="Centrocosto")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Centrocosto")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ccosto", referencedColumnName="id", onDelete="CASCADE")
      * })

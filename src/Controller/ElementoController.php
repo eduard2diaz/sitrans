@@ -111,6 +111,7 @@ class ElementoController extends Controller
             'form_id' => 'elemento_edit',
             'action' => 'Actualizar',
             'title' => 'Editar elemento',
+            'eliminable'=>$this->esEliminable($elemento)
         ]);
     }
 
@@ -119,13 +120,19 @@ class ElementoController extends Controller
      */
     public function delete(Request $request, Elemento $elemento): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($elemento))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$elemento);
         $em = $this->getDoctrine()->getManager();
         $em->remove($elemento);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El elemento fue eliminado satisfactoriamente'));
+    }
+
+    private function esEliminable(Elemento $elemento){
+        $em=$this->getDoctrine()->getManager();
+        $subelemento=$em->getRepository('App:Subelemento')->findOneByElemento($elemento);
+        return null==$subelemento;
     }
 
     //Funcion ajax utilizada por otras clases

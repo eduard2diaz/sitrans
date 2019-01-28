@@ -21,7 +21,7 @@ class HojarutaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $hojarutas = $this->getDoctrine()->getManager()->createQuery('SELECT h.id, v.matricula as vehiculo, h.codigo, h.fechasalida, h.fechallegada FROM App:Hojaruta h JOIN h.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
+            $hojarutas = $this->getDoctrine()->getManager()->createQuery('SELECT h.id, v.matricula as vehiculo, h.codigo, h.fechasalida, h.fechallegada FROM App:Hojaruta h JOIN h.vehiculo v JOIN h.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords' => count($hojarutas),

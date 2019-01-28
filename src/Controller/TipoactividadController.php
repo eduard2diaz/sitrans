@@ -106,7 +106,8 @@ class TipoactividadController extends Controller
             'form' => $form->createView(),
             'form_id' => 'tipoactividad_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar tipo de actividad'
+            'title' => 'Editar tipo de actividad',
+            'eliminable'=>$this->esEliminable($tipoactividad)
         ]);
     }
 
@@ -115,7 +116,7 @@ class TipoactividadController extends Controller
      */
     public function delete(Request $request, Tipoactividad $tipoactividad): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($tipoactividad))
             throw $this->createAccessDeniedException();
 
         $this->denyAccessUnlessGranted('EDIT',$tipoactividad);
@@ -123,5 +124,11 @@ class TipoactividadController extends Controller
         $em->remove($tipoactividad);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El tipo de actividad fue eliminada satisfactoriamente'));
+    }
+
+    private function esEliminable(Tipoactividad $tipoactividad){
+        $em=$this->getDoctrine()->getManager();
+        $hruta=$em->getRepository('App:Hojaruta')->findOneByTipoactividad($tipoactividad);
+        return $hruta==null;
     }
 }

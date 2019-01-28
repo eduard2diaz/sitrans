@@ -10,7 +10,7 @@
             <div class="modal-body" id="modal-body">
                 <table class="table table-hover">
                     <tr>
-                        <th style="width: 10%">Nombre</th>
+                        <th>Nombre</th>
                         <td>{{chofer.nombre}}</td>
                     </tr>
                     <tr>
@@ -20,6 +20,10 @@
                     <tr>
                         <th>Carnet de identidad</th>
                         <td>{{chofer.ci}}</td>
+                    </tr>
+                    <tr>
+                        <th>Institución</th>
+                        <td>{{chofer.institucion}}</td>
                     </tr>
                     <tr>
                         <th>Licencia</th>
@@ -37,14 +41,14 @@
                     </tr>
                     <tr>
                         <th>Dirección particular</th>
-                        <td>{{chofer.direccion}}</td>
+                        <td>
+                            <address>{{chofer.direccion}}</address>
+                        </td>
                     </tr>
-
-
                 </table>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

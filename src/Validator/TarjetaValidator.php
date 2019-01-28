@@ -8,6 +8,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
+/*
+ *Validador que se encarga de comprobar que no exista en una institucion 2 o mas tarjetas con el mismo codigo
+ */
 class TarjetaValidator extends ConstraintValidator
 {
     private $registry;

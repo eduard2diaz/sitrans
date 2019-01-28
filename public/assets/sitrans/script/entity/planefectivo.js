@@ -5,11 +5,9 @@ var planefectivo = function () {
     var configurarFormulario=function(){
         $('select#planefectivo_mes').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#planefectivo_anno').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $("div#basicmodal form").validate({
@@ -30,9 +28,6 @@ var planefectivo = function () {
         table = $("table#planefectivo_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('planefectivo_index'),
                 "language": {
                     url: datatable_translation
@@ -48,8 +43,8 @@ var planefectivo = function () {
                     },
                     {targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm" href="'+Routing.generate('planefectivo_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_planefectivo" data-href="'+Routing.generate('planefectivo_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal text-uppercase m-btn m-btn--icon btn-sm" href="'+Routing.generate('planefectivo_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger text-uppercase m-btn m-btn--icon btn-sm eliminar_planefectivo" data-href="'+Routing.generate('planefectivo_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> Eliminar</a></li>\n '}
                 }]
             });
     }
@@ -58,12 +53,11 @@ var planefectivo = function () {
     var edicion = function () {
         $('body').on('click', 'a.edicion', function (evento)
         {
-
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -78,7 +72,7 @@ var planefectivo = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -97,7 +91,7 @@ var planefectivo = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -144,20 +138,19 @@ var planefectivo = function () {
 
            bootbox.confirm({
                 title: "Eliminar plan de efectivo",
-                message: "<p>¿Está seguro que desea eliminar este plan de efectivo?</p>",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este plan de efectivo?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentplanefectivo porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",
@@ -194,6 +187,3 @@ var planefectivo = function () {
         }
     }
 }();
-
-
-

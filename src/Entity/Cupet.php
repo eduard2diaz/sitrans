@@ -48,14 +48,22 @@ class Cupet
     private $enfuncionamiento;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Provincia")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Provincia
+     *
+     * @ORM\ManyToOne(targetEntity="Provincia")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="provincia", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $provincia;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Municipio")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Municipio")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="municipio", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $municipio;
 

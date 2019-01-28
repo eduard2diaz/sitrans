@@ -107,7 +107,8 @@ class TipotarjetaController extends Controller
             'form' => $form->createView(),
             'form_id' => 'tipotarjeta_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar tipo de tarjeta'
+            'title' => 'Editar tipo de tarjeta',
+            'eliminable'=>$this->esEliminable($tipotarjeta)
         ]);
     }
 
@@ -116,7 +117,7 @@ class TipotarjetaController extends Controller
      */
     public function delete(Request $request, Tipotarjeta $tipotarjeta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($tipotarjeta))
             throw $this->createAccessDeniedException();
 
         $this->denyAccessUnlessGranted('DELETE',$tipotarjeta);
@@ -124,5 +125,11 @@ class TipotarjetaController extends Controller
         $em->remove($tipotarjeta);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El tipo de tarjeta fue eliminado satisfactoriamente'));
+    }
+
+    private function esEliminable(Tipotarjeta $tipotarjeta){
+        $em=$this->getDoctrine()->getManager();
+        $tarjeta=$em->getRepository('App:Tarjeta')->findOneBy(['tipotarjeta'=>$tipotarjeta]);
+        return $tarjeta==null;
     }
 }

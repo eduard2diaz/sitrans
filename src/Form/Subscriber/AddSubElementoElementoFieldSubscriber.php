@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  *
  * @author eduardo
  */
-class AddElementoFieldSubscriber  implements EventSubscriberInterface{
+class AddSubElementoElementoFieldSubscriber  implements EventSubscriberInterface{
 
     private $factory;
     /**

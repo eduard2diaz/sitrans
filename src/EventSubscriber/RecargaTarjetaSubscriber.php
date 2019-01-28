@@ -27,7 +27,6 @@ class RecargaTarjetaSubscriber implements EventSubscriber
         $entity = $args->getEntity();
         if ($entity instanceof Recargatarjeta){
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()+$entity->getCantidadefectivo());
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()+$entity->getCantidadlitros());
             $this->getServiceContainer()->get('traza.service')->persistTrazaTarjeta($entity);
         }
     }
@@ -36,7 +35,6 @@ class RecargaTarjetaSubscriber implements EventSubscriber
         $entity = $args->getEntity();
         if ($entity instanceof Recargatarjeta){
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()-$entity->getCantidadefectivo());
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()-$entity->getCantidadlitros());
             $traza=$this->getServiceContainer()->get('traza.service')->findTraza(get_class($entity),$entity->getId());
             $this->getServiceContainer()->get('traza.service')->removeTraza($traza);
         }

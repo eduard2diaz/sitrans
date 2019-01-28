@@ -87,14 +87,19 @@ class Responsable
     private $tarjetas;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 
     public function __construct()
     {
         $this->tarjetas = new ArrayCollection();
+        $this->setActivo(true);
     }
 
     public function getId(): ?int
@@ -188,7 +193,6 @@ class Responsable
 
     public function addTarjeta(Tarjeta $tarjeta): self
     {
-
         if (!$this->tarjetas->contains($tarjeta)) {
             $this->tarjetas[] = $tarjeta;
             $tarjeta->setResponsable($this);
@@ -236,28 +240,42 @@ class Responsable
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if (null == $this->getArea())
-            $context->buildViolation('Seleccione el área')
-                ->atPath('area')
-                ->addViolation();
+        /*
+         * Ojo: un responsable solo posee tarjetas activas, en caso de poseer solo 1 tarjeta es que puede posser un
+         * vehiculo siempre y cuando este responsable este activo. Ademas un responsable solo es desactivado cuando
+         *  abandona una institucion por tanto en ese momento la(s) tarjeta(s) que poseia dejan de estar a su cargo y
+         * al vehiculo le es asignado otro responsable
+         */
         if (null == $this->getInstitucion())
             $context->buildViolation('Seleccione la institución')
                 ->atPath('institucion')
                 ->addViolation();
-        foreach ($this->getTarjetas() as $value)
-            if (!$value->getActivo()) {
-                $context->buildViolation('Solo puede ser responsable de tarjetas activas')
-                    ->atPath('tarjetas')
-                    ->addViolation();
-                break;
-            } else
-                if ((null != $value->getResponsable()) && ($this->getId() != $value->getResponsable()->getId())) {
-                    $context->buildViolation('Solo puede ser responsable que no posean responsables')
+        elseif (null == $this->getArea())
+            $context->buildViolation('Seleccione el área')
+                ->atPath('area')
+                ->addViolation();
+        elseif (false == $this->getActivo() && $this->getTarjetas()->count() > 0)
+            $context->buildViolation('Un responsable inactivo no puede poseer tarjeta')
+                ->atPath('tarjetas')
+                ->addViolation();
+        elseif (true == $this->getActivo() && $this->getTarjetas()->count() == 0)
+            $context->buildViolation('Un responsable activo tiene que poseer tarjeta(s)')
+                ->atPath('tarjetas')
+                ->addViolation();
+        else {
+            foreach ($this->getTarjetas() as $value)
+                if (!$value->getActivo()) {
+                    $context->buildViolation('Solo puede ser responsable de tarjetas activas')
                         ->atPath('tarjetas')
                         ->addViolation();
                     break;
-                }
+                } else
+                    if ((null != $value->getResponsable()) && ($this->getId() != $value->getResponsable()->getId())) {
+                        $context->buildViolation("La tarjeta ".$value->getCodigo()." ya posee responsable")
+                            ->atPath('tarjetas')
+                            ->addViolation();
+                        break;
+                    }
+        }
     }
-
-
 }

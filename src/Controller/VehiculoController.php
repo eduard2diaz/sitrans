@@ -21,7 +21,7 @@ class VehiculoController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $vehiculos = $this->getDoctrine()->getManager()->createQuery('SELECT v.id, v.matricula , ch.nombre as chofer, r.nombre as responsable FROM App:Vehiculo v JOIN v.responsable r JOIN v.chofer ch JOIN v.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
+            $vehiculos = $this->get('institucion.service')->obtenerVehiculosSubordinados();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($vehiculos),
@@ -41,23 +41,22 @@ class VehiculoController extends Controller
      */
     public function new(Request $request): Response
     {
-      //  if(!$request->isXmlHttpRequest())
-        //    throw $this->createAccessDeniedException();
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
 
         $vehiculo = new Vehiculo();
-        $form = $this->createForm(VehiculoType::class, $vehiculo, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('vehiculo_new')));
+        $form = $this->createForm(VehiculoType::class, $vehiculo, array('action' => $this->generateUrl('vehiculo_new')));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted())
             if ($form->isValid()) {
-
                 $em->persist($vehiculo);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El vehículo fue registrado satisfactoriamente",
                     'matricula' => $vehiculo->getMatricula(),
-                    'responsable' => $vehiculo->getResponsable()->__toString(),
-                    'chofer' => $vehiculo->getChofer()->__toString(),
+                    'marca' => $vehiculo->getMarca(),
+                    'tipocombustible' => $vehiculo->getTipocombustible()->getNombre(),
                     'id' => $vehiculo->getId(),
                 ));
             } else {
@@ -85,6 +84,7 @@ class VehiculoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$vehiculo);
         return $this->render('vehiculo/_show.html.twig',['vehiculo'=>$vehiculo]);
     }
 
@@ -96,7 +96,8 @@ class VehiculoController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(VehiculoType::class, $vehiculo, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('vehiculo_edit',array('id'=>$vehiculo->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$vehiculo);
+        $form = $this->createForm(VehiculoType::class, $vehiculo, array('action' => $this->generateUrl('vehiculo_edit',array('id'=>$vehiculo->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
@@ -105,8 +106,8 @@ class VehiculoController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El vehículo fue actualizado satisfactoriamente",
                     'matricula' => $vehiculo->getMatricula(),
-                    'responsable' => $vehiculo->getResponsable()->__toString(),
-                    'chofer' => $vehiculo->getChofer()->__toString(),
+                    'marca' => $vehiculo->getMarca(),
+                    'tipocombustible' => $vehiculo->getTipocombustible()->getNombre(),
                     'id' => $vehiculo->getId(),
                 ));
             } else {
@@ -124,7 +125,8 @@ class VehiculoController extends Controller
                 'form' => $form->createView(),
                 'form_id' => 'vehiculo_edit',
                 'action' => 'Actualizar',
-                'title' => 'Editar vehículo'
+                'title' => 'Editar vehículo',
+                'eliminable'=>$this->esEliminable($vehiculo)
             ]),
             'vehiculo'=>$vehiculo->getId()
         ]);
@@ -137,15 +139,17 @@ class VehiculoController extends Controller
      */
     public function delete(Request $request, Vehiculo $vehiculo): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($vehiculo))
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$vehiculo);
         $em = $this->getDoctrine()->getManager();
         $em->remove($vehiculo);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El vehículo fue eliminado satisfactoriamente'));
     }
 
+    //FUNCIONALIDADES UTILIZADAS EN SUS CRUD POR OTRAS ENTIDADES
     /**
      * @Route("/activo", name="vehiculo_activos", methods="GET",options={"expose"=true})
      */
@@ -161,4 +165,17 @@ class VehiculoController extends Controller
             $text.="<option value={$value->getId()}>{$value->getMatricula()}</option>";
         return new Response($text);
     }
+
+    private function esEliminable(Vehiculo $vehiculo){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['Hojaruta','Mantenimiento','Reparacion','Somaton','Pruebalitro'];
+        foreach ($entidades as $value){
+            $objeto=$em->getRepository("App:$value")->findOneByVehiculo($vehiculo);
+            if(null!=$objeto)
+                return false;
+        }
+
+        return true;
+    }
+
 }

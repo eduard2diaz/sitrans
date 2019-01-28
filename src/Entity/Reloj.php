@@ -50,6 +50,7 @@ class Reloj
     public function __construct()
     {
         $this->kwrestante=0;
+        $this->setActivo(true);
     }
 
     public function getId()

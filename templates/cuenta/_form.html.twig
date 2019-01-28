@@ -53,6 +53,8 @@
             </div>
         </div>
     </div>
+    {{ form_errors(form) }}
+    {{ form_rest(form) }}
 </div>
 <div class="modal-footer">
     <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
@@ -60,6 +62,9 @@
         <i class="flaticon-edit-1 ladda-label"></i> {{ action |default('Guardar')}}
         <span class="ladda-spinner"></span>
     </button>
+    {% if eliminable is defined and eliminable==true %}
+        <a class="btn btn-danger btn-sm eliminar_cuenta" data-href="{{ path('cuenta_delete',{'id':cuenta.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
+    {% endif %}
 </div>
 {{form_end(form)}}
 

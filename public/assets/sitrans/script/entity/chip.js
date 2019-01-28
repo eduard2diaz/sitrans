@@ -5,15 +5,12 @@ var chip = function () {
     var configurarFormulario=function(){
         $('select#chip_tarjeta').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#chip_moneda').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
         $('select#chip_cupet').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $('input#chip_fecha').datetimepicker();
@@ -21,7 +18,7 @@ var chip = function () {
         jQuery.validator.addMethod("greaterThan",
             function(value, element, params) {
                 return parseInt(value) <= parseInt($(params).val());
-            },'Los litros extraídos deben ser menor o igual al saldo inicial');
+            },'El importe debe ser menor o igual que el saldo inicial');
 
         $("div#basicmodal form").validate({
             rules:{
@@ -29,13 +26,13 @@ var chip = function () {
                 'chip[cupet]': {required:true},
                 'chip[numerocomprobante]': {required:true},
                 'chip[fecha]': {required:true},
-                'chip[importe]': {required:true, min:0.1},
+                'chip[importe]': {required:true, min:0.1,  greaterThan: "#chip_saldoinicial"},
                 'chip[idfisico]': {required:true},
                 'chip[idlogico]': {required:true},
                 'chip[moneda]': {required:true},
                 'chip[servicio]': {required:true},
                 'chip[saldoinicial]': {required:true, min:1 },
-                'chip[litrosextraidos]': {required:true, min:1,  greaterThan: "#chip_saldoinicial" },
+                'chip[litrosextraidos]': {required:true, min:1 },
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');
@@ -50,9 +47,6 @@ var chip = function () {
         table = $("table#chip_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('chip_index'),
                 "language": {
                     url: datatable_translation
@@ -85,7 +79,7 @@ var chip = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -99,7 +93,7 @@ var chip = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                   base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -116,7 +110,7 @@ var chip = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -151,7 +145,7 @@ var chip = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -197,23 +191,21 @@ var chip = function () {
             evento.preventDefault();
             var link = $(this).attr('data-href');
             $('div#basicmodal').modal('hide');
-            setTimeout(function(){
                 bootbox.confirm({
                     title: "Eliminar chip",
-                    message: "<p>¿Está seguro que desea eliminar este chip?</p>",
+                    message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este chip?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                     buttons: {
                         confirm: {
                             label: 'Sí, estoy seguro',
-                            className: 'btn btn-primary'},
+                            className: 'btn btn-primary btn-sm'},
                         cancel: {
                             label: 'Cancelar',
-                            className: 'btn btn-metal'}
+                            className: 'btn btn-metal btn-sm'}
                     },
                     callback: function (result) {
                         if (result == true)
                             $.ajax({
                                 type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                                // dataType: 'html', esta url se comentchip porque lo k estamos mandando es un json y no un html plano
                                 url: link,
                                 beforeSend: function () {
                                     mApp.block("body",
@@ -235,8 +227,125 @@ var chip = function () {
                             });
                     }
                 });
-            },500);
 
+
+        });
+    }
+
+    var saldoInicialTarjeta= function() {
+        $('div#basicmodal').on('change', 'select#chip_tarjeta', function (evento) {
+            var value = $(this).val();
+            if (value >= 1 && $('input#chip_fecha').val()!="")
+                $.ajax({
+                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    dataType: 'html',
+                    url: Routing.generate('tarjeta_cantidadefectivo',{'id':value}),
+                    data: {
+                        fecha: $('input#chip_fecha').val(),
+                    },
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
+                    },
+                    success: function (data) {
+                        $('input#chip_saldoinicial').val(data);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
+        });
+
+        $('div#basicmodal').on('change', 'input#chip_fecha', function (evento) {
+            var value = $(this).val();
+            var tarjeta = $('select#chip_tarjeta').val();
+            if (tarjeta > 0)
+                $.ajax({
+                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    dataType: 'html',
+                    url: Routing.generate('tarjeta_cantidadefectivo',{'id':tarjeta}),
+                    data: {
+                        fecha: value,
+                    },
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
+                    },
+                    success: function (data) {
+                        $('input#chip_saldoinicial').val(data);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
+        });
+    }
+
+    var importeTarjeta= function() {
+        $('div#basicmodal').on('change', 'input#chip_importe', function (evento) {
+            var importe = $(this).val();
+            var fecha = $('input#chip_fecha').val();
+            var tarjeta =  $('select#chip_tarjeta').val();
+            if (importe >0 && fecha!="" && tarjeta>0)
+                $.ajax({
+                    type: 'get',
+                    dataType: 'html',
+                    url: Routing.generate('preciocombustible_findbytarjeta'),
+                    data: {
+                        importe: importe,
+                        fecha: fecha,
+                        tarjeta:tarjeta
+                    },
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
+                    },
+                    success: function (data) {
+                        $('input#chip_litrosextraidos').val(data);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
+        });
+
+        $('div#basicmodal').on('change', 'input#chip_fecha', function (evento) {
+            var fecha = $(this).val();
+            var importe = $('input#chip_importe').val();
+            var tarjeta =  $('select#chip_tarjeta').val();
+            if (importe >0 && fecha!="" && tarjeta>0)
+                $.ajax({
+                    type: 'get',
+                    dataType: 'html',
+                    url: Routing.generate('preciocombustible_findbytarjeta'),
+                    data: {
+                        importe: importe,
+                        fecha: fecha,
+                        tarjeta: tarjeta
+                    },
+                    beforeSend: function (data) {
+                        mApp.block("div#basicmodal div.modal-body",
+                            {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
+                    },
+                    success: function (data) {
+                        $('input#chip_litrosextraidos').val(data);
+                    },
+                    error: function () {
+                        base.Error();
+                    },
+                    complete: function () {
+                        mApp.unblock("div#basicmodal div.modal-body")
+                    }
+                });
         });
     }
 
@@ -248,7 +357,8 @@ var chip = function () {
                     show();
                     edicion();
                     eliminar();
-                    authenticated.importeTarjeta('input#chip_litrosextraidos', 'input#chip_fecha','select#chip_tarjeta','input#chip_importe');
+                    saldoInicialTarjeta();
+                    importeTarjeta();
                 }
             );
         }

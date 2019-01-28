@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use   Symfony\Component\Validator\Validator\TraceableValidator;
 /**
  * @Route("/preciocombustible")
  */
@@ -81,15 +81,16 @@ class PrecioCombustibleController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
-        
-        return $this->render('preciocombustible/_show.html.twig',['preciocombustible'=>$preciocombustible]);
+
+        return $this->render('preciocombustible/_show.html.twig',['preciocombustible'=>$preciocombustible,'editable'=>$this->esEditable($preciocombustible)]);
     }
+
     /**
      * @Route("/{id}/edit", name="preciocombustible_edit", methods="GET|POST",options={"expose"=true})
      */
     public function edit(Request $request, PrecioCombustible $preciocombustible): Response
     {
-        if(!$request->isXmlHttpRequest())
+        if(!$request->isXmlHttpRequest() || false==$this->esEditable($preciocombustible))
             throw $this->createAccessDeniedException();
         
         $form = $this->createForm(PrecioCombustibleType::class, $preciocombustible, array('action' => $this->generateUrl('preciocombustible_edit',array('id'=>$preciocombustible->getId()))));
@@ -128,7 +129,7 @@ class PrecioCombustibleController extends Controller
      */
     public function delete(Request $request, PrecioCombustible $preciocombustible): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEditable($preciocombustible))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
@@ -137,20 +138,38 @@ class PrecioCombustibleController extends Controller
         return new JsonResponse(array('mensaje' =>'El precio de combustible fue eliminado satisfactoriamente'));
     }
 
-    //Conjunto de funcionalidades ajax utilizadas por otras clases
+    /*
+     * Funcionalidad privada que retorna un booleano indicando si es o no editable y/o eliminable un precio de
+     * combustible
+     */
+    private function esEditable(PrecioCombustible $precioCombustible){
+        $em=$this->getDoctrine()->getManager();
+        $cadena = "SELECT COUNT(r) FROM App:Recargatarjeta r JOIN r.tarjeta t JOIN t.tipocombustible tt WHERE tt.id= :tipocombustible AND r.fecha>= :fecha";
+        $consulta = $em->createQuery($cadena);
+        $consulta->setParameters(['tipocombustible' => $precioCombustible->getTipocombustible()->getId(), 'fecha' => $precioCombustible->getFecha()]);
+        return $consulta->getResult()[0][1]==0;
+    }
+
+
+    /*Conjunto de funcionalidades ajax utilizadas por otras clases como:
+     *Recargatarjeta
+     */
+
     /**
      * @Route("/findbytarjeta", name="preciocombustible_findbytarjeta", options={"expose"=true})
      */
     public function findByTarjeta(Request $request): Response
     {
         /*
-         *Funcionalidad que devuelve a que precio se encuentra el combustible en un determinado momento
+         *Funcionalidad que devuelve a que cuantos litros representa una deerminada cantidad de dinero
+         * teniendo en cuenta a cuanto se encuentra el combustible en un determinado momento
          */
-        if(!$request->isXmlHttpRequest() || $request->request->has('litros') || $request->request->has('fecha') || $request->request->has('tarjeta'))
+
+        if(!$request->isXmlHttpRequest() || $request->request->has('importe') || $request->request->has('fecha') || $request->request->has('tarjeta'))
             throw $this->createAccessDeniedException();
 
         $em=$this->getDoctrine()->getManager();
-        $precio=$request->get('litros');
+        $importe=$request->get('importe');
         $fecha=$request->get('fecha');
         $tarjeta=$request->get('tarjeta');
         $tarjeta=$em->getRepository('App:Tarjeta')->find($tarjeta);
@@ -158,37 +177,11 @@ class PrecioCombustibleController extends Controller
             throw new \Exception("La tarjeta indicada no existe o usted no tiene acceso a la misma");
 
         $tipocombustible=$tarjeta->getTipocombustible();
-        $importe=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha) ;
+        $tarifa=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha) ;
 
-        if(!$importe)
-            throw new \Exception("No existe el importe");
+        if(!$tarifa)
+            throw new \Exception("No existe la tarifa");
 
-        return new Response($importe[0]['importe']*$precio);
-    }
-
-    /**
-     * @Route("/findbyvehiculo", name="preciocombustible_findbyvehiculo", options={"expose"=true})
-     */
-    public function findByVehiculo(Request $request): Response
-    {
-        if(!$request->isXmlHttpRequest()  || $request->request->has('litros') || $request->request->has('fecha') || $request->request->has('vehiculo'))
-            throw $this->createAccessDeniedException();
-
-        $precio=$request->get('litros');
-        $fecha=$request->get('fecha');
-        $em=$this->getDoctrine()->getManager();
-        $vehiculo=$request->get('vehiculo');
-        $vehiculo=$em->getRepository('App:Vehiculo')->find($vehiculo);
-
-        if(!$vehiculo || $this->getUser()->getInstitucion()->getId()!=$vehiculo->getInstitucion()->getId())
-            throw new \Exception("El vehículo indicado no existe o usted no tiene acceso al mismo");
-
-        $tipocombustible=$vehiculo->getResponsable()->getTarjetas()->first()->getTipocombustible();
-        $importe=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha);
-
-        if(!$importe)
-            throw new \Exception("No existe el importe");
-
-        return new Response($importe[0]['importe']*$precio);
+        return new Response(floor($importe/$tarifa[0]['importe']));
     }
 }

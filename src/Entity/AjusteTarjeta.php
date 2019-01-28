@@ -6,13 +6,13 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Validator\Importe as ImporteConstraint;
-use App\Validator\CierreCombustible as CierreCombustibleConstraint;
+use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
+use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
 
 /**
  * @ORM\Entity
- * @ImporteConstraint(fecha="fecha",litros="monto",foreign="tarjeta",importe="cantefectivo")
  * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
+ * @UltimaOperacionConstraint(foreign="tarjeta",fecha="fecha")
  */
 class AjusteTarjeta
 {
@@ -24,8 +24,12 @@ class AjusteTarjeta
     private $id;
 
     /**
+     * @var \Tarjeta
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Tarjeta")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tarjeta", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $tarjeta;
 
@@ -33,15 +37,6 @@ class AjusteTarjeta
      * @ORM\Column(type="datetime")
      */
     private $fecha;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\Range(
-     *      min = 1,
-     *      minMessage = "Debe ajustar la tarjeta con al menos {{ limit }}litro",
-     * )
-     */
-    private $monto;
 
     /**
      * @ORM\Column(type="float")
@@ -62,8 +57,12 @@ class AjusteTarjeta
     private $tipo;
 
     /**
+     * @var \Usuario
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 
@@ -92,18 +91,6 @@ class AjusteTarjeta
     public function setFecha(\DateTimeInterface $fecha): self
     {
         $this->fecha = $fecha;
-
-        return $this;
-    }
-
-    public function getMonto(): ?int
-    {
-        return $this->monto;
-    }
-
-    public function setMonto(int $monto): self
-    {
-        $this->monto = $monto;
 
         return $this;
     }
@@ -168,27 +155,10 @@ class AjusteTarjeta
             $context->buildViolation('Seleccione una tarjeta activa')
                 ->atPath($path)
                 ->addViolation();
-        elseif($this->getTipo()==0 && $this->getMonto()>$this->getTarjeta()->getCantlitros())
-            $context->buildViolation('La tarjeta no dispone con la cantidad de litros indicadas')
-                ->atPath($path)
-                ->addViolation();
         elseif($this->getTipo()==0 && $this->getCantefectivo()>$this->getTarjeta()->getCantefectivo())
             $context->buildViolation('La tarjeta no dispone con la cantidad de efectivo necesaria')
                 ->atPath($path)
                 ->addViolation();
-
-        $hoy=new \DateTime('today');
-        $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
-                ->addViolation();
-
     }
 
 

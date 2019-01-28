@@ -71,20 +71,14 @@ class Tarjeta
     private $responsable;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $cantlitros;
-
-    /**
      * @ORM\Column(type="float")
      */
     private $cantefectivo;
 
     public function __construct()
     {
-        $this->responsables = new ArrayCollection();
-        $this->cantlitros=0;
         $this->cantefectivo=0;
+        $this->setActivo(true);
     }
 
     public function getId(): ?int
@@ -156,18 +150,6 @@ class Tarjeta
         return $this;
     }
 
-    public function getCantlitros(): ?int
-    {
-        return $this->cantlitros;
-    }
-
-    public function setCantlitros(int $cantlitros): self
-    {
-        $this->cantlitros = $cantlitros;
-
-        return $this;
-    }
-
     public function getCantefectivo(): ?float
     {
         return $this->cantefectivo;
@@ -189,6 +171,13 @@ class Tarjeta
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
+        /*
+         * Detalles de validacion:
+         * 1.Una tarjeta puede o no tener responsable.
+         * 2.Si la tarjeta esta activa y tiene un responsable este tiene que estar activo
+         * OJO: una tarjeta solo se desactiva cuando se pierde o cuando deja de estar en funcionamiento, por tanto al
+         * desactivar una tarjeta el responsable no sufre cambios ni el vehiculo a su cargo
+         * */
         if(null==$this->getTipocombustible())
             $context->buildViolation('Seleccione el tipo de combustible')
                 ->atPath('tipocombustible')
@@ -197,6 +186,10 @@ class Tarjeta
         if(null==$this->getTipotarjeta())
             $context->buildViolation('Seleccione el tipo de tarjeta')
                 ->atPath('tipotarjeta')
+                ->addViolation();
+
+        if(true==$this->getActivo() && null!=$this->getResponsable() && false==$this->getResponsable()->getActivo())
+            $context->buildViolation('Seleccione un responsable activo')
                 ->addViolation();
     }
 }

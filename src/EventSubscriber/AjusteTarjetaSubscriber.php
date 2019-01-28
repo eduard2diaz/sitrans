@@ -28,7 +28,6 @@ class AjusteTarjetaSubscriber implements EventSubscriber
         if ($entity instanceof AjusteTarjeta){
             $multiplo=$entity->getTipo()==1 ? 1 : -1;
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()+$entity->getCantefectivo()*$multiplo);
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()+$entity->getMonto()*$multiplo);
             $this->getServiceContainer()->get('traza.service')->persistTrazaTarjeta($entity);
         }
     }
@@ -38,7 +37,6 @@ class AjusteTarjetaSubscriber implements EventSubscriber
         if ($entity instanceof AjusteTarjeta){
             $multiplo=$entity->getTipo()==1 ? -1 : 1;
             $entity->getTarjeta()->setCantefectivo($entity->getTarjeta()->getCantefectivo()+$entity->getCantefectivo()*$multiplo);
-            $entity->getTarjeta()->setCantlitros($entity->getTarjeta()->getCantlitros()+$entity->getMonto()*$multiplo);
             $traza=$this->getServiceContainer()->get('traza.service')->findTraza(get_class($entity),$entity->getId());
             $this->getServiceContainer()->get('traza.service')->removeTraza($traza);
         }

@@ -56,8 +56,8 @@ class ReparacionController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La reparación fue registrada satisfactoriamente",
                     'vehiculo' => $reparacion->getVehiculo()->getMatricula(),
-                    'fechainicio' => $reparacion->getFechainicio()->format('d-m-Y h:i a'),
-                    'fechafin' => $reparacion->getFechafin()->format('d-m-Y h:i a'),
+                    'fechainicio' => $reparacion->getFechainicio(),
+                    'fechafin' => $reparacion->getFechafin(),
                     'id' => $reparacion->getId(),
                 ));
             } else {
@@ -83,6 +83,7 @@ class ReparacionController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$reparacion);
         return $this->render('reparacion/_show.html.twig',['reparacion'=>$reparacion]);
     }
 
@@ -94,6 +95,7 @@ class ReparacionController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$reparacion);
         $form = $this->createForm(ReparacionType::class, $reparacion, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('reparacion_edit',array('id'=>$reparacion->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -133,6 +135,7 @@ class ReparacionController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$reparacion);
         $em = $this->getDoctrine()->getManager();
         $em->remove($reparacion);
         $em->flush();

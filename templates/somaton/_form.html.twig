@@ -1,4 +1,83 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{{form_start(form,{'attr':{
+    'id': 'somaton_new',
+    'class': 'm-form m-form--state'
+}})}}
+
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.vehiculo)}}
+                </label>
+                <div>
+                    {{form_widget(form.vehiculo)}}
+                    {{form_errors(form.vehiculo)}}
+                </div>
+            </div>
+            {{form_errors(form)}}
+        </div>
+    </div>
+    <div class="row m--margin-top-20">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechainicio)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechainicio)}}
+                    {{form_errors(form.fechainicio)}}
+                </div>
+            </div>
+            {{form_errors(form)}}
+        </div>
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.fechafin)}}
+                </label>
+                <div>
+                    {{form_widget(form.fechafin)}}
+                    {{form_errors(form.fechafin)}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m--margin-top-20">
+        <div class="col-md-6">
+            <div class="form-group m-form__group">
+
+                <label class="m-checkbox m-checkbox--state-primary">
+                    {{form_widget(form.aprobado)}}
+                    {{form_label(form.aprobado)}}
+                    {{form_errors(form.aprobado)}}
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row m--margin-top-10">
+        <div class="col-md-12">
+            <div class="form-group m-form__group">
+                <label>
+                    {{form_label(form.descripcion)}}
+                </label>
+                <div>
+                    {{form_widget(form.descripcion)}}
+                    {{form_errors(form.descripcion)}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_errors(form) }}
+    {{ form_rest(form) }}
+</div>
+<div class="modal-footer">
+    <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+    <button class="btn btn-primary btn-sm mt-ladda-btn ladda-button" data-style="expand-right" type="submit">
+        <i class="flaticon-edit-1 ladda-label"></i> Guardar
+        <span class="ladda-spinner"></span>
+    </button>
+</div>
+{{form_end(form)}}
+

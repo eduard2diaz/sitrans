@@ -2,20 +2,18 @@ var recargatarjeta = function () {
     var table = null;
     var obj = null;
 
-    var configurarFormulario=function(){
+    var configurarFormulario = function () {
         $('select#recargatarjeta_tarjeta').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $('input#recargatarjeta_fecha').datetimepicker();
 
         $("div#basicmodal form").validate({
-            rules:{
-                'recargatarjeta[cantidadlitros]': {required:true, min: 1},
-                'recargatarjeta[cantidadefectivo]': {required:true, min: 0.1},
-                'recargatarjeta[fecha]': {required:true},
-                'recargatarjeta[tarjeta]': {required:true},
+            rules: {
+                'recargatarjeta[cantidadefectivo]': {required: true, min: 0.1},
+                'recargatarjeta[fecha]': {required: true},
+                'recargatarjeta[tarjeta]': {required: true},
             },
             highlight: function (element) {
                 $(element).parent().parent().addClass('has-danger');
@@ -29,57 +27,51 @@ var recargatarjeta = function () {
     var configurarDataTable = function () {
         table = $("table#recargatarjeta_table").DataTable(
             {
-                responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
+                responsive: true,
                 ajax: Routing.generate('recargatarjeta_index'),
                 "language": {
                     url: datatable_translation
                 },
-                columns:[
-                    {data:"id"},{data:"tarjeta"},{data:"fecha"},{data:"cantidadlitros"},{data:"cantidadefectivo"},{data:"acciones"}
+                columns: [
+                    {data: "id"}, {data: "tarjeta"}, {data: "fecha"}, {data: "cantidadefectivo"}, {data: "acciones"}
                 ],
-                columnDefs:[
+                columnDefs: [
                     {
                         targets: 2, title: "Fecha", orderable: !1, render: function (a, e, t, n) {
                             return moment(t.fecha.date).format('DD-MM-YYYY h:mm a');
                         }
                     }
-
-
-                    ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
-                        return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm recargatarjeta_show" data-href="'+Routing.generate('recargatarjeta_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>';
-                    }
-                }],
+                    , {
+                        targets: -1, title: " ", orderable: !1, render: function (a, e, t, n) {
+                            return ' <ul class="m-nav m-nav--inline m--pull-right">' +
+                                '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm text-uppercase recargatarjeta_show" data-href="' + Routing.generate('recargatarjeta_show', {id: t.id}) + '"><i class="flaticon-eye"></i> Visualizar</a></li>';
+                        }
+                    }],
 
             });
     }
 
     var show = function () {
-        $('body').on('click', 'a.recargatarjeta_show', function (evento)
-        {
+        $('body').on('click', 'a.recargatarjeta_show', function (evento) {
 
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                        {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
                 },
                 success: function (data) {
                     if ($('div#basicmodal').html(data)) {
                         $('div#basicmodal').modal('show');
                     }
                 },
-                error: function ()
-                {
-                    // base.Error();
+                error: function () {
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -89,29 +81,27 @@ var recargatarjeta = function () {
     }
 
     var edicion = function () {
-        $('body').on('click', 'a.edicion', function (evento)
-        {
+        $('body').on('click', 'a.edicion', function (evento) {
 
             evento.preventDefault();
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                        {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
                 },
                 success: function (data) {
-                      if ($('div#basicmodal').html(data)) {
-                          configurarFormulario();
-                         $('div#basicmodal').modal('show');
+                    if ($('div#basicmodal').html(data)) {
+                        configurarFormulario();
+                        $('div#basicmodal').modal('show');
                     }
                 },
-                error: function ()
-                {
-                   // base.Error();
+                error: function () {
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -121,19 +111,18 @@ var recargatarjeta = function () {
     }
 
     var newAction = function () {
-        $('div#basicmodal').on('submit', 'form#recargatarjeta_new', function (evento)
-        {
+        $('div#basicmodal').on('submit', 'form#recargatarjeta_new', function (evento) {
             evento.preventDefault();
             var padre = $(this).parent();
-            var l = Ladda.create(document.querySelector( '.ladda-button' ) );
+            var l = Ladda.create(document.querySelector('.ladda-button'));
             l.start();
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
-                        {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
+                        {overlayColor: "#000000", type: "loader", state: "success", message: "Cargando..."});
                 },
                 complete: function () {
                     l.stop();
@@ -143,9 +132,7 @@ var recargatarjeta = function () {
                     if (data['error']) {
                         padre.html(data['form']);
                         configurarFormulario();
-                    }
-                    else
-                    {
+                    } else {
                         if (data['mensaje'])
                             toastr.success(data['mensaje']);
 
@@ -155,68 +142,67 @@ var recargatarjeta = function () {
                             "id": data['id'],
                             "tarjeta": data['tarjeta'],
                             "fecha": data['fecha'],
-                            "cantidadlitros": data['cantidadlitros'],
                             "cantidadefectivo": data['cantidadefectivo']
                         });
                         objeto.draw();
                         table.page(pagina).draw('page');
                     }
                 },
-                error: function ()
-                {
+                error: function () {
                     base.Error();
                 }
             });
         });
     }
 
-     var eliminar = function () {
-        $('div#basicmodal').on('click', 'a.eliminar_recargatarjeta', function (evento)
-        {
+    var eliminar = function () {
+        $('div#basicmodal').on('click', 'a.eliminar_recargatarjeta', function (evento) {
             evento.preventDefault();
             var link = $(this).attr('data-href');
             $('div#basicmodal').modal('hide');
 
-            setTimeout(function(){
-                bootbox.confirm({
-                    title: "Eliminar recarga",
-                    message: "<p>¿Está seguro que desea eliminar esta recarga?</p>",
-                    buttons: {
-                        confirm: {
-                            label: 'Sí, estoy seguro',
-                            className: 'btn btn-primary'},
-                        cancel: {
-                            label: 'Cancelar',
-                            className: 'btn btn-metal'}
+            bootbox.confirm({
+                title: "Eliminar recarga",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar esta recarga?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
+                buttons: {
+                    confirm: {
+                        label: 'Sí, estoy seguro',
+                        className: 'btn btn-primary btn-sm'
                     },
-                    callback: function (result) {
-                        if (result == true)
-                            $.ajax({
-                                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                                // dataType: 'html', esta url se comentrecargatarjeta porque lo k estamos mandando es un json y no un html plano
-                                url: link,
-                                beforeSend: function () {
-                                    mApp.block("body",
-                                        {overlayColor:"#000000",type:"loader",state:"success",message:"Eliminando..."});
-                                },
-                                complete: function () {
-                                    mApp.unblock("body")
-                                },
-                                success: function (data) {
-                                    table.row(obj.parents('tr'))
-                                        .remove()
-                                        .draw('page');
-                                    toastr.success(data['mensaje']);
-                                },
-                                error: function ()
-                                {
-                                    base.Error();
-                                }
-                            });
+                    cancel: {
+                        label: 'Cancelar',
+                        className: 'btn btn-metal btn-sm'
                     }
-                });
-            },500);
-
+                },
+                callback: function (result) {
+                    if (result == true)
+                        $.ajax({
+                            type: 'get',
+                            url: link,
+                            beforeSend: function () {
+                                mApp.block("body",
+                                    {
+                                        overlayColor: "#000000",
+                                        type: "loader",
+                                        state: "success",
+                                        message: "Eliminando..."
+                                    });
+                            },
+                            complete: function () {
+                                mApp.unblock("body")
+                            },
+                            success: function (data) {
+                                table.row(obj.parents('tr'))
+                                    .remove()
+                                    .draw('page');
+                                toastr.success(data['mensaje']);
+                            },
+                            error: function () {
+                                base.Error();
+                            }
+                        });
+                }
+            });
         });
     }
 
@@ -228,7 +214,6 @@ var recargatarjeta = function () {
                     show();
                     edicion();
                     eliminar();
-                    authenticated.importeTarjeta('input#recargatarjeta_cantidadlitros', 'input#recargatarjeta_fecha','select#recargatarjeta_tarjeta','input#recargatarjeta_cantidadefectivo');
                 }
             );
         }

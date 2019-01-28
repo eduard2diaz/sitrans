@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Importe as ImporteConstraint;
-use App\Validator\CierreCombustible as CierreCombustibleConstraint;
 
 /**
  * Chip
@@ -14,7 +13,6 @@ use App\Validator\CierreCombustible as CierreCombustibleConstraint;
  * @ORM\Table(name="chip", indexes={@ORM\Index(name="IDX_AA29BCBBAE90B786", columns={"tarjeta"}), @ORM\Index(name="IDX_AA29BCBB5F42E8B9", columns={"cupet"})})
  * @ORM\Entity
  * @ImporteConstraint(fecha="fecha",litros="litrosextraidos",foreign="tarjeta",importe="importe")
- * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
  */
 class Chip
 {
@@ -86,11 +84,11 @@ class Chip
     private $saldoinicial;
 
     /**
-     * @var int|null
+     * @var float|null
      *
-     * @ORM\Column(name="litrosextraidos", type="integer", nullable=false)
+     * @ORM\Column(name="litrosextraidos",type="float", precision=10, scale=0, nullable=false)
      * @Assert\Range(
-     *      min = 1,
+     *      min = 0.1,
      *      minMessage = "La cantidad de litros debe ser igual o superior a {{ limit }}",
      * )
      */
@@ -110,7 +108,7 @@ class Chip
     /**
      * @var \Tarjeta
      *
-     * @ORM\ManyToOne(targetEntity="Tarjeta")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Tarjeta")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tarjeta", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -120,7 +118,7 @@ class Chip
     /**
      * @var \Cupet
      *
-     * @ORM\ManyToOne(targetEntity="Cupet")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Cupet")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="cupet", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -128,8 +126,12 @@ class Chip
     private $cupet;
 
     /**
+     * @var \Usuario
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 
@@ -228,12 +230,12 @@ class Chip
         return $this;
     }
 
-    public function getLitrosextraidos(): ?int
+    public function getLitrosextraidos(): ?float
     {
         return $this->litrosextraidos;
     }
 
-    public function setLitrosextraidos(?int $litrosextraidos): self
+    public function setLitrosextraidos(?float $litrosextraidos): self
     {
         $this->litrosextraidos = $litrosextraidos;
 
@@ -325,14 +327,9 @@ class Chip
             $context->buildViolation('Seleccione un cupet en funcionamiento')
                 ->atPath('cupet')
                 ->addViolation();
-
-        if($this->getLitrosextraidos()>$this->getTarjeta()->getCantlitros())
-            $context->buildViolation('La tarjeta seleccionada no posee la cantidad de litros indicada')
-                ->atPath('litrosextraidos')
-                ->addViolation();
-        elseif($this->getLitrosextraidos()>$this->getSaldoinicial())
-            $context->buildViolation('No puede extraer más combustible que el que posee la tarjeta')
-                ->atPath('litrosextraidos')
+        elseif($this->getTarjeta()->getCantefectivo()!=$this->getSaldoinicial())
+            $context->buildViolation('El saldo inicial debe coincidir con la cantidad de efectivo que posee la tarjeta')
+                ->atPath('saldoinicial')
                 ->addViolation();
         elseif($this->getImporte()>$this->getTarjeta()->getCantefectivo())
             $context->buildViolation('La tarjeta seleccionada no posee la cantidad indicada de efectivo')

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Usuario;
+use App\Tools\InstitucionService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,20 +15,29 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UsuarioType extends AbstractType
 {
+    private $token;
+    private $authorizationChecker;
+    private $institucion_service;
+
+    public function __construct(TokenStorageInterface $token,AuthorizationCheckerInterface $authorizationChecker,InstitucionService $institucion_service)
+    {
+        $this->token=$token;
+        $this->authorizationChecker=$authorizationChecker;
+        $this->institucion_service=$institucion_service;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $esAdmin = $options['esAdmin'];
-        $esSuper = $options['esSuper'];
-        $disabled = $options['disab'];
-        $auxdisabled = $options['disab'];
-        if ($esAdmin)
-            $auxdisabled = false;
+        $esAdmin = $this->authorizationChecker->isGranted('ROLE_ADMIN');
+        $esSuper = $this->authorizationChecker->isGranted('ROLE_SUPERADMIN');
+        $disabled= $options['data']->getId()==$this->token->getToken()->getUser()->getId();
         if ($esSuper) {
             $builder
-                ->add('institucion', null, array('label' => 'Institución', 'required' => false, 'disabled' => $disabled, 'attr' => array('class' => 'form-control input-medium')))
                 ->add('idrol', null, array('label'=>'Permisos', 'required' => true,'disabled' => $disabled, 'attr' => array('class' => 'form-control input-medium')));
         }else{
             $builder->add('idrol',null,array(
@@ -44,15 +54,14 @@ class UsuarioType extends AbstractType
             ));
         }
 
-
+        $hijas=$this->institucion_service->obtenerArbolInstitucional();
         $builder
             ->add('usuario', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large')))
-
             ->add('activo',null,['disabled' => $disabled,])
             ->add('nombre', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
             ->add('apellidos', TextType::class, array('attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern' => '^([A-Za-záéíóúñ]{2,}((\s[A-Za-záéíóúñ]{2,})*))*$')))
             ->add('correo', EmailType::class, array('label'=>'Correo electrónico','attr' => array('autocomplete' => 'off', 'class' => 'form-control input-large','pattern'=>'^[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$')))
-
+            ->add('institucion', null, array('choices'=>$hijas,'required'=>$esAdmin==true ? true : false,'disabled' => $disabled,'label' => 'Institución','attr' => array('class' => 'form-control input-medium')))
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $obj) {
@@ -80,8 +89,6 @@ class UsuarioType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Usuario::class,
-            'disab' => false,
         ]);
-        $resolver->setRequired(['esAdmin','esSuper']);
     }
 }

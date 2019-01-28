@@ -28,6 +28,7 @@ class ChipType extends AbstractType
             )))
 
             ->add('tarjeta',EntityType::class,array(
+                'placeholder'=>'Seleccione una tarjeta',
                 'required'=>true,
                 'auto_initialize'=>false,
                 'class'         =>'App:Tarjeta',
@@ -36,7 +37,7 @@ class ChipType extends AbstractType
                     $qb->join('t.responsable','r');
                     $qb->join('t.tipotarjeta','tt');
                     $qb->join('tt.institucion','i');
-                    $qb->where('t.activo = :activo AND t.cantlitros > 0 AND r.activo = :activo AND i.id= :id')->setParameters(['activo'=>true,'id'=>$institucion]);
+                    $qb->where('t.activo = :activo AND t.cantefectivo > 0 AND r.activo = :activo AND i.id= :id')->setParameters(['activo'=>true,'id'=>$institucion]);
                     if(null!=$tarjeta)
                         $qb->orWhere('t.id = :tarjeta')->setParameter('tarjeta',$tarjeta);
                     return $qb;
@@ -73,12 +74,12 @@ class ChipType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('litrosextraidos', IntegerType::class, array('label'=>'Litros extraídos','attr' => array(
+            ->add('importe', NumberType::class, array('attr' => array(
                 'autocomplete' => 'off',
+
                 'class' => 'form-control input-medium'
             )))
-
-            ->add('importe', NumberType::class, array('attr' => array(
+            ->add('litrosextraidos', IntegerType::class, array('label'=>'Litros extraídos','attr' => array(
                 'autocomplete' => 'off',
                 'readonly'=>true,
                 'class' => 'form-control input-medium'

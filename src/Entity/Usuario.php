@@ -99,7 +99,12 @@ class Usuario implements UserInterface
     private $correo;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Institucion")
+     * @var \Institucion
+     *
+     * @ORM\ManyToOne(targetEntity="Institucion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="institucion", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $institucion;
 

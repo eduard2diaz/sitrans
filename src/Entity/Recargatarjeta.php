@@ -5,16 +5,16 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Validator\Importe as ImporteConstraint;
-use App\Validator\CierreCombustible as CierreCombustibleConstraint;
+use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
+use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
 
 /**
  * Recargatarjeta
  *
  * @ORM\Table(name="recargatarjeta", indexes={@ORM\Index(name="IDX_E2F3E177AE90B786", columns={"tarjeta"})})
  * @ORM\Entity
- * @ImporteConstraint(fecha="fecha",litros="cantidadlitros",foreign="tarjeta",importe="cantidadefectivo")
  * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
+ * @UltimaOperacionConstraint(foreign="tarjeta",fecha="fecha")
  */
 class Recargatarjeta
 {
@@ -34,17 +34,6 @@ class Recargatarjeta
      * @ORM\Column(name="fecha", type="datetime", nullable=true)
      */
     private $fecha;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="cantidadlitros", type="integer", nullable=true)
-     * @Assert\Range(
-     *      min = 1,
-     *      minMessage = "Debe recargar la tarjeta con al menos {{ limit }}litro",
-     * )
-     */
-    private $cantidadlitros;
 
     /**
      * @var float|null
@@ -68,8 +57,12 @@ class Recargatarjeta
     private $tarjeta;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Usuario")
-     * @ORM\JoinColumn(nullable=false)
+     * @var \Usuario
+     *
+     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="usuario", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $usuario;
 
@@ -86,18 +79,6 @@ class Recargatarjeta
     public function setFecha(?\DateTimeInterface $fecha): self
     {
         $this->fecha = $fecha;
-
-        return $this;
-    }
-
-    public function getCantidadlitros(): ?int
-    {
-        return $this->cantidadlitros;
-    }
-
-    public function setCantidadlitros(?int $cantidadlitros): self
-    {
-        $this->cantidadlitros = $cantidadlitros;
 
         return $this;
     }
@@ -148,8 +129,7 @@ class Recargatarjeta
         if(null==$this->getUsuario())
             $context->buildViolation('Seleccione un usuario')->addViolation();
         if(null==$this->getTarjeta())
-            $context->buildViolation('Seleccione una tarjeta')
-                ->atPath($path)
+            $context->buildViolation('Seleccione una tarjeta')->atPath($path)
                 ->addViolation();
         elseif(!$this->getTarjeta()->getActivo())
                 $context->buildViolation('Seleccione una tarjeta activa')
@@ -162,19 +142,6 @@ class Recargatarjeta
         elseif(!$this->getTarjeta()->getResponsable()->getActivo())
             $context->buildViolation('No se puede recargar una tarjeta que no posee responsable activo')
                 ->atPath($path)
-                ->addViolation();
-
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
                 ->addViolation();
     }
 }

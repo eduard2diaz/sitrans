@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\Institucion;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 
 /**
  * @Route("/tarjeta")
@@ -34,7 +35,6 @@ class TarjetaController extends Controller
                 ]
                 );
         }
-
         return $this->render('tarjeta/index.html.twig');
     }
 
@@ -84,6 +84,7 @@ class TarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$tarjeta);
         return $this->render('tarjeta/_show.html.twig',['tarjeta'=>$tarjeta]);
     }
 
@@ -95,16 +96,13 @@ class TarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$tarjeta);
         $form = $this->createForm(TarjetaType::class, $tarjeta, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('tarjeta_edit',array('id'=>$tarjeta->getId()))));
         $activoOriginal=$form->get('activo')->getData();
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
             if ($form->isValid()) {
-
-                if(!$tarjeta->getActivo() && $activoOriginal==true && null!=$tarjeta->getResponsable())
-                    $this->forward('App\Controller\ResponsableController::disableVehiculo', ['responsable' => $tarjeta->getResponsable()->getId()]);
-
                 $em->persist($tarjeta);
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"La tarjeta fue actualizada satisfactoriamente",
@@ -125,6 +123,7 @@ class TarjetaController extends Controller
 
         return $this->render('tarjeta/new.html.twig', [
             'tarjeta' => $tarjeta,
+            'eliminable'=>$this->esEliminable($tarjeta),
             'form' => $form->createView(),
             'form_id' => 'tarjeta_edit',
             'action' => 'Actualizar',
@@ -137,9 +136,10 @@ class TarjetaController extends Controller
      */
     public function delete(Request $request, Tarjeta $tarjeta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($tarjeta))
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$tarjeta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($tarjeta);
         $em->flush();
@@ -147,10 +147,34 @@ class TarjetaController extends Controller
     }
 
     /**
+     * @Route("/{id}/cantidadefectivo", name="tarjeta_cantidadefectivo", methods="GET",options={"expose"=true})
+     */
+    public function cantidadEfectivo(Request $request, Tarjeta $tarjeta): Response
+    {
+        /*
+         *Funcionalidad que devuelve la cantidad de efectivo que posse una tarjeta en una fecha dada, es utilizada por la cajera
+         * en el proceso de registrar un chip
+         */
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $this->denyAccessUnlessGranted('VIEW',$tarjeta);
+        $fecha=$request->get('fecha') ?? null;
+
+        $cantidad=$this->get('traza.service')->cantidadEfectivoTarjetaenFechaX($tarjeta->getId(),$fecha) ?? 0;
+        return new Response($cantidad);
+    }
+
+
+    /**
      * @Route("/{id}/findbyinstitucion", name="tarjeta_findbyinstitucion", options={"expose"=true})
      */
     public function findbyinstitucion(Request $request, Institucion $institucion)
     {
+        /*
+         *Devuelve todas las tarjetas disponibles en una determinada institucion, esto es utilizado para la
+         * captación de un responsable
+         */
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
         $id=$request->get('responsable');
@@ -217,5 +241,24 @@ class TarjetaController extends Controller
         }
         return new JsonResponse($array);
     }
+
+    /*
+     *Funcionalidad que devuelve un boolean indicando si la tarjeta es o no eliminable
+     */
+    private function esEliminable(Tarjeta $tarjeta){
+        //No se puede eliminar a una tarjeta que posee responsable
+        if($tarjeta->getResponsable()!=null)
+            return false;
+
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['Recargatarjeta','AjusteTarjeta','Chip','CierreMesTarjeta'];
+        foreach ($entidades as $value){
+            $object=$em->getRepository("App:$value")->findOneByTarjeta($tarjeta);
+            if(null!=$object)
+                return false;
+        }
+        return true;
+    }
+
 
 }

@@ -35,9 +35,9 @@ var area = function () {
                 ],
                 columnDefs:[{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm area_show" data-href="'+Routing.generate('area_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>' +
-                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm edicion" data-href="'+Routing.generate('area_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> EDITAR</a></li>' +
-                            '<li class="m-nav__item"><a class=" m--font-boldest btn btn-danger m-btn m-btn--icon btn-sm eliminar_area" data-href="'+Routing.generate('area_delete',{id:t.id})+'"><i class="flaticon-delete-1"></i> ELIMINAR</a></li>\n '}
+                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm text-uppercase area_show" data-href="'+Routing.generate('area_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>' +
+                            '<li class="m-nav__item"><a class="btn btn-info m-btn m-btn--icon btn-sm text-uppercase edicion" data-href="'+Routing.generate('area_edit',{id:t.id})+'"><i class="flaticon-edit-1"></i> Editar</a></li>';
+                }
                 }]
             });
     }
@@ -200,11 +200,11 @@ var area = function () {
         });
     }
     var eliminar = function () {
-        $('table#area_table').on('click', 'a.eliminar_area', function (evento)
+        $('div#basicmodal').on('click', 'a.eliminar_area', function (evento)
         {
             evento.preventDefault();
-            var obj = $(this);
             var link = $(this).attr('data-href');
+            $('div#basicmodal').modal('hide');
 
            bootbox.confirm({
                 title: "Eliminar área",

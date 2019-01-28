@@ -121,6 +121,7 @@ class SubelementoController extends Controller
             'form_id' => 'subelemento_edit',
             'action' => 'Actualizar',
             'title' => 'Editar subelemento',
+            'eliminable'=>$this->esEliminable($subelemento)
         ]);
     }
 
@@ -129,13 +130,31 @@ class SubelementoController extends Controller
      */
     public function delete(Request $request, Subelemento $subelemento): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($subelemento))
             throw $this->createAccessDeniedException();
         $this->denyAccessUnlessGranted('DELETE',$subelemento);
         $em = $this->getDoctrine()->getManager();
         $em->remove($subelemento);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El subelemento fue eliminado satisfactoriamente'));
+    }
+
+    private function esEliminable(Subelemento $subelemento){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=[
+            ['nombre'=>'PlanefectivoCuenta','llave'=>'subelemento']
+        ];
+        foreach ($entidades as $value){
+            $entidad=$value['nombre'];
+            $llave=$value['llave'];
+            $consulta=$em->createQuery("SELECT count(o.id) FROM App:$entidad o JOIN o.$llave a WHERE a.id= :id");
+            $consulta->setParameter('id',$subelemento->getId());
+            $consulta->setMaxResults(1);
+            $result=$consulta->getResult();
+            if($result[0][1]>0)
+                return false;
+        }
+        return true;
     }
 
     //Funcionalidad ajax utilizada por otras clases

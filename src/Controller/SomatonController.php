@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Somaton;
 use App\Form\SomatonType;
-use App\Repository\SomatonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,29 +16,56 @@ use Symfony\Component\Routing\Annotation\Route;
 class SomatonController extends Controller
 {
     /**
-     * @Route("/", name="somaton_index", methods="GET")
+     * @Route("/", name="somaton_index", methods="GET",options={"expose"=true})
      */
-    public function index(SomatonRepository $somatonRepository): Response
+    public function index(Request $request): Response
     {
-        return $this->render('somaton/index.html.twig', ['somatons' => $somatonRepository->findAll()]);
+        if($request->isXmlHttpRequest()) {
+            $somatons = $this->getDoctrine()->getManager()->createQuery('SELECT s.id, v.matricula as vehiculo, s.fechainicio FROM App:Somaton s JOIN s.vehiculo v JOIN s.institucion i WHERE i.id= :institucion')->setParameter('institucion',$this->getUser()->getInstitucion()->getId())->getResult();
+            return new JsonResponse(
+                $result = [
+                    'iTotalRecords'        => count($somatons),
+                    'iTotalDisplayRecords' => 10,
+                    'sEcho'                => 0,
+                    'sColumns'             => '',
+                    'aaData'               => $somatons,
+                ]
+                );
+        }
+
+        return $this->render('somaton/index.html.twig');
     }
 
     /**
-     * @Route("/new", name="somaton_new", methods="GET|POST")
+     * @Route("/new", name="somaton_new", methods="GET|POST",options={"expose"=true})
      */
     public function new(Request $request): Response
     {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
         $somaton = new Somaton();
-        $form = $this->createForm(SomatonType::class, $somaton);
+        $somaton->setInstitucion($this->getUser()->getInstitucion());
+        $form = $this->createForm(SomatonType::class, $somaton, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('somaton_new')));
         $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($somaton);
-            $em->flush();
+        if ($form->isSubmitted())
+            if ($form->isValid()) {
+                $em->persist($somaton);
+                $em->flush();
+                return new JsonResponse(array('mensaje' =>"Los resultados del somatón fueron registrados satisfactoriamente",
+                    'vehiculo' => $somaton->getVehiculo()->getMatricula(),
+                    'fechainicio' => $somaton->getFechainicio(),
+                    'id' => $somaton->getId(),
+                ));
+            } else {
+                $page = $this->renderView('somaton/_form.html.twig', array(
+                    'form' => $form->createView(),
+                ));
+                return new JsonResponse(array('form' => $page, 'error' => true,));
+            }
 
-            return $this->redirectToRoute('somaton_index');
-        }
 
         return $this->render('somaton/new.html.twig', [
             'somaton' => $somaton,
@@ -46,45 +73,31 @@ class SomatonController extends Controller
         ]);
     }
 
+
     /**
-     * @Route("/{id}", name="somaton_show", methods="GET")
+     * @Route("/{id}/show", name="somaton_show", methods="GET",options={"expose"=true})
      */
-    public function show(Somaton $somaton): Response
+    public function show(Request $request, Somaton $somaton): Response
     {
-        return $this->render('somaton/show.html.twig', ['somaton' => $somaton]);
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $this->denyAccessUnlessGranted('VIEW',$somaton);
+        return $this->render('somaton/_show.html.twig',['somaton'=>$somaton]);
     }
 
     /**
-     * @Route("/{id}/edit", name="somaton_edit", methods="GET|POST")
-     */
-    public function edit(Request $request, Somaton $somaton): Response
-    {
-        $form = $this->createForm(SomatonType::class, $somaton);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('somaton_edit', ['id' => $somaton->getId()]);
-        }
-
-        return $this->render('somaton/edit.html.twig', [
-            'somaton' => $somaton,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="somaton_delete", methods="DELETE")
+     * @Route("/{id}/delete", name="somaton_delete", options={"expose"=true})
      */
     public function delete(Request $request, Somaton $somaton): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$somaton->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($somaton);
-            $em->flush();
-        }
+        if (!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
 
-        return $this->redirectToRoute('somaton_index');
+        $this->denyAccessUnlessGranted('DELETE',$somaton);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($somaton);
+        $em->flush();
+        return new JsonResponse(array('mensaje' =>'Los resultados del somatón fueron eliminados satisfactoriamente'));
     }
 }

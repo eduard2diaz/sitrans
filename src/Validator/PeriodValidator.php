@@ -98,6 +98,8 @@ class PeriodValidator extends ConstraintValidator
                     ['nombre'=>'App\Entity\Hojaruta','foreign'=>'vehiculo','from'=>'fechasalida','to'=>'fechallegada', 'error'=>'Para el período indicado el vehículo tiene una hoja de ruta'],
                     ['nombre'=>'App\Entity\Mantenimiento','foreign'=>'vehiculo','from'=>'fechainicio','to'=>'fechafin', 'error'=>'Para el período indicado el vehículo tiene un mantenimiento'],
                     ['nombre'=>'App\Entity\Reparacion','foreign'=>'vehiculo','from'=>'fechainicio','to'=>'fechafin', 'error'=>'Para el período indicado el vehículo tiene una reparación'],
+                    ['nombre'=>'App\Entity\Pruebalitro','foreign'=>'vehiculo','from'=>'fechainicio','to'=>'fechafin', 'error'=>'Para el período indicado el vehículo tiene una prueba de litro'],
+                    ['nombre'=>'App\Entity\Somaton','foreign'=>'vehiculo','from'=>'fechainicio','to'=>'fechafin', 'error'=>'Para el período indicado el vehículo tiene un somatón'],
                 ];
             foreach ($entities as $entidad){
                 if($entity==$entidad['nombre'])

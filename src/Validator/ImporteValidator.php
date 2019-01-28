@@ -46,7 +46,7 @@ class ImporteValidator extends ConstraintValidator
         if($cantidad!=$importe)
             $this->context->buildViolation($constraint->message)
                 ->setParameter('%importe%', $cantidad)
-                ->atPath($constraint->fecha)
+                ->atPath($constraint->importe)
                 ->addViolation();
     }
 

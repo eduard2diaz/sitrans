@@ -23,16 +23,7 @@ class ChoferController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $em=$this->getDoctrine()->getManager();
-            if($this->isGranted('ROLE_SUPERADMIN'))
-                $consulta = $em->createQuery('SELECT ch.id, ch.nombre, ch.apellido, ch.ci FROM App:Chofer ch');
-            else
-            {
-                $consulta = $em->createQuery('SELECT ch.id, ch.nombre, ch.apellido, ch.ci FROM App:Chofer ch JOIN ch.institucion i WHERE i.id= :institucion');
-                $consulta->setParameter('institucion',$this->getUser()->getInstitucion()->getId());
-            }
-
-            $chofers = $consulta->getResult();
+            $chofers = $this->get('institucion.service')->obtenerChoferesSubordinados();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($chofers),
@@ -56,10 +47,10 @@ class ChoferController extends Controller
             throw $this->createAccessDeniedException();
 
         $chofer = new Chofer();
-        $form = $this->createForm(ChoferType::class, $chofer, array('institucion'=>$this->getUser()->getInstitucion()->getId(),'action' => $this->generateUrl('chofer_new')));
+        $form = $this->createForm(ChoferType::class, $chofer, array('action' => $this->generateUrl('chofer_new')));
         $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
 
+        $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted())
             if ($form->isValid()) {
                 $em->persist($chofer);
@@ -92,6 +83,8 @@ class ChoferController extends Controller
     {
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
+
+        $this->denyAccessUnlessGranted('VIEW',$chofer);
         return $this->render('chofer/_show.html.twig',['chofer'=>$chofer]);
     }
     /**
@@ -102,7 +95,8 @@ class ChoferController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $form = $this->createForm(ChoferType::class, $chofer, array('institucion' => $this->getUser()->getInstitucion()->getId(), 'action' => $this->generateUrl('chofer_edit', array('id' => $chofer->getId()))));
+        $this->denyAccessUnlessGranted('EDIT',$chofer);
+        $form = $this->createForm(ChoferType::class, $chofer, array('action' => $this->generateUrl('chofer_edit', array('id' => $chofer->getId()))));
         $activoOriginal = $form->get('activo')->getData();
         $institucionOriginal = $chofer->getInstitucion()->getId();
         $form->handleRequest($request);
@@ -142,7 +136,8 @@ class ChoferController extends Controller
             'form' => $form->createView(),
             'form_id' => 'chofer_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar chofer'
+            'title' => 'Editar chofer',
+            'eliminable'=>$this->esEliminable($chofer)
         ]);
     }
 
@@ -151,15 +146,20 @@ class ChoferController extends Controller
      */
     public function delete(Request $request, Chofer $chofer): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($chofer))
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$chofer);
         $em = $this->getDoctrine()->getManager();
         $em->remove($chofer);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El chofer fue eliminado satisfactoriamente'));
     }
 
+    /*
+     * Funcionalidad que filtra todos los choferes que poseen las licencias necesarias para conducir un determinado
+     * tipo de vehiculo, esta funcionalidad es utilizada al registrar un nuevo vehiculo
+     */
     /**
      * @Route("/{id}/findbytipovehiculo", name="chofer_findbytipovehiculo", options={"expose"=true})
      */
@@ -186,6 +186,10 @@ class ChoferController extends Controller
         return new JsonResponse($choferes);
     }
 
+    /*
+     * Funcionalidad que se usa en este propio controlador para verificar si el chofer tiene o no un vehiculo asignado,
+     * en caso de ser asi devuelve la matricula de dicho vehiculo
+     */
     private function tieneVehiculoAsignado($chofer){
         $em=$this->getDoctrine()->getManager();
         $consulta=$em->createQuery('SELECT v.matricula FROM App:Vehiculo v JOIN v.chofer c WHERE c.id= :id');
@@ -195,6 +199,10 @@ class ChoferController extends Controller
     }
 
 
+    /*
+     * Funcionalidad utilizada por este controlador para en caso de que se desactive a un chofer y este tenga bajo su
+     * responsabilidad a un determinado vehiculo, este ultimo sea tambien desactivado temporalmente
+     */
     private function disableVehiculo($chofer){
         $em=$this->getDoctrine()->getManager();
         $estados=[0,1];
@@ -206,8 +214,21 @@ class ChoferController extends Controller
             $value->setEstado(2);
             $em->persist($value);
         }
-
         $em->flush();
+    }
 
+    /*
+     * Funcionalidad que comprueba que un chofer es eliminable, es decir que el no tiene ningun vehiculo
+     * bajo su responsabilidad
+     */
+    private function esEliminable(Chofer $chofer){
+        $em=$this->getDoctrine()->getManager();
+        $entidades=['Vehiculo','Traza'];
+        foreach ($entidades as $value){
+            $chofer=$em->getRepository("App:$value")->findOneByChofer($chofer);
+            if(null!=$chofer)
+                return false;
+        }
+        return true;
     }
 }

@@ -29,6 +29,30 @@ class TarifaKwValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\TarifaKw');
         }
 
+        if ($constraint->em) {
+            $em = $this->registry->getManager($constraint->em);
+            if (!$em) {
+                throw new ConstraintDefinitionException(sprintf('Object manager "%s" does not exist.', $constraint->em));
+            }
+        } else {
+            $em = $this->registry->getManagerForClass(get_class($value));
+
+            if (!$em) {
+                throw new ConstraintDefinitionException(sprintf('Unable to find the object manager associated with an entity of class "%s".', get_class($value)));
+            }
+        }
+
+        $fecha = $pa->getValue($value, 'fecha');
+        $cadena = "SELECT COUNT(r) FROM App:RecargaKw r WHERE r.fecha>= :fecha";
+        $consulta = $em->createQuery($cadena);
+        $consulta->setParameter('fecha', $fecha);
+        $result = $consulta->getResult();
+        if ($result[0][1] > 0)
+            $this->context->buildViolation("Ya existe una recarga de kilowatts con fecha superior a %fecha%")
+                ->setParameter('%fecha%', $fecha->format('d-m-Y'))
+                ->atPath('fecha')
+                ->addViolation();
+
 
         $total=$value->getRangoTarifaKws()->count();
         if($total==0)

@@ -11,17 +11,15 @@
                     </h3>
                 </div>
             </div>
-            {% if not is_granted('ROLE_SUPERADMIN') %}
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
                     <li class="m-portlet__nav-item">
-                        <a data-href="{{ path('vehiculo_new') }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Agregar un vehículo">
+                        <a data-href="{{ path('vehiculo_new') }}" class="btn btn-sm edicion"  data-toggle="m-tooltip" data-placement="top" title="" data-original-title="Registrar un vehículo">
                             <span><i class="flaticon-add"></i></span> Nuevo
                         </a>
                     </li>
                 </ul>
             </div>
-            {% endif %}
         </div>
         <div class="m-portlet__body">
                        <!--begin: Datatable -->
@@ -37,10 +35,10 @@
                         Matrícula
                     </th>
                     <th>
-                        Chofer
+                        Marca
                     </th>
                     <th>
-                        Responsable
+                        Tipo de combustible
                     </th>
                     <th>
                     </th>
@@ -56,10 +54,10 @@
                         Matrícula
                     </th>
                     <th>
-                        Chofer
+                        Marca
                     </th>
                     <th>
-                        Responsable
+                        Tipo de combustible
                     </th>
                     <th>
                     </th>

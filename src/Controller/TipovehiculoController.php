@@ -116,7 +116,8 @@ class TipovehiculoController extends Controller
             'form' => $form->createView(),
             'form_id' => 'tipovehiculo_edit',
             'action' => 'Actualizar',
-            'title' => 'Editar tipo de vehículo'
+            'title' => 'Editar tipo de vehículo',
+            'eliminable' => $this->esEliminable($tipovehiculo)
         ]);
     }
 
@@ -125,12 +126,20 @@ class TipovehiculoController extends Controller
      */
     public function delete(Request $request, Tipovehiculo $tipovehiculo): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($tipovehiculo))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($tipovehiculo);
         $em->flush();
         return new JsonResponse(array('mensaje' =>'El tipo de vehículo fue eliminado satisfactoriamente'));
+    }
+
+    /*
+     * Funcion que devuelve un booleano indicando si un tipo de vehiculo es o no eliminable
+     */
+    private function esEliminable(Tipovehiculo $tipovehiculo){
+        $em=$this->getDoctrine()->getManager();
+        return null==$em->getRepository('App:Vehiculo')->findOneByTipovehiculo($tipovehiculo);
     }
 }

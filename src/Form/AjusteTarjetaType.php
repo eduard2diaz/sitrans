@@ -28,13 +28,8 @@ class AjusteTarjetaType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('monto', IntegerType::class, array('label'=>'Cantidad de litros','attr' => array(
-                'autocomplete' => 'off',
-                'class' => 'form-control input-medium'
-            )))
             ->add('cantefectivo', NumberType::class, array('label'=>'Cantidad de efectivo','attr' => array(
                 'autocomplete' => 'off',
-                'readonly'=>true,
                 'class' => 'form-control input-medium'
             )))
             ->add('tipo',ChoiceType::class,array(

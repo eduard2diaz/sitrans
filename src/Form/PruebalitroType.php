@@ -24,7 +24,13 @@ class PruebalitroType extends AbstractType
             $disabled=true;
 
         $builder
-            ->add('fecha', TextType::class, array('label'=>'Fecha',
+            ->add('fechainicio', TextType::class, array('label'=>'Fecha de inicio',
+                'attr' => array(
+                'autocomplete' => 'off',
+                'disabled'=>$disabled,
+                'class' => 'form-control input-medium'
+            )))
+            ->add('fechafin', TextType::class, array('label'=>'Fecha de fin',
                 'attr' => array(
                 'autocomplete' => 'off',
                 'disabled'=>$disabled,
@@ -38,7 +44,10 @@ class PruebalitroType extends AbstractType
                 'class' => 'form-control input-medium',
                 'min'=>0.5
             )))
-
+            /*
+             *A diferencia del mantenimiento  y la reparacion la prueba del litro se le hace solo a los vehiculos
+             * activos
+             */
             ->add('vehiculo',EntityType::class,array(
                 'label'=>'Vehículo',
                 'auto_initialize'=>false,
@@ -58,7 +67,9 @@ class PruebalitroType extends AbstractType
             ))
         ;
 
-        $builder->get('fecha')
+        $builder->get('fechainicio')
+            ->addModelTransformer(new DateTimetoStringTransformer());
+        $builder->get('fechafin')
             ->addModelTransformer(new DateTimetoStringTransformer());
     }
 

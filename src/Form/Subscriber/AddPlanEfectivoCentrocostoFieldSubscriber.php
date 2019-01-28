@@ -2,7 +2,8 @@
 
 namespace App\Form\Subscriber;
 
-use App\Entity\Area;
+use App\Entity\Centrocosto;
+use App\Entity\Cuenta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -19,7 +20,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  *
  * @author eduardo
  */
-class AddAreaFieldSubscriber  implements EventSubscriberInterface{
+class AddPlanEfectivoCentrocostoFieldSubscriber  implements EventSubscriberInterface{
 
     private $factory;
     /**
@@ -47,29 +48,28 @@ class AddAreaFieldSubscriber  implements EventSubscriberInterface{
         if(null===$data){
             return;
         }
-        $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
-        $this->addElements($event->getForm(), $institucion);
+        $cuenta= is_array($data) ? $data['cuenta'] : $data->getCuenta();
+        $this->addElements($event->getForm(), $cuenta);
     }
 
-    protected function addElements($form, $institucion) {
-        $form->add($this->factory->createNamed('area',EntityType::class,null,array(
-            'label'=>'Área',
+    protected function addElements($form, $cuenta) {
+        $form->add($this->factory->createNamed('centrocosto',EntityType::class,null,array(
+            'label'=>'Centro de costo',
             'required'=>true,
             'auto_initialize'=>false,
-            'class'         =>'App:Area',
-            'query_builder'=>function(EntityRepository $repository)use($institucion){
-                $qb=$repository->createQueryBuilder('area')
-                    ->innerJoin('area.ccosto','cc')
-                    ->innerJoin('cc.cuenta','c')
-                    ->innerJoin('c.institucion','i');
-                if($institucion instanceof Area){
-                    $qb->where('i.id = :id')
-                        ->setParameter('id',$institucion);
-                }elseif(is_numeric($institucion)){
-                    $qb->where('i.id = :id')
-                        ->setParameter('id',$institucion);
+            'multiple'=>true,
+            'class'         =>'App:Centrocosto',
+            'query_builder'=>function(EntityRepository $repository)use($cuenta){
+                $qb=$repository->createQueryBuilder('centrocosto')
+                    ->innerJoin('centrocosto.cuenta','c');
+                if($cuenta instanceof Cuenta){
+                    $qb->where('c.id = :id')
+                        ->setParameter('id',$cuenta);
+                }elseif(is_numeric($cuenta)){
+                    $qb->where('c.id = :id')
+                        ->setParameter('id',$cuenta);
                 }else{
-                    $qb->where('i.id = :id')
+                    $qb->where('c.id = :id')
                         ->setParameter('id',null);
                 }
                 return $qb;
@@ -82,11 +82,11 @@ class AddAreaFieldSubscriber  implements EventSubscriberInterface{
         $form = $event->getForm();
 
        if(null==$data->getId()){
-           $form->add('area',null,array('label'=>'Área','required'=>true,'choices'=>[]));
+           $form->add('centrocosto',null,array('label'=>'Centro de costo','required'=>true,'choices'=>array()));
         }else
        {
-           $institucion= is_array($data) ? $data['institucion'] : $data->getInstitucion()->getId();
-           $this->addElements($event->getForm(), $institucion);
+           $cuenta= is_array($data) ? $data['cuenta'] : $data->getCuenta();
+           $this->addElements($event->getForm(), $cuenta);
        }
 
     }

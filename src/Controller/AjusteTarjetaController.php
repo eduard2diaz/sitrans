@@ -21,7 +21,7 @@ class AjusteTarjetaController extends Controller
     public function index(Request $request): Response
     {
         if($request->isXmlHttpRequest()) {
-            $ajustetarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.monto as cantidadlitros, r.cantefectivo as cantidadefectivo FROM App:AjusteTarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
+            $ajustetarjetas = $this->getDoctrine()->getManager()->createQuery('SELECT r.id , t.codigo as tarjeta, r.fecha, r.cantefectivo as cantidadefectivo FROM App:AjusteTarjeta r JOIN r.tarjeta t JOIN t.tipotarjeta tt JOIN tt.institucion i WHERE i.id= :id')->setParameter('id',$this->getUser()->getInstitucion()->getId())->getResult();
             return new JsonResponse(
                 $result = [
                     'iTotalRecords'        => count($ajustetarjetas),
@@ -56,7 +56,6 @@ class AjusteTarjetaController extends Controller
                 $em->flush();
                 return new JsonResponse(array('mensaje' =>"El ajuste fue registrado satisfactoriamente",
                     'fecha' => $ajustetarjeta->getFecha(),
-                    'cantidadlitros' => $ajustetarjeta->getMonto(),
                     'cantidadefectivo' => $ajustetarjeta->getCantefectivo(),
                     'tarjeta' => $ajustetarjeta->getTarjeta()->getCodigo(),
                     'id' => $ajustetarjeta->getId(),
@@ -83,11 +82,11 @@ class AjusteTarjetaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$ajustetarjeta);
         $tarjeta=$ajustetarjeta->getTarjeta()->getId();
-
         $mes=$ajustetarjeta->getFecha()->format('m');
         $anno=$ajustetarjeta->getFecha()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
+        $cierre=$this->get('tarjeta.service')->existeCierreCombustible($anno,$mes,$tarjeta);
 
         return $this->render('ajustetarjeta/_show.html.twig',['ajuste'=>$ajustetarjeta,'cierre'=>$cierre]);
     }
@@ -100,6 +99,7 @@ class AjusteTarjetaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$ajustetarjeta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($ajustetarjeta);
         $em->flush();
