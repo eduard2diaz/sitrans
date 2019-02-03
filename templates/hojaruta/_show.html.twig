@@ -50,11 +50,11 @@
                 </table>
             </div>
             <div class="modal-footer">
-                {% if cierre is null %}
-                    <a class="btn btn-info edicion" data-href="{{ path('hojaruta_edit',{'id':hojaruta.id}) }}"><i class="flaticon-edit-1"></i> Editar</a>
-                    <a class="btn btn-danger eliminar_hojaruta" data-href="{{ path('hojaruta_delete',{'id':hojaruta.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                {% if eliminable==true %}
+                    <a class="btn btn-info btn-sm edicion" data-href="{{ path('hojaruta_edit',{'id':hojaruta.id}) }}"><i class="flaticon-edit-1"></i> Editar</a>
+                    <a class="btn btn-danger btn-sm eliminar_hojaruta" data-href="{{ path('hojaruta_delete',{'id':hojaruta.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
                 {% endif %}
-                <a class="btn btn-metal" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

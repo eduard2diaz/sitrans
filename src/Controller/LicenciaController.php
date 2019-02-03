@@ -95,7 +95,9 @@ class LicenciaController extends Controller
                 $page = $this->renderView('licencia/_form.html.twig', array(
                     'form' => $form->createView(),
                     'form_id' => 'licencia_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($licencia),
+                    'licencia' => $licencia,
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
@@ -115,7 +117,7 @@ class LicenciaController extends Controller
      */
     public function delete(Request $request, Licencia $licencia): Response
     {
-        if (!$request->isXmlHttpRequest() || $this->esEliminable($licencia))
+        if (!$request->isXmlHttpRequest() || false==$this->esEliminable($licencia))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();

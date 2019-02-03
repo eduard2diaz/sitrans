@@ -85,12 +85,12 @@ class ChipController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$chip);
         $tarjeta=$chip->getTarjeta()->getId();
-
         $mes=$chip->getFecha()->format('m');
         $anno=$chip->getFecha()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreCombustible($anno,$mes,$tarjeta);
-        return $this->render('chip/_show.html.twig',['chip'=>$chip,'cierre'=>$cierre]);
+        $esEliminable=$chip==$this->get('tarjeta.service')->ultimaOperacionTarjeta($tarjeta,$chip->getFecha());
+        return $this->render('chip/_show.html.twig',['chip'=>$chip,'eliminable'=>$esEliminable]);
     }
 
     /**
@@ -98,9 +98,10 @@ class ChipController extends Controller
      */
     public function delete(Request $request, Chip $chip): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() ||  $chip!=$this->get('tarjeta.service')->ultimaOperacionTarjeta($chip->getTarjeta(),$chip->getFecha()))
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$chip);
         $em = $this->getDoctrine()->getManager();
         $em->remove($chip);
         $em->flush();

@@ -27,12 +27,12 @@ class CierreMesTarjetaType extends AbstractType
                 'autocomplete' => 'off',
                 'class' => 'form-control input-medium'
             )))
-            ->add('restantecombustible', IntegerType::class, array('label' => 'Combustible restante', 'attr' => array(
+            ->add('restantecombustible', NumberType::class, array('label' => 'Combustible restante', 'attr' => array(
                 'autocomplete' => 'off',
                 'readonly' => $readonly,
                 'class' => 'form-control input-medium'
             )))
-            ->add('combustibleconsumido', IntegerType::class, array('label' => 'Combustible consumido', 'attr' => array(
+            ->add('combustibleconsumido', NumberType::class, array('label' => 'Combustible consumido', 'attr' => array(
                 'autocomplete' => 'off',
                 'readonly' => $readonly,
                 'class' => 'form-control input-medium'

@@ -107,9 +107,11 @@ class InstitucionController extends Controller
                 ));
             } else {
                 $page = $this->renderView('institucion/_form.html.twig', array(
+                    'institucion' => $institucion,
                     'form' => $form->createView(),
                     'form_id' => 'institucion_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($institucion)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

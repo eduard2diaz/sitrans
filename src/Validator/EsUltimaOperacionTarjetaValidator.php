@@ -32,10 +32,12 @@ class EsUltimaOperacionTarjetaValidator extends ConstraintValidator
         $foreign = $pa->getValue($value, $constraint->foreign);
         $fecha = $pa->getValue($value, $constraint->fecha);
 
-        if (!$foreign instanceof  Tarjeta)
+        if ($foreign instanceof  \App\Entity\Vehiculo)
+            $foreign=$foreign->getResponsable()->getTarjetas()->first();
+        elseif (!$foreign instanceof  Tarjeta)
             throw new \Exception('Llave foranea incorrecta');
 
-            if(null==$this->registry->obtenerUltimaOperacionTarjeta($foreign->getId(),$fecha)) {
+            if(null!=$this->registry->ultimaOperacionTarjeta($foreign->getId(),$fecha)) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('%tarjeta%', $foreign->getCodigo())
                     ->atPath('tarjeta')

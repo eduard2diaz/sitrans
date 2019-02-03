@@ -7,19 +7,20 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class CierreKw extends Constraint
+class TablaDistancia extends Constraint
 {
-    public $message = 'Ya el reloj %reloj% tiene cierre en este mes';
-    public $service = 'cierrekw.validator';
+    public $message = 'Ya existe un tabla de distancia con origen %origen% y destino %destino% o viceversa';
+    public $service = 'tabladistancia.validator';
+    public $em = null;
     public $repositoryMethod = 'findBy';
-    public $fecha;
-    public $foreign;
-    public $errorPath = 'reloj';
+    public $origen;
+    public $destino;
+    public $errorPath = 'origen';
     public $ignoreNull = true;
 
     public function getRequiredOptions()
     {
-        return ['fecha','foreign'];
+        return ['origen','destino'];
     }
 
     /**
@@ -39,7 +40,7 @@ class CierreKw extends Constraint
 
     public function getDefaultOption()
     {
-        return 'foreign';
+        return 'origen';
     }
 
 }

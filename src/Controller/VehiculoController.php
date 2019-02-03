@@ -112,9 +112,11 @@ class VehiculoController extends Controller
                 ));
             } else {
                 $page = $this->renderView('vehiculo/_form.html.twig', array(
+                    'vehiculo' => $vehiculo,
                     'form' => $form->createView(),
                     'form_id' => 'vehiculo_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($vehiculo)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

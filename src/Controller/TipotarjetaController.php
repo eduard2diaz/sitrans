@@ -95,9 +95,11 @@ class TipotarjetaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('tipotarjeta/_form.html.twig', array(
+                    'tipotarjeta' => $tipotarjeta,
                     'form' => $form->createView(),
                     'form_id' => 'tipotarjeta_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($tipotarjeta)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

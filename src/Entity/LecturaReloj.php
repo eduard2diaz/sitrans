@@ -5,11 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Validator\CierreKw as CierreKwConstraint;
+use App\Validator\EsUltimaOperacionKwArea as UltimaOperacionConstraint;
 
 /**
  * @ORM\Entity
- * @CierreKwConstraint(foreign="reloj",fecha="fecha")
+ * @UltimaOperacionConstraint(foreign="reloj",fecha="fecha")
  */
 class LecturaReloj
 {
@@ -125,19 +125,6 @@ class LecturaReloj
         if($this->getReloj()->getKwrestante()<$this->getLectura())
             $context->buildViolation('El reloj seleccionado no tiene suficientes kilowatts')
                 ->atPath($path)
-                ->addViolation();
-
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
                 ->addViolation();
 
         if (null == $this->getUsuario())

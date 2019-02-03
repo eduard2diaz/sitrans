@@ -7,14 +7,14 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class ExisteCierreCombustible extends Constraint
+class EsUltimaOperacionKwArea extends Constraint
 {
-    public $message = 'Ya la tarjeta %tarjeta% tiene cierre en este mes';
-    public $service = 'existecierrecombustible.validator';
+    public $message = 'Ya el reloj %reloj% tiene una operación con fecha superior';
+    public $service = 'esultimaoperacionkwarea.validator';
     public $repositoryMethod = 'findBy';
     public $fecha;
     public $foreign;
-    public $errorPath = 'tarjeta';
+    public $errorPath = 'reloj';
     public $ignoreNull = true;
 
     public function getRequiredOptions()

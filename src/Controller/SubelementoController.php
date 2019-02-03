@@ -108,9 +108,11 @@ class SubelementoController extends Controller
                 ));
             } else {
                 $page = $this->renderView('subelemento/_form.html.twig', array(
+                    'subelemento' => $subelemento,
                     'form' => $form->createView(),
                     'form_id' => 'subelemento_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($subelemento)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

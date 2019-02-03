@@ -108,9 +108,11 @@ class RelojController extends Controller
                 ));
             } else {
                 $page = $this->renderView('reloj/_form.html.twig', array(
+                    'reloj' => $reloj,
                     'form' => $form->createView(),
                     'form_id' => 'reloj_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($reloj)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

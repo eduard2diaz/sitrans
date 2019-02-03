@@ -29,6 +29,13 @@ class Traza
     private $fecha;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="fechacaptacion", type="datetime", nullable=true)
+     */
+    private $fechacaptacion;
+
+    /**
      * @var int|null
      *
      * @ORM\Column(name="identificador", type="integer", nullable=true)
@@ -251,6 +258,22 @@ class Traza
         $this->efectivo = $efectivo;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getFechacaptacion(): ?\DateTime
+    {
+        return $this->fechacaptacion;
+    }
+
+    /**
+     * @param \DateTime|null $fechacaptacion
+     */
+    public function setFechacaptacion(?\DateTime $fechacaptacion): void
+    {
+        $this->fechacaptacion = $fechacaptacion;
     }
 
 }

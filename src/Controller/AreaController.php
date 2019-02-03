@@ -109,9 +109,11 @@ class AreaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('area/_form.html.twig', array(
+                    'area' => $area,
                     'form' => $form->createView(),
                     'form_id' => 'area_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($area)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

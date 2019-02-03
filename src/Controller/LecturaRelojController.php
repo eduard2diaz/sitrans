@@ -85,12 +85,12 @@ class LecturaRelojController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$lecturareloj->getReloj());
         $area=$lecturareloj->getReloj()->getArea()->getId();
-
         $mes=$lecturareloj->getFecha()->format('m');
         $anno=$lecturareloj->getFecha()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreKilowatts($anno,$mes,$area);
-        return $this->render('lectura_reloj/_show.html.twig',['lecturareloj'=>$lecturareloj,'cierre'=>$cierre]);
+        $eliminable=$this->get('reloj.service')->ultimaOperacionKwArea($area,$lecturareloj->getFecha())==$lecturareloj;
+        return $this->render('lectura_reloj/_show.html.twig',['lecturareloj'=>$lecturareloj,'eliminable'=>$eliminable]);
     }
 
     /**
@@ -98,7 +98,10 @@ class LecturaRelojController extends Controller
      */
     public function delete(Request $request, LecturaReloj $lecturareloj): Response
     {
-        if (!$request->isXmlHttpRequest())
+        $this->denyAccessUnlessGranted('VIEW',$lecturareloj->getReloj());
+        $area=$lecturareloj->getReloj()->getArea()->getId();
+
+        if (!$request->isXmlHttpRequest() || $lecturareloj!=$this->get('reloj.service')->ultimaOperacionKwArea($area,$lecturareloj->getFecha()))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();

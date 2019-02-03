@@ -82,7 +82,6 @@ class CentrocostoValidator extends ConstraintValidator
                     ->setParameter('%nombre%', $value['valor'])
                     ->atPath($value['campo'])
                     ->addViolation();
-                break;
             }
 
         }

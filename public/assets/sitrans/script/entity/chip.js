@@ -63,13 +63,12 @@ var chip = function () {
                     }
                     ,{targets:-1,title:" ",orderable:!1,render:function(a,e,t,n){
                         return' <ul class="m-nav m-nav--inline m--pull-right">'+
-                            '<li class="m-nav__item"><a class="btn btn-metal m-btn m-btn--icon btn-sm chip_show" data-href="'+Routing.generate('chip_show',{id:t.id})+'"><i class="flaticon-eye"></i> VISUALIZAR</a></li>';
+                            '<li class="m-nav__item"><a class="btn btn-metal text-uppercase m-btn m-btn--icon btn-sm chip_show" data-href="'+Routing.generate('chip_show',{id:t.id})+'"><i class="flaticon-eye"></i> Visualizar</a></li>';
                     }
                 }],
 
             });
     }
-
 
     var show = function () {
         $('body').on('click', 'a.chip_show', function (evento)
@@ -205,7 +204,7 @@ var chip = function () {
                     callback: function (result) {
                         if (result == true)
                             $.ajax({
-                                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                                type: 'get',
                                 url: link,
                                 beforeSend: function () {
                                     mApp.block("body",
@@ -227,8 +226,6 @@ var chip = function () {
                             });
                     }
                 });
-
-
         });
     }
 
@@ -237,7 +234,7 @@ var chip = function () {
             var value = $(this).val();
             if (value >= 1 && $('input#chip_fecha').val()!="")
                 $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                    type: 'get',
                     dataType: 'html',
                     url: Routing.generate('tarjeta_cantidadefectivo',{'id':value}),
                     data: {

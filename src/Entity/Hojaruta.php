@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Period as PeriodConstraint;
 use App\Validator\Importe as ImporteConstraint;
-use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
+use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
 
 /**
  * Hojaruta
@@ -16,7 +16,7 @@ use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
  * @ORM\Entity
  * @PeriodConstraint(from="fechasalida",to="fechallegada",foreign="vehiculo",message="Ya existe una hoja de ruta para el período indicado")
  * @ImporteConstraint(fecha="fechasalida",litros="litrosconsumidos",foreign="vehiculo",importe="importe")
- * @CierreCombustibleConstraint(foreign="vehiculo",fecha="fechasalida")
+ * @UltimaOperacionConstraint(foreign="vehiculo",fecha="fechasalida")
  */
 class Hojaruta
 {
@@ -324,19 +324,6 @@ class Hojaruta
         if(null==$this->getId() && $this->getLitrosconsumidos()>$this->getVehiculo()->getLitrosentanque())
             $context->buildViolation('Seleccione el vehículo con suficiente combustible')
                 ->atPath('vehiculo')
-                ->addViolation();
-
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFechasalida()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fechasalida')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFechasalida()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fechasalida')
                 ->addViolation();
     }
 

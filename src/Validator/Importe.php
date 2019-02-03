@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class Importe extends Constraint
 {
-    public $message = 'El importe debe ser %importe%';
+    public $message = 'La cantidad de litros debe ser %litro%';
     public $service = 'importe.validator';
     public $em = null;
     public $repositoryMethod = 'findBy';

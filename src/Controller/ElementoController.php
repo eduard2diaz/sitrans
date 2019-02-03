@@ -98,9 +98,11 @@ class ElementoController extends Controller
                 ));
             } else {
                 $page = $this->renderView('elemento/_form.html.twig', array(
+                    'elemento' => $elemento,
                     'form' => $form->createView(),
                     'form_id' => 'elemento_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($elemento)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

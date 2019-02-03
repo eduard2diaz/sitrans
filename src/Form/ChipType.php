@@ -79,7 +79,7 @@ class ChipType extends AbstractType
 
                 'class' => 'form-control input-medium'
             )))
-            ->add('litrosextraidos', IntegerType::class, array('label'=>'Litros extraídos','attr' => array(
+            ->add('litrosextraidos', NumberType::class, array('label'=>'Litros extraídos','attr' => array(
                 'autocomplete' => 'off',
                 'readonly'=>true,
                 'class' => 'form-control input-medium'

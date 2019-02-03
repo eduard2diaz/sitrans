@@ -177,11 +177,33 @@ class PrecioCombustibleController extends Controller
             throw new \Exception("La tarjeta indicada no existe o usted no tiene acceso a la misma");
 
         $tipocombustible=$tarjeta->getTipocombustible();
-        $tarifa=$this->get('energia.service')->importeCombustible($tipocombustible,$fecha) ;
+        $tarifa=$this->get('tarjeta.service')->importeCombustible($tipocombustible,$fecha) ;
 
         if(!$tarifa)
             throw new \Exception("No existe la tarifa");
 
-        return new Response(floor($importe/$tarifa[0]['importe']));
+        return new Response($importe/$tarifa[0]['importe']);
+    }
+
+    /**
+     * @Route("/findbyvehiculo", name="preciocombustible_findbyvehiculo", options={"expose"=true})
+     */
+    public function findByVehiculo(Request $request): Response
+    {
+        if(!$request->isXmlHttpRequest())
+            throw $this->createAccessDeniedException();
+
+        $precio=$request->get('litros');
+        $fecha=$request->get('fecha');
+        $em=$this->getDoctrine()->getManager();
+        $vehiculo=$request->get('vehiculo');
+        $vehiculo=$em->getRepository('App:Vehiculo')->find($vehiculo);
+        $tipocombustible=$vehiculo->getResponsable()->getTarjetas()->first()->getTipocombustible();
+        $importe=$this->get('tarjeta.service')->importeCombustible($tipocombustible,$fecha);
+
+        if(!$importe)
+            throw new \Exception("No existe el importe");
+
+        return new Response($importe[0]['importe']*$precio);
     }
 }

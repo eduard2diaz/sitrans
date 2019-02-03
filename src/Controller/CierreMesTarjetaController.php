@@ -23,6 +23,7 @@ class CierreMesTarjetaController extends Controller
      */
     public function index(CierreMesCombustible $cierre, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('VIEW',$cierre);
         if ($request->isXmlHttpRequest()) {
             $consulta = 'SELECT c.id , t.codigo as tarjeta, c.fecha, c.restantecombustible as combustiblerestante, c.restanteefectivo as efectivorestante
                         FROM App:CierreMesTarjeta c JOIN c.cierre c1  JOIN c.tarjeta t   WHERE c1.id =:id';
@@ -52,6 +53,7 @@ class CierreMesTarjetaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierre);
         $cierremestarjeta = new CierreMesTarjeta();
         $cierremestarjeta->setCierre($cierre);
         $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_new', array('id' => $cierre->getId()))));
@@ -89,6 +91,7 @@ class CierreMesTarjetaController extends Controller
      */
     public function show(Request $request, CierreMesTarjeta $cierremestarjeta): Response
     {
+        $this->denyAccessUnlessGranted('VIEW',$cierremestarjeta->getCierre());
         return $this->render('cierremestarjeta/_show.html.twig', ['cierre' => $cierremestarjeta]);
     }
 
@@ -100,6 +103,7 @@ class CierreMesTarjetaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierremestarjeta->getCierre());
         $form = $this->createForm(CierreMesTarjetaType::class, $cierremestarjeta, array('action' => $this->generateUrl('cierremestarjeta_edit', array('id' => $cierremestarjeta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -141,6 +145,7 @@ class CierreMesTarjetaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierremestarjeta->getCierre());
         $em = $this->getDoctrine()->getManager();
         $em->remove($cierremestarjeta);
         $em->flush();
@@ -157,7 +162,7 @@ class CierreMesTarjetaController extends Controller
 
         $anno = $cierre->getAnno();
         $mes = $cierre->getMes();
-        return new JsonResponse($this->get('energia.service')->estadoCombustible($tarjeta->getId(), $anno, $mes));
+        return new JsonResponse($this->get('tarjeta.service')->estadoCombustible($tarjeta->getId(), $anno, $mes));
     }
 
     /**
@@ -178,7 +183,7 @@ class CierreMesTarjetaController extends Controller
         foreach ($tarjetas as $value) {
             $existeCierre = $em->getRepository('App:CierreMesTarjeta')->findOneBy(['cierre' => $cierre, 'tarjeta' => $value]);
             if (!$existeCierre) {
-                $estado = $this->get('energia.service')->estadoCombustible($value->getId(), $anno, $mes);
+                $estado = $this->get('tarjeta.service')->estadoCombustible($value->getId(), $anno, $mes);
                 $cierretarjeta = new CierreMesTarjeta();
                 $cierretarjeta->setTarjeta($value);
                 $cierretarjeta->setCierre($cierre);

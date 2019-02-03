@@ -28,7 +28,7 @@ class ChoferType extends AbstractType
             ->add('ci',TextType::class,array('label'=>'Carnet de identidad','attr'=>array('maxlength'=>11,'autocomplete'=>'off','placeholder'=>'Escriba el carnet de identidad','class'=>'form-control input-medium','pattern' => '^[0-9]{11}$')))
             ->add('direccion',TextareaType::class,array('label'=>'Dirección particular','attr'=>array('placeholder'=>'Escriba la dirección particular','class'=>'form-control input-medium')))
             ->add('idlicencia',null,array('label'=>'Licencia','required'=>true,'attr'=>array('class'=>'form-control input-medium')))
-            ->add('institucion', null, array('choices'=>$hijas,'label' => 'Institución','attr' => array('class' => 'form-control input-medium')))
+            ->add('institucion', null, array('required'=>true,'choices'=>$hijas,'label' => 'Institución','attr' => array('class' => 'form-control input-medium')))
             ->add('activo')
         ;
     }

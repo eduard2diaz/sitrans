@@ -85,14 +85,15 @@ class HojarutaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$hojaruta);
         $em = $this->getDoctrine()->getManager();
         $trazahruta = $em->getRepository('App:Traza')->findOneBy(['identificador' => $hojaruta->getId(), 'entity' => get_class($hojaruta)]);
         $tarjeta = $trazahruta->getTarjeta();
         $mes = $hojaruta->getFechasalida()->format('m');
         $anno = $hojaruta->getFechasalida()->format('Y');
-        $cierre = $this->get('energia.service')->existeCierreCombustible($anno, $mes, $tarjeta);
+        $eliminable = $this->get('tarjeta.service')->ultimaOperacionTarjeta($tarjeta)==$hojaruta;
 
-        return $this->render('hojaruta/_show.html.twig', ['hojaruta' => $hojaruta, 'cierre' => $cierre]);
+        return $this->render('hojaruta/_show.html.twig', ['hojaruta' => $hojaruta, 'eliminable' => $eliminable]);
     }
 
     /**
@@ -103,6 +104,7 @@ class HojarutaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('EDIT',$hojaruta);
         $form = $this->createForm(HojarutaType::class, $hojaruta, array('institucion'=>$this->getUser()->getInstitucion(),'action' => $this->generateUrl('hojaruta_edit', array('id' => $hojaruta->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -141,9 +143,14 @@ class HojarutaController extends Controller
      */
     public function delete(Request $request, Hojaruta $hojaruta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        $em = $this->getDoctrine()->getManager();
+        $trazahruta = $em->getRepository('App:Traza')->findOneBy(['identificador' => $hojaruta->getId(), 'entity' => get_class($hojaruta)]);
+        $tarjeta = $trazahruta->getTarjeta();
+
+        if (!$request->isXmlHttpRequest() || $this->get('tarjeta.service')->ultimaOperacionTarjeta($tarjeta)!=$hojaruta)
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$hojaruta);
         $em = $this->getDoctrine()->getManager();
         $em->remove($hojaruta);
         $em->flush();

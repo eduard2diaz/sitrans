@@ -33,111 +33,127 @@ class TarjetaService
         return $this->em;
     }
 
+
     /*
-     * Funcionalidad utilizada en los gestionar de las recargas y ajustes de tarjeta, que comprueba si se ha hecho el
-     * cierre mensual de una tarjeta en un determinado mes, anno
-     * ESTA FUNCIONALIDAD ES CONSUMIDA POR EL VALIDADOR CierreCombustibleValidator
+     * Funcionalidad que devuelve la ultima operacin que se realizo sobre la tarjeta
      */
-    public function existeCierreCombustible($anno,$mes,$tarjeta)
+    public function ultimaOperacionTarjeta($tarjeta,$fecha=null)
     {
         $em = $this->getEm()->getManager();
-        $consulta = $em->createQuery('SELECT ct.id FROM App:CierreMesTarjeta ct join ct.tarjeta t JOIN ct.cierre c WHERE t.id= :tarjeta AND c.mes= :mes AND c.anno= :anno');
-        $consulta->setParameters(['tarjeta' => $tarjeta, 'mes' => $mes, 'anno' => $anno]);
+        $entities = ['CierreMesTarjeta','Recargatarjeta', 'AjusteTarjeta', 'Chip'];
+        $ultimaOperacion=null;
+
+        if(null!=$fecha) {
+            $parameters = ['tarjeta' => $tarjeta, 'fecha' => $fecha];
+            $consulta = $em->createQuery("SELECT h FROM App:Hojaruta h join h.vehiculo v join v.responsable r join r.tarjetas t WHERE t.id= :tarjeta AND h.fechasalida>=:fecha ORDER BY h.fechasalida DESC");
+        }else{
+            $parameters = ['tarjeta' => $tarjeta];
+            $consulta = $em->createQuery("SELECT h FROM App:Hojaruta h join h.vehiculo v join v.responsable r join r.tarjetas t WHERE t.id= :tarjeta ORDER BY h.fechasalida DESC");
+        }
+        $consulta->setParameters($parameters);
         $consulta->setMaxResults(1);
-        $cierre = $consulta->getResult();
-        return empty($cierre) ? null : $cierre[0]['id'];
+        $operacion = $consulta->getResult();
+        if(!empty($operacion)) {
+            $operacion = $operacion[0];
+            if (null != $operacion && $operacion->getFechasalida() >= $fecha) {
+                $fecha = $operacion->getFechasalida();
+                $ultimaOperacion = $operacion;
+            }
+        }
+
+        foreach ($entities as $value) {
+            if(null!=$fecha) {
+                $parameters = ['tarjeta' => $tarjeta, 'fecha' => $fecha];
+                $consulta = $em->createQuery("SELECT r FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta AND r.fecha>=:fecha ORDER BY r.fecha DESC");
+            }else{
+                $parameters = ['tarjeta' => $tarjeta];
+                $consulta = $em->createQuery("SELECT r FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta ORDER BY r.fecha DESC");
+            }
+            $consulta->setParameters($parameters);
+            $consulta->setMaxResults(1);
+            $operacion = $consulta->getResult();
+            if(empty($operacion))
+                continue;
+            $operacion=$operacion[0];
+            if(null!=$operacion && $operacion->getFecha()>=$fecha){
+                $fecha=$operacion->getFecha();
+                $ultimaOperacion=$operacion;
+            }
+
+        }
+
+        return $ultimaOperacion;
     }
 
     /*
-    *Funcionalidad que devuelve true/false para saber si luego de una fecha se ha hecho alguna operacion con la tarjeta
-     * SE UTILIZA EN EL VALIDADOR EsUltimaOperacionTarjeta el cual compruba que no exista en el momento en que se
-     * registra la operacion ninguna operacion posterior a la fecha de la operacion
+     * Funcionalidad que devuelve el importe o precio de un determinado tipo de combustible en una fecha dada,
+     * se utiliza en la captacion de los chips etcetera
     */
-   public function esUltimaOperacionTarjeta($tarjeta,$fecha){
-       $em = $this->getEm()->getManager();
-       $entities=['Recargatarjeta','AjusteTarjeta','Chip'];
-       $parameters=['tarjeta'=> $tarjeta,'fecha'=>$fecha];
+    public function importeCombustible($tipocombustible, $fecha)
+    {
+        $consulta = $this->getEm()->getManager()->createQuery('SELECT pc.importe FROM App:PrecioCombustible pc JOIN pc.tipocombustible tc WHERE tc.id= :id AND pc.fecha<= :fecha ORDER BY pc.fecha DESC');
+        $consulta->setParameters(['id' => $tipocombustible, 'fecha' => $fecha]);
+        $consulta->setMaxResults(1);
+        return $consulta->getResult();
+    }
 
-       $mes=$fecha->format('m');
-       $anno=$fecha->format('Y');
-       if($this->existeCierreCombustible($tarjeta,$mes,$anno))
-           return false;
+     /*
+     * Devuelve los litros y efectivo consumido y restanes de una determinada tarjeta
+     * para un determinado cierre de tarjeta
+     */
+    public function estadoCombustible($tarjeta,$anno,$mes){
+        $firstday = new \DateTime("01-$mes-$anno");
+        $maxday=Util::maxDays($mes,$anno);
+        $lastday = new \DateTime("$maxday-$mes-$anno");
 
-       foreach ($entities as $value) {
-           $consulta = $em->createQuery("SELECT r.id FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta AND r.fecha>=:fecha");
-           $consulta->setParameters($parameters);
-           $consulta->setMaxResults(1);
-           $ajuste = $consulta->getResult();
-           if(!empty($ajuste)) {
-               return false;
-           }
-       }
-       return true;
-   }
+        $conn = $this->getEm()->getConnection();
+        //PARA HACER CONSULTAS EN SQL EN CASO DE QUE NO EXISTAN LAS MISMAS PALABRAS RESERVADAS DE SQL EN DQL , PODEMOS UTILIZAR:
+        $recargas=['litros'=>0,'efectivo'=>0];
+        $sql = 'SELECT r.cantidadefectivo,r.fecha,tc.id as tipocombustible FROM recargatarjeta r join tarjeta t on(r.tarjeta=t.id) join tipocombustible tc on(t.tipocombustible=tc.id) WHERE t.id= :id AND DATE(r.fecha)>= :finicio AND DATE(r.fecha)<= :ffin';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['id'=>$tarjeta,'finicio' => $firstday->format('Y-m-d'),'ffin'=>$lastday->format('Y-m-d')]);
+        $recargasList=$stmt->fetchAll();
+        foreach ($recargasList as $value){
+            $recargas['efectivo']+=$value['cantidadefectivo'];
+            $tarifa=$this->importeCombustible($value['tipocombustible'],$value['fecha']);
+            $recargas['litros']=$recargas['litros']+$value['cantidadefectivo']/$tarifa[0]['importe'];
+        }
 
-   /*
-    * Funcionalidad que devuelve el importe o precio de un determinado tipo de combustible en una fecha dada,
-    * se utiliza en la captacion de loschips etcetera
-
-   public function importeCombustible($tipocombustible, $fecha)
-   {
-       $consulta = $this->getEm()->getManager()->createQuery('SELECT pc.importe FROM App:PrecioCombustible pc JOIN pc.tipocombustible tc WHERE tc.id= :id AND pc.fecha<= :fecha ORDER BY pc.fecha DESC');
-       $consulta->setParameters(['id' => $tipocombustible, 'fecha' => $fecha]);
-       $consulta->setMaxResults(1);
-       return $consulta->getResult();
-   }
-
-
-   /*
-    *Funcionalidad que devuelve true o false en caso de ser o no posible eliminar una recarga,
-    * se utiliza en el gestionar recarga
-
-   public function esPosibleEliminarRecarga($tarjeta,$fecha){
-       $mes=$fecha->format('m');
-       $anno=$fecha->format('Y');
-       return !$this->existeChip($tarjeta,$fecha) && !$this->existeCierreCombustible($tarjeta,$mes,$anno);
-   }
-
-   /*
-    * Funcionalidad que devuelve si una tarjeta tiene o no una recarga, se utsa para el gestionar de tarjeta
-
-   public function existeRecargaTarjeta($tarjeta){
-       $em = $this->getEm()->getManager();
-       $consulta = $em->createQuery('SELECT r.id FROM App:Recargatarjeta r join r.tarjeta t WHERE t.id= :tarjeta');
-       $consulta->setParameter('tarjeta',$tarjeta);
-       $consulta->setMaxResults(1);
-       $recarga = $consulta->getResult();
-       return empty($recarga) ? null : $recarga[0]['id'];
-   }
-
-   /*
-    * Funcionalidad que devuelve si una tarjeta tiene o no un ajuste, se utsa para el gestionar de tarjeta
-
-   public function existeAjusteTarjeta($tarjeta){
-       $em = $this->getEm()->getManager();
-       $consulta = $em->createQuery('SELECT r.id FROM App:AjusteTarjeta r join r.tarjeta t WHERE t.id= :tarjeta');
-       $consulta->setParameter('tarjeta',$tarjeta);
-       $consulta->setMaxResults(1);
-       $ajuste = $consulta->getResult();
-       return empty($ajuste) ? null : $ajuste[0]['id'];
-   }
+        $ajustes=['litros'=>0,'efectivo'=>0];
+        $sql = 'SELECT a.cantefectivo,a.fecha,a.tipo, tc.id as tipocombustible FROM ajuste_tarjeta a join tarjeta t on(a.tarjeta=t.id) join tipocombustible tc on(t.tipocombustible=tc.id) WHERE t.id= :id AND DATE(a.fecha)>= :finicio AND DATE(a.fecha)<= :ffin';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['id'=>$tarjeta,'finicio' => $firstday->format('Y-m-d'),'ffin'=>$lastday->format('Y-m-d')]);
+        $ajustesList=$stmt->fetchAll();
+        foreach ($ajustesList as $value){
+            if($value['tipo']==1){
+                $ajustes['efectivo']+=$value['cantefectivo'];
+                $tarifa=$this->importeCombustible($value['tipocombustible'],$value['fecha']);
+                $ajustes['litros']=$ajustes['litros']+$value['cantefectivo']/$tarifa[0]['importe'];
+            }
+            elseif($value['tipo']==0){
+                $ajustes['efectivo']-=$value['cantefectivo'];
+                $tarifa=$this->importeCombustible($value['tipocombustible'],$value['fecha']);
+                $ajustes['litros']=$ajustes['litros']-$value['cantefectivo']/$tarifa[0]['importe'];
+            }
 
 
+        }
 
-   /*
-    * Funcionalidad utilizada en los gestionar de las recargas y ajustes de tarjeta, que comprueba si se ha captado
-    * algun chip para una tarjeta  a partir de una determinada fecha.
+        $sql = 'SELECT SUM(c.litrosextraidos) as litros, SUM(c.importe) as efectivo FROM chip c join tarjeta t on(c.tarjeta=t.id) WHERE  t.id= :id AND DATE(c.fecha)>= :finicio AND DATE(c.fecha)<= :ffin';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['id'=>$tarjeta,'finicio' => $firstday->format('Y-m-d'),'ffin'=>$lastday->format('Y-m-d')]);
+        $consumido=$stmt->fetchAll();
+        if(!$consumido[0]['litros']) {
+            $consumido[0]['litros'] = 0;
+            $consumido[0]['efectivo'] = 0;
+        }
 
-   public function existeChip($tarjeta,$fecha)
-   {
-       $em = $this->getEm()->getManager();
-       $consulta = $em->createQuery('SELECT ch.id FROM App:Chip ch join ch.tarjeta t WHERE t.id= :tarjeta AND ch.fecha>= :fecha');
-       $consulta->setParameters(['tarjeta' => $tarjeta, 'fecha' => $fecha]);
-       $consulta->setMaxResults(1);
-       $cierre = $consulta->getResult();
-       return empty($cierre) ? null : $cierre[0]['id'];
-   }
-
-
-   */
+        return [
+            'consumido'=>$consumido,
+            'restante'=>[
+                'litros'=>$recargas['litros']+$ajustes['litros']-$consumido[0]['litros'],
+                'efectivo'=>$recargas['efectivo']+$ajustes['efectivo']-$consumido[0]['efectivo']
+            ]
+        ];
+    }
 }

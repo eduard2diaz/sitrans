@@ -46,7 +46,7 @@ class CierreMesTarjeta
     private $tarjeta;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      * @Assert\Range(
      *      min = 0,
      *      minMessage = "El combustible restante debe ser igual o superior a {{ limit }}",
@@ -64,7 +64,7 @@ class CierreMesTarjeta
     private $restanteefectivo;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      * @Assert\Range(
      *      min = 0,
      *      minMessage = "El combustible consumido debe ser igual o superior a {{ limit }}",
@@ -164,12 +164,12 @@ class CierreMesTarjeta
         $this->cierre = $cierre;
     }
 
-    public function getCombustibleconsumido(): ?int
+    public function getCombustibleconsumido(): ?float
     {
         return $this->combustibleconsumido;
     }
 
-    public function setCombustibleconsumido(int $combustibleconsumido): self
+    public function setCombustibleconsumido(float $combustibleconsumido): self
     {
         $this->combustibleconsumido = $combustibleconsumido;
 
@@ -188,6 +188,18 @@ class CierreMesTarjeta
         return $this;
     }
 
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
@@ -201,17 +213,5 @@ class CierreMesTarjeta
             $context->buildViolation('Seleccione una tarjeta activa')
                 ->atPath('tarjeta')
                 ->addViolation();
-    }
-
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
-
-    public function setUsuario(?Usuario $usuario): self
-    {
-        $this->usuario = $usuario;
-
-        return $this;
     }
 }

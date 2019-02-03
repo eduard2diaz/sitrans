@@ -106,7 +106,9 @@ class TipovehiculoController extends Controller
                 $page = $this->renderView('tipovehiculo/_form.html.twig', array(
                     'form' => $form->createView(),
                     'form_id' => 'tipovehiculo_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'tipovehiculo' => $tipovehiculo,
+                    'eliminable' => $this->esEliminable($tipovehiculo)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

@@ -27,7 +27,7 @@ class ReporteController extends Controller
 
         $first_date=new \DateTime($request->request->get('finicio'));
         $last_date=new \DateTime($request->request->get('ffin'));
-        $data=$this->get('energia.service')->kmRecorridosPeriodo($first_date, $last_date);
+        $data=$this->get('reporte.service')->kmRecorridosPeriodo($first_date, $last_date);
 
         return new JsonResponse(['html'=>$this->renderView('reporte/html/kmconsumo.html.twig',['data'=>$data]),
             'pdf'=>$this->renderView('reporte/pdf/kmconsumo.html.twig',['data'=>$data])]);
@@ -43,7 +43,7 @@ class ReporteController extends Controller
 
         $first_date=new \DateTime($request->request->get('finicio'));
         $last_date=new \DateTime($request->request->get('ffin'));
-        $data=$this->get('energia.service')->diferenciaConsumo($first_date, $last_date);
+        $data=$this->get('reporte.service')->diferenciaConsumo($first_date, $last_date);
         return new JsonResponse(['html'=>$this->renderView('reporte/html/diferenciaconsumo.html.twig',['data'=>$data]),
             'pdf'=>$this->renderView('reporte/pdf/diferenciaconsumo.html.twig',['data'=>$data])]);
     }
@@ -56,7 +56,7 @@ class ReporteController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $data=$this->get('energia.service')->remanenteActual();
+        $data=$this->get('reporte.service')->remanenteActual();
         return new JsonResponse(['html'=>$this->renderView('reporte/html/remanente_actual.html.twig',['data'=>$data]),
             'pdf'=>$this->renderView('reporte/pdf/remanente_actual.html.twig',['data'=>$data])]);
     }
@@ -71,7 +71,7 @@ class ReporteController extends Controller
 
         $first_date=new \DateTime($request->request->get('finicio'));
         $last_date=new \DateTime($request->request->get('ffin'));
-        $data=$this->get('energia.service')->porcientoDesviacion($first_date, $last_date);
+        $data=$this->get('reporte.service')->porcientoDesviacion($first_date, $last_date);
 
         return new JsonResponse(['html'=>$this->renderView('reporte/html/porcientodesviacion.html.twig',['data'=>$data]),
             'pdf'=>$this->renderView('reporte/pdf/porcientodesviacion.html.twig',['data'=>$data])]);
@@ -85,7 +85,7 @@ class ReporteController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-        $data=$this->get('energia.service')->pendienteMantenimiento();
+        $data=$this->get('reporte.service')->pendienteMantenimiento();
         return new JsonResponse(['html'=>$this->renderView('reporte/html/pendiente_mantenimiento.html.twig',['data'=>$data]),
             'pdf'=>$this->renderView('reporte/pdf/pendiente_mantenimiento.html.twig',['data'=>$data])]);
     }
@@ -100,7 +100,7 @@ class ReporteController extends Controller
 
         $mes=$request->request->get('mes');
         $anno=$request->request->get('anno');
-        $consumo=$this->get('energia.service')->consumoKw($mes,$anno);
+        $consumo=$this->get('reporte.service')->consumoKw($mes,$anno);
         return new JsonResponse(['html'=>$this->renderView('reporte/html/kwconsumo.html.twig',['data'=>$consumo]),
             'pdf'=>$this->renderView('reporte/pdf/kwconsumo.html.twig',['data'=>$consumo])]);
     }
@@ -113,7 +113,7 @@ class ReporteController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
-       $estados=$this->get('energia.service')->estadoVehiculos();
+       $estados=$this->get('reporte.service')->estadoVehiculos();
        return new JsonResponse(
            [
                'view'=>$this->renderView('reporte/html/estado_vehiculo.html.twig'),
@@ -131,7 +131,7 @@ class ReporteController extends Controller
 
         $first_date=new \DateTime($request->request->get('finicio'));
         $last_date=new \DateTime($request->request->get('ffin'));
-        $data=$this->get('energia.service')->resumenViajesPeriodo($first_date, $last_date);
+        $data=$this->get('reporte.service')->resumenViajesPeriodo($first_date, $last_date);
         return new JsonResponse(
             [
                         'view'=>$this->renderView('reporte/html/resumenviajes.html.twig'),
@@ -148,7 +148,7 @@ class ReporteController extends Controller
             throw $this->createAccessDeniedException();
 
         $anno=$request->request->get('anno') ?? date('Y');
-        $data = $this->get('energia.service')->consumoMensualKw($anno);
+        $data = $this->get('reporte.service')->consumoMensualKw($anno);
         return new JsonResponse(
             [
                 'view' => $this->renderView('reporte/html/consumomensualkw.twig'),
@@ -166,7 +166,7 @@ class ReporteController extends Controller
 
         $year=$request->request->get('anno');
         $categoria=$request->request->get('categoria');
-        $data=$this->get('energia.service')->analisisportadores($year, $categoria);
+        $data=$this->get('reporte.service')->analisisportadores($year, $categoria);
         return new JsonResponse(
             [
                 'view'=>$this->renderView('reporte/html/analisisportadores.html.twig'),
@@ -184,7 +184,7 @@ class ReporteController extends Controller
 
         $anno=$request->request->get('anno');
         $mes=$request->request->get('mes');
-        $tipocombustibles_array=$this->get('energia.service')->combustibleConsumoMesArea($anno,$mes);
+        $tipocombustibles_array=$this->get('reporte.service')->combustibleConsumoMesArea($anno,$mes);
         return new JsonResponse(['html'=>$this->renderView('reporte/html/consumocombustiblemesarea.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)]),
             'pdf'=>$this->renderView('reporte/pdf/consumocombustiblemesarea.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)])]);
     }
@@ -199,7 +199,7 @@ class ReporteController extends Controller
 
         $anno=$request->request->get('anno');
         $mes=$request->request->get('mes');
-        $tipocombustibles_array=$this->get('energia.service')->combustibleDistribucionMes($anno,$mes);
+        $tipocombustibles_array=$this->get('reporte.service')->combustibleDistribucionMes($anno,$mes);
 
         return new JsonResponse(['html'=>$this->renderView('reporte/html/distribucioncombustiblemes.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)]),
             'pdf'=>$this->renderView('reporte/pdf/distribucioncombustiblemes.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)])]);
@@ -215,7 +215,7 @@ class ReporteController extends Controller
 
         $anno=$request->request->get('anno');
         $mes=$request->request->get('mes');
-        $tipocombustibles_array=$this->get('energia.service')->combustibleConsumoMesVehiculo($anno,$mes);
+        $tipocombustibles_array=$this->get('reporte.service')->combustibleConsumoMesVehiculo($anno,$mes);
 
         return new JsonResponse(['html'=>$this->renderView('reporte/html/consumocombustiblemesvehiculo.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)]),
             'pdf'=>$this->renderView('reporte/pdf/consumocombustiblemesvehiculo.html.twig',['data'=>$tipocombustibles_array,'anno'=>$anno,'mes'=>Util::getMesKey($mes)])]);

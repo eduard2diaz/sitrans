@@ -5,11 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\TablaDistancia as TablaDistanciaConstraint;
 
 /**
  * @ORM\Entity
- * @UniqueEntity(fields={"origen","destino"})
+ * @TablaDistanciaConstraint(origen="origen",destino="destino")
  */
 class TablaDistancia
 {

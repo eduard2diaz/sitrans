@@ -7,11 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
-use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
 
 /**
  * @ORM\Entity
- * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
  * @UltimaOperacionConstraint(foreign="tarjeta",fecha="fecha")
  */
 class AjusteTarjeta

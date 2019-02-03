@@ -20,7 +20,7 @@ class PrecioCombustibleType extends AbstractType
                 'class' => 'form-control input-medium'
             )))
             ->add('importe',NumberType::class,['attr'=>['autocomplete'=>'off','class'=>'form-control']])
-            ->add('tipocombustible',null,['label'=>'Tipo de combustible'])
+            ->add('tipocombustible',null,['required'=>true,'label'=>'Tipo de combustible'])
         ;
 
         $builder->get('fecha')

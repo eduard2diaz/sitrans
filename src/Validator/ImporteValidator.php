@@ -3,6 +3,7 @@
 namespace App\Validator;
 
 use App\Entity\Tarjeta;
+use function PHPSTORM_META\type;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -42,11 +43,11 @@ class ImporteValidator extends ConstraintValidator
         if(!$importeenBd)
             throw new \Exception('No existe la tarifa en la base de datos');
 
-        $cantidad=$litros*$importeenBd[0]['importe'];
-        if($cantidad!=$importe)
+        $cantidad=$importe/$importeenBd[0]['importe'];
+        if(strval($cantidad)!=strval($litros))
             $this->context->buildViolation($constraint->message)
-                ->setParameter('%importe%', $cantidad)
-                ->atPath($constraint->importe)
+                ->setParameter('%litro%', $cantidad)
+                ->atPath($constraint->litros)
                 ->addViolation();
     }
 

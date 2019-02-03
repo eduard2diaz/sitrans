@@ -85,12 +85,13 @@ class RecargaKwController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$recargakw->getReloj());
         $area=$recargakw->getReloj()->getArea()->getId();
 
         $mes=$recargakw->getFecha()->format('m');
         $anno=$recargakw->getFecha()->format('Y');
-        $cierre=$this->get('energia.service')->existeCierreKilowatts($anno,$mes,$area);
-        return $this->render('recargakw/_show.html.twig',['recarga'=>$recargakw,'cierre'=>$cierre]);
+        $eliminable=$this->get('reloj.service')->ultimaOperacionKwArea($area,$recargakw->getFecha())==$recargakw;
+        return $this->render('recargakw/_show.html.twig',['recarga'=>$recargakw,'eliminable'=>$eliminable]);
     }
 
     /**
@@ -98,7 +99,9 @@ class RecargaKwController extends Controller
      */
     public function delete(Request $request, RecargaKw $recargakw): Response
     {
-        if (!$request->isXmlHttpRequest())
+        $this->denyAccessUnlessGranted('VIEW',$recargakw->getReloj());
+        $area=$recargakw->getReloj()->getArea()->getId();
+        if (!$request->isXmlHttpRequest() || $recargakw!=$this->get('reloj.service')->ultimaOperacionKwArea($area,$recargakw->getFecha()))
             throw $this->createAccessDeniedException();
 
         $em = $this->getDoctrine()->getManager();
@@ -128,7 +131,7 @@ class RecargaKwController extends Controller
         $mes_anterior=$fecha->sub(new \DateInterval('P1M'));
         $mes=$mes_anterior->format('m');
         $anno=$mes_anterior->format('y');
-        return new JsonResponse(['restante'=>$this->get('energia.service')->estadoKw($area,$anno,$mes)['cierreanterior']]);
+        return new JsonResponse(['restante'=>$this->get('reloj.service')->estadoKw($area,$anno,$mes)['cierreanterior']]);
     }
 
 

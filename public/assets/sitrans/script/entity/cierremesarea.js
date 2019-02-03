@@ -5,7 +5,6 @@ var cierremesarea = function () {
     var configurarFormulario=function(){
         $('select#cierremes_area_area').select2({
             dropdownParent: $("#basicmodal"),
-            //allowClear: true
         });
 
         $('input#cierremes_area_fecha').datetimepicker();
@@ -31,9 +30,6 @@ var cierremesarea = function () {
         table = $("table#cierremesarea_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('cierremesarea_index',{'id':cierremensual}),
                 "language": {
                     url: datatable_translation
@@ -65,7 +61,7 @@ var cierremesarea = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -96,7 +92,7 @@ var cierremesarea = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -111,7 +107,7 @@ var cierremesarea = function () {
                 },
                 error: function ()
                 {
-                   // base.Error();
+                    base.Error();
                 },
                 complete: function () {
                     mApp.unblock("body")
@@ -128,7 +124,7 @@ var cierremesarea = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
@@ -154,8 +150,7 @@ var cierremesarea = function () {
         {
             if ($(this).val() > 0)
                 $.ajax({
-                    type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                    //dataType: 'html',
+                    type: 'get',
                     url: Routing.generate('cierremesarea_ajax', {'cierre':cierremensual,'area': $(this).val()}),
                     beforeSend: function (data) {
                         mApp.block("div#basicmodal div.modal-body",
@@ -237,7 +232,7 @@ var cierremesarea = function () {
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
-                data: $(this).serialize(), //para enviar el formulario hay que serializarlo
+                data: $(this).serialize(),
                 beforeSend: function () {
                     mApp.block("body",
                         {overlayColor:"#000000",type:"loader",state:"success",message:"Cargando..."});
@@ -278,21 +273,20 @@ var cierremesarea = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este cierre?",
-                message: "<p>¿Está seguro que desea eliminar este cierre?</p>",
+                title: "Eliminar cierre",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este cierre?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'}
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcierremesarea porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

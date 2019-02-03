@@ -52,15 +52,21 @@ class PrecioCombustibleValidator extends ConstraintValidator
         $tipocombustible = $pa->getValue($value, $constraint->tipocombustible)->getId();
         $fecha = $pa->getValue($value, $constraint->fecha);
         $entity = $repository->getClassName();
-        $cadena = "SELECT COUNT(r) FROM App:Recargatarjeta r JOIN r.tarjeta t JOIN t.tipocombustible tt WHERE tt.id= :tipocombustible AND r.fecha>= :fecha";
-        $consulta = $em->createQuery($cadena);
-        $consulta->setParameters(['tipocombustible' => $tipocombustible, 'fecha' => $fecha]);
-        $result = $consulta->getResult();
-        if ($result[0][1] > 0)
-            $this->context->buildViolation("Para ese tipo de combustible ya existe una recarga de tarjeta con fecha superior a %fecha%")
-                ->setParameter('%fecha%', $fecha->format('d-m-Y'))
-                ->atPath('tipocombustible')
-                ->addViolation();
+        $entidades=['CierreMesTarjeta','AjusteTarjeta','Recargatarjeta'];
+        foreach ($entidades as $value){
+            $cadena = "SELECT COUNT(r) FROM App:$value r JOIN r.tarjeta t JOIN t.tipocombustible tt WHERE tt.id= :tipocombustible AND r.fecha>= :fecha";
+            $consulta = $em->createQuery($cadena);
+            $consulta->setParameters(['tipocombustible' => $tipocombustible, 'fecha' => $fecha]);
+            $result = $consulta->getResult();
+            if ($result[0][1] > 0) {
+                $this->context->buildViolation("Para ese tipo de combustible ya existe una recarga de tarjeta con fecha superior a %fecha%")
+                    ->setParameter('%fecha%', $fecha->format('d-m-Y'))
+                    ->atPath('tipocombustible')
+                    ->addViolation();
+                break;
+            }
+        }
+
 
     }
 }

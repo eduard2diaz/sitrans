@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\CierremesKw;
-use App\Form\template\YearType;
+use App\Form\template\YearPorMesCumplidoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +15,7 @@ class CierremesKwType extends AbstractType
     {
         $builder
             ->add('mes',MesType::class)
-            ->add('anno',YearType::class);
+            ->add('anno',YearPorMesCumplidoType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

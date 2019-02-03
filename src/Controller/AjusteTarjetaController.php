@@ -83,12 +83,9 @@ class AjusteTarjetaController extends Controller
             throw $this->createAccessDeniedException();
 
         $this->denyAccessUnlessGranted('VIEW',$ajustetarjeta);
-        $tarjeta=$ajustetarjeta->getTarjeta()->getId();
-        $mes=$ajustetarjeta->getFecha()->format('m');
-        $anno=$ajustetarjeta->getFecha()->format('Y');
-        $cierre=$this->get('tarjeta.service')->existeCierreCombustible($anno,$mes,$tarjeta);
-
-        return $this->render('ajustetarjeta/_show.html.twig',['ajuste'=>$ajustetarjeta,'cierre'=>$cierre]);
+       $tarjeta=$ajustetarjeta->getTarjeta()->getId();
+        $esEliminable=$ajustetarjeta==$this->get('tarjeta.service')->ultimaOperacionTarjeta($tarjeta,$ajustetarjeta->getFecha());
+        return $this->render('ajustetarjeta/_show.html.twig',['ajuste'=>$ajustetarjeta,'eliminable'=>$esEliminable]);
     }
 
     /**
@@ -96,7 +93,7 @@ class AjusteTarjetaController extends Controller
      */
     public function delete(Request $request, AjusteTarjeta $ajustetarjeta): Response
     {
-        if (!$request->isXmlHttpRequest())
+        if (!$request->isXmlHttpRequest() || $ajustetarjeta!=$this->get('tarjeta.service')->ultimaOperacionTarjeta($ajustetarjeta->getTarjeta(),$ajustetarjeta->getFecha()))
             throw $this->createAccessDeniedException();
 
         $this->denyAccessUnlessGranted('DELETE',$ajustetarjeta);

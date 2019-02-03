@@ -78,7 +78,7 @@ class CierremesKwController extends Controller
      */
     public function show(Request $request, CierremesKw $cierremeskw): Response
     {
-
+        $this->denyAccessUnlessGranted('VIEW',$cierremeskw);
         return $this->render('cierremeskw/show.html.twig', [
             'cierremeskw' => $cierremeskw,
         ]);
@@ -92,6 +92,7 @@ class CierremesKwController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierremeskw);
         $em = $this->getDoctrine()->getManager();
         $em->remove($cierremeskw);
         $em->flush();

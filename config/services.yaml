@@ -88,7 +88,7 @@ services:
         autoconfigure: true
         tags:
             - { name: validator.constraint_validator, alias: importe.validator }
-        arguments: ['@energia.service']
+        arguments: ['@tarjeta.service']
 
     responsable.validator:
         class: App\Validator\ResponsableValidator
@@ -165,19 +165,18 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: area.validator }
 
-    cierrekw.validator:
-        class: App\Validator\CierreKwValidator
+    tabladistancia.validator:
+        class: App\Validator\TablaDistanciaValidator
         public: true
         tags:
-            - { name: validator.constraint_validator, alias: cierrekw.validator }
-        arguments: ['@energia.service']
+            - { name: validator.constraint_validator, alias: tabladistancia.validator }
 
-    existecierrecombustible.validator:
-        class: App\Validator\ExisteCierreCombustibleValidator
+    esultimaoperacionkwarea.validator:
+        class: App\Validator\EsUltimaOperacionKwAreaValidator
         public: true
         tags:
-            - { name: validator.constraint_validator, alias: existecierrecombustible.validator }
-        arguments: ['@tarjeta.service']
+            - { name: validator.constraint_validator, alias: esultimaoperacionkwarea.validator }
+        arguments: ['@reloj.service']
 
     esultimaoperaciontarjeta.validator:
         class: App\Validator\EsUltimaOperacionTarjetaValidator
@@ -186,13 +185,18 @@ services:
             - { name: validator.constraint_validator, alias: esultimaoperaciontarjeta.validator }
         arguments: ['@tarjeta.service']
 
-    energia.service:
-        class: App\Tools\EnergiaService
+    reporte.service:
+        class: App\Tools\ReporteService
         public: true
         arguments: ['@doctrine']
 
     tarjeta.service:
         class: App\Tools\TarjetaService
+        public: true
+        arguments: ['@doctrine']
+
+    reloj.service:
+        class: App\Tools\RelojService
         public: true
         arguments: ['@doctrine']
 

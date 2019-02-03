@@ -93,6 +93,8 @@ class ProvinciaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('provincia/_form.html.twig', array(
+                    'provincia' => $provincia,
+                    'eliminable'=>$this->esEliminable($provincia),
                     'form' => $form->createView(),
                     'form_id' => 'provincia_edit',
                     'action' => 'Actualizar'

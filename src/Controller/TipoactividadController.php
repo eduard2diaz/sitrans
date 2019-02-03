@@ -94,9 +94,11 @@ class TipoactividadController extends Controller
                 ));
             } else {
                 $page = $this->renderView('tipoactividad/_form.html.twig', array(
+                    'tipoactividad' => $tipoactividad,
                     'form' => $form->createView(),
                     'form_id' => 'tipoactividad_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($tipoactividad)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

@@ -42,6 +42,7 @@ security:
         - { path: ^/cupet, roles: ROLE_SUPERADMIN }
         - { path: ^/licencia, roles: ROLE_SUPERADMIN }
         - { path: ^/preciocombustible/findbytarjeta, roles: ROLE_CAJERO }
+        - { path: ^/preciocombustible/findbyvehiculo, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/preciocombustible, roles: ROLE_SUPERADMIN }
         - { path: ^/tabladistancia/new,  roles: ROLE_SUPERADMIN }
         - { path: ^/tabladistancia/\d+/edit,  roles: ROLE_SUPERADMIN }

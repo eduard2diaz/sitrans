@@ -120,10 +120,10 @@ class CierreMesCombustible
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $current_year = date('Y');
-        $next_year = date('Y');
-        if (date('m') == 12)
-            $next_year = $current_year + 1;
-        if ($this->getAnno() < $current_year || $this->getAnno() > $next_year)
+        $previous_year=$current_year;
+        if (date('m') == 1)
+            $previous_year = $current_year - 1;
+        if ($this->getAnno() <  $previous_year || $this->getAnno() > $current_year)
             $context->buildViolation('Seleccione un año válido')
                 ->atPath('anno')
                 ->addViolation();

@@ -79,7 +79,7 @@ class CierreMesCombustibleController extends Controller
      */
     public function show(Request $request, CierreMesCombustible $cierremescombustible): Response
     {
-
+        $this->denyAccessUnlessGranted('VIEW',$cierremescombustible);
         return $this->render('cierremescombustible/show.html.twig', [
             'cierremescombustible' => $cierremescombustible,
         ]);
@@ -93,6 +93,7 @@ class CierreMesCombustibleController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('DELETE',$cierremescombustible);
         $em = $this->getDoctrine()->getManager();
         $em->remove($cierremescombustible);
         $em->flush();

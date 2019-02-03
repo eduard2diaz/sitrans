@@ -98,9 +98,11 @@ class CentrocostoController extends Controller
                 ));
             } else {
                 $page = $this->renderView('centrocosto/_form.html.twig', array(
+                    'centrocosto' => $centrocosto,
                     'form' => $form->createView(),
                     'form_id' => 'centrocosto_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($centrocosto)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

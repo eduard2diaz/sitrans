@@ -109,6 +109,8 @@ class MunicipioController extends Controller
                 ));
             } else {
                 $page = $this->renderView('municipio/_form.html.twig', array(
+                    'municipio' => $municipio,
+                    'eliminable'=>$this->esEliminable($municipio),
                     'form' => $form->createView(),
                     'form_id' => 'municipio_edit',
                     'action' => 'Actualizar'

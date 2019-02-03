@@ -6,12 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Validator\Importe as ImporteConstraint;
+use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
 
 /**
  * Chip
  *
  * @ORM\Table(name="chip", indexes={@ORM\Index(name="IDX_AA29BCBBAE90B786", columns={"tarjeta"}), @ORM\Index(name="IDX_AA29BCBB5F42E8B9", columns={"cupet"})})
  * @ORM\Entity
+ * @UltimaOperacionConstraint(foreign="tarjeta",fecha="fecha")
  * @ImporteConstraint(fecha="fecha",litros="litrosextraidos",foreign="tarjeta",importe="importe")
  */
 class Chip
@@ -334,19 +336,6 @@ class Chip
         elseif($this->getImporte()>$this->getTarjeta()->getCantefectivo())
             $context->buildViolation('La tarjeta seleccionada no posee la cantidad indicada de efectivo')
                 ->atPath('importe')
-                ->addViolation();
-
-        $hoy=new \DateTime('today');
-
-        $anno=$hoy->format('y');
-        if($this->getFecha()->format('y')!=$anno)
-            $context->buildViolation('Seleccione una fecha dentro del año actual')
-                ->atPath('fecha')
-                ->addViolation();
-        $mes=$hoy->format('m');
-        if($this->getFecha()->format('m')!=$mes)
-            $context->buildViolation('Seleccione una fecha dentro del mes actual')
-                ->atPath('fecha')
                 ->addViolation();
     }
 

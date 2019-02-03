@@ -37,9 +37,6 @@ var cierremestarjeta = function () {
         table = $("table#cierremestarjeta_table").DataTable(
             {
                 responsive:true,
-                //   searchDelay:500,
-                //  processing:true,
-                //    serverSide:true,
                 ajax: Routing.generate('cierremestarjeta_index',{'id':cierremensual}),
                 "language": {
                     url: datatable_translation
@@ -71,7 +68,7 @@ var cierremestarjeta = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -197,7 +194,7 @@ var cierremestarjeta = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 dataType: 'html',
                 url: link,
                 beforeSend: function (data) {
@@ -228,7 +225,7 @@ var cierremestarjeta = function () {
             {
             var link = Routing.generate('cierremestarjeta_ajax',{'cierre':cierremensual,'tarjeta':$(this).val(),'_format':'json'});
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
+                type: 'get',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
@@ -261,8 +258,7 @@ var cierremestarjeta = function () {
             var link = $(this).attr('data-href');
             obj = $(this);
             $.ajax({
-                type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                //      dataType: 'html',
+                type: 'get',
                 url: link,
                 beforeSend: function (data) {
                     mApp.block("body",
@@ -292,21 +288,21 @@ var cierremestarjeta = function () {
             var link = $(this).attr('data-href');
 
            bootbox.confirm({
-                title: "Desea eliminar este cierre?",
-                message: "<p>¿Está seguro que desea eliminar este cierre?</p>",
+                title: "Eliminar cierre",
+                message: "<div class='text-justify'><p class='confirm_message'>¿Está seguro que desea eliminar este cierre?</p><p class='confirm_detail'>Esta acción no se podrá deshacer</p></div>",
                 buttons: {
                     confirm: {
                         label: 'Sí, estoy seguro',
-                        className: 'btn btn-primary'},
+                        className: 'btn btn-primary btn-sm'},
                     cancel: {
                         label: 'Cancelar',
-                        className: 'btn btn-metal'}
+                        className: 'btn btn-metal btn-sm'
+                    }
                 },
                 callback: function (result) {
                     if (result == true)
                         $.ajax({
-                            type: 'get', //Se uso get pues segun los desarrolladores de yahoo es una mejoria en el rendimineto de las peticiones ajax
-                            // dataType: 'html', esta url se comentcierremestarjeta porque lo k estamos mandando es un json y no un html plano
+                            type: 'get',
                             url: link,
                             beforeSend: function () {
                                 mApp.block("body",

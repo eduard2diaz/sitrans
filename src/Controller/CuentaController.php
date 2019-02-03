@@ -101,9 +101,11 @@ class CuentaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('cuenta/_form.html.twig', array(
+                    'cuenta' => $cuenta,
                     'form' => $form->createView(),
                     'form_id' => 'cuenta_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($cuenta)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

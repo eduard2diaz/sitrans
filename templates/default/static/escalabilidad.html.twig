@@ -1,11 +1,18 @@
-{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
-{% block body %}
+{% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
     <style>
-        ul.inline li{
+        ul.inline li {
             display: inline;
         }
+
+        div.m-subheader {
+            display: none;
+        }
     </style>
-    <div class="m-portlet m-portlet--mobile m--margin-top-30">
+{% endblock stylesheets %}
+{% block body %}
+    <div class="m-portlet m-portlet--mobile m--margin-top-30 m--margin-left-30 m--margin-right-30">
         <div class="m-portlet__head">
             <div class="m-portlet__head-caption">
                 <div class="m-portlet__head-title">
@@ -21,9 +28,12 @@
                 <div class="col-md-6">
                     <h4>Sistema operativo</h4>
                     <p class="text-justify">
-                        SITRANS es un sistema multiplataforma, por lo cual lo puede desplegar en cualquier sistema operativo, Windows, MAC y Linux siempre y cuando tenga instalado un servidor web.
-                        Y aunque está optimizado para linux los tiempos de procesamiento y respuesta son extraordinarios en cualquier otro.
-                        Aunque muchos parámetros y servidores son configurables existen puntos determinantes para su despliegue.
+                        SITRANS es un sistema multiplataforma, por lo cual lo puede desplegar en cualquier sistema
+                        operativo, Windows, MAC y Linux siempre y cuando tenga instalado un servidor web.
+                        Y aunque está optimizado para linux los tiempos de procesamiento y respuesta son extraordinarios
+                        en cualquier otro.
+                        Aunque muchos parámetros y servidores son configurables existen puntos determinantes para su
+                        despliegue.
                     <ul class="list-inline text-muted text-center">
                         <li>PHP v7.1 o superior</li>
                         <li>NodeJS v10</li>
@@ -33,28 +43,44 @@
                 </div>
                 <div class="col-md-6">
                     <h4>Base de datos</h4>
-                    <p>Symfony 4 en su versión 4.1 fue el Framework PHP sobre el cual se desarrolló esta aplicación, por tal motivo puede emplear el servidor de base de datos relacional de su preferencia, solamente con el pequeño detalle de ajustar la estrategia de generación base de datos; un proceso sumamente sencillo para nuestros especialistas pero que en caso de no poseer los concimientos necesarios puede ser sumamente engorroso.</p>
-                    <p>El código fuente original de SITRANS está orientado para el empleo de Postgresql como sistema de base de datos.</p>
+                    <p>Symfony 4 en su versión 4.1 fue el Framework PHP sobre el cual se desarrolló esta aplicación, por
+                        tal motivo puede emplear el servidor de base de datos relacional de su preferencia, solamente
+                        con el pequeño detalle de ajustar la estrategia de generación base de datos; un proceso
+                        sumamente sencillo para nuestros especialistas pero que en caso de no poseer los concimientos
+                        necesarios puede ser sumamente engorroso.</p>
+                    <p>El código fuente original de SITRANS está orientado para el empleo de Postgresql como sistema de
+                        base de datos.</p>
                 </div>
             </div>
             <div class="row m--margin-top-20">
                 <div class="col-md-6">
                     <h4>Servidor web</h4>
                     <p>
-                        Se recomienda la utilización de nginx como servidor web, pues los tiempos de respuesta son superiores en comparación con cualquier otro.
-                        Pero en caso de desearlo puede usar xampp, wampp o utilizar composer para instalar un servidor local en la propia aplicación.
+                        Se recomienda la utilización de nginx como servidor web, pues los tiempos de respuesta son
+                        superiores en comparación con cualquier otro.
+                        Pero en caso de desearlo puede usar xampp, wampp o utilizar composer para instalar un servidor
+                        local en la propia aplicación.
                     </p>
                     <p>
-                        Recuerde que luego de desplegar la aplicación puede acceder a ella desde su dispositivo móbil de preferencia.
-                        Además que sus instituciones subordinadas pueden si así lo desean consumirla, captar datos y generar información.
+                        Recuerde que luego de desplegar la aplicación puede acceder a ella desde su dispositivo móbil de
+                        preferencia.
+                        Además que sus instituciones subordinadas pueden si así lo desean consumirla, captar datos y
+                        generar información.
                     </p>
                 </div>
                 <div class="col-md-6">
                     <h4>Actualización</h4>
-                    <p>Las actualizaciones del código fuente de SITRANS solo serán notificadas a los clientes que previamente hallan contratado a la universidad para la adquisición, despliegue y soporte de la aplicación.</p>
-                    <p>Por tal motivo cualquier no conformidad que identifique durante la explotación del software no serán resueltas por el equipo de desarrollo del software a menos que sea interés del mismo o proceda de un cliente.
+                    <p>Las actualizaciones del código fuente de SITRANS solo serán notificadas a los clientes que
+                        previamente hallan contratado a la universidad para la adquisición, despliegue y soporte de la
+                        aplicación.</p>
+                    <p>Por tal motivo cualquier no conformidad que identifique durante la explotación del software no
+                        serán resueltas por el equipo de desarrollo del software a menos que sea interés del mismo o
+                        proceda de un cliente.
                     </p>
-                    <p>Todo desarrollador ajeno a la institución podra contribuir con el desarrollo del sistema y sus recomendaciones serán evaluadas por el equipo de desarrollo, pero es una violación de los términos del servicio cualquier mejora que se realice al software original que no sea compartida con el equipo de desarrollo y socializada con la comunidad.</p>
+                    <p>Todo desarrollador ajeno a la institución podra contribuir con el desarrollo del sistema y sus
+                        recomendaciones serán evaluadas por el equipo de desarrollo, pero es una violación de los
+                        términos del servicio cualquier mejora que se realice al software original que no sea compartida
+                        con el equipo de desarrollo y socializada con la comunidad.</p>
                 </div>
             </div>
         </div>

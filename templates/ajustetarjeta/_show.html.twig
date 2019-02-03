@@ -32,10 +32,10 @@
                 </table>
             </div>
             <div class="modal-footer">
-                {% if cierre is null %}
+                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
+                {% if eliminable== true %}
                     <a class="btn btn-danger btn-sm eliminar_ajustetarjeta" data-href="{{ path('ajustetarjeta_delete',{'id':ajuste.id}) }}"><i class="flaticon-delete-1"></i> Eliminar</a>
                 {% endif %}
-                <a class="btn btn-metal btn-sm" data-dismiss="modal"><i class="flaticon-cancel"></i> Cancelar</a>
             </div>
         </div>
     </div>

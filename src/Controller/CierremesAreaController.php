@@ -86,6 +86,7 @@ class CierremesAreaController extends Controller
      */
     public function show(Request $request, CierremesArea $cierremesarea): Response
     {
+        $this->denyAccessUnlessGranted('VIEW',$cierremesarea->getCierre());
         return $this->render('cierremesarea/_show.html.twig',['cierre'=>$cierremesarea]);
     }
 
@@ -97,6 +98,7 @@ class CierremesAreaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierremesarea->getCierre());
         $form = $this->createForm(CierremesAreaType::class, $cierremesarea, array('action' => $this->generateUrl('cierremesarea_edit',array('id'=>$cierremesarea->getId()))));
         $form->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
@@ -137,6 +139,7 @@ class CierremesAreaController extends Controller
         if (!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierremesarea->getCierre());
         $em = $this->getDoctrine()->getManager();
         $em->remove($cierremesarea);
         $em->flush();
@@ -153,7 +156,7 @@ class CierremesAreaController extends Controller
 
         $anno=$cierre->getAnno();
         $mes=$cierre->getMes();
-        $data=$this->get('energia.service')->estadoKw($area->getId(),$anno,$mes);
+        $data=$this->get('reloj.service')->estadoKw($area->getId(),$anno,$mes);
         dump($data);
         dump(new JsonResponse($data));
         return new JsonResponse($data);
@@ -167,6 +170,7 @@ class CierremesAreaController extends Controller
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
 
+        $this->denyAccessUnlessGranted('VIEW',$cierre);
         $em=$this->getDoctrine()->getManager();
         $consulta=$em->createQuery('SELECT a FROM App:Area a JOIN a.ccosto cc JOIN cc.cuenta c JOIN c.institucion i WHERE i.id= :institucion');
         $consulta->setParameter('institucion',$cierre->getInstitucion()->getId());
@@ -178,7 +182,7 @@ class CierremesAreaController extends Controller
         foreach ($areas as $value) {
             $existeCierre = $em->getRepository('App:CierremesArea')->findBy(['cierre' => $cierre, 'area' => $value]);
             if (!$existeCierre){
-                $estado = $this->get('energia.service')->estadoKw($value->getId(),$anno,$mes);
+                $estado = $this->get('reloj.service')->estadoKw($value->getId(),$anno,$mes);
                 $cierrearea = new CierremesArea();
                 $cierrearea->setArea($value);
                 $cierrearea->setCierre($cierre);

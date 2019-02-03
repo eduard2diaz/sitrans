@@ -150,9 +150,11 @@ class ResponsableController extends Controller
                 ));
             } else {
                 $page = $this->renderView('responsable/_form.html.twig', array(
+                    'responsable' => $responsable,
                     'form' => $form->createView(),
                     'form_id' => 'responsable_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable' => $this->esEliminable($responsable)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

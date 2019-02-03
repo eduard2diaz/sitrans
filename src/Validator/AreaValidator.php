@@ -78,11 +78,10 @@ class AreaValidator extends ConstraintValidator
             $consulta->setParameters($parameters);
             $result = $consulta->getResult();
             if ($result[0][1] > 0) {
-                $this->context->buildViolation("Ya existe un área con " . $value['campo'] . " %nombre%")
+                $this->context->buildViolation("Ya existe un área con " . ($value['campo']=='codigo' ? 'código' : $value['campo']). " %nombre%")
                     ->setParameter('%nombre%', $value['valor'])
                     ->atPath($value['campo'])
                     ->addViolation();
-                break;
             }
 
         }

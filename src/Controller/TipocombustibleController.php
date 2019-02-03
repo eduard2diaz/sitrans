@@ -94,8 +94,10 @@ class TipocombustibleController extends Controller
             } else {
                 $page = $this->renderView('tipocombustible/_form.html.twig', array(
                     'form' => $form->createView(),
+                    'tipocombustible' => $tipocombustible,
                     'form_id' => 'tipocombustible_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($tipocombustible)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

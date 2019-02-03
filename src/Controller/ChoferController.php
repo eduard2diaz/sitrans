@@ -123,9 +123,11 @@ class ChoferController extends Controller
                 ));
             } else {
                 $page = $this->renderView('chofer/_form.html.twig', array(
+                    'chofer' => $chofer,
                     'form' => $form->createView(),
                     'form_id' => 'chofer_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($chofer)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

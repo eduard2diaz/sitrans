@@ -39,7 +39,7 @@ class TrazaService
         $traza->setEfectivo($entity->getVehiculo()->getResponsable()->getTarjetas()->first()->getCantefectivo());
         $traza->setCombustibleentanque($entity->getVehiculo()->getLitrosentanque());
         $traza->setIndiceConsumo($entity->getVehiculo()->getIndconsumo());
-
+        $traza->setFechacaptacion($entity->getFechasalida());
         $manager->persist($traza);
         $manager->flush();
     }
@@ -74,6 +74,11 @@ class TrazaService
         $traza->setTarjeta($entity->getTarjeta());
         $traza->setCombustibleentanque($combustibleentanque);
         $traza->setIndiceConsumo($indiceconsumo);
+        /*
+         * La fecha de captacion es la fecha que se pone en los formularios, y el otro campo
+         * llamado fecha es la fecha real en que la capto
+         */
+        $traza->setFechacaptacion($entity->getFecha());
         $traza->setEfectivo($entity->getTarjeta()->getCantefectivo());
         $manager->persist($traza);
         $manager->flush();
@@ -119,7 +124,7 @@ class TrazaService
         if(null==$fecha)
             return $tarjeta_obj->getCantefectivo();
 
-        $consulta=$manager->createQuery('SELECT t.efectivo FROM App:Traza t WHERE t.tarjeta = :tarjeta AND t.fecha <= :fecha ORDER BY t.fecha DESC');
+        $consulta=$manager->createQuery('SELECT t.efectivo FROM App:Traza t WHERE t.tarjeta = :tarjeta AND t.fechacaptacion <= :fecha ORDER BY t.fecha DESC');
         $consulta->setParameters(['tarjeta'=>$tarjeta,'fecha'=>$fecha]);
         $consulta->setMaxResults(1);
         $traza=$consulta->getResult();

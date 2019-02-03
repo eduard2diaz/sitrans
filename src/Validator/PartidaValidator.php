@@ -77,7 +77,12 @@ class PartidaValidator extends ConstraintValidator
             $consulta->setParameters($parameters);
             $result = $consulta->getResult();
             if ($result[0][1] > 0) {
-                $this->context->buildViolation("Ya existe una partida con ".$value['campo']. " %nombre%")
+                $translate=$value['campo'];
+                if($value['campo']=='codigo')
+                    $translate='código';
+                elseif ($value['campo']=='tipopartida')
+                    $translate='el tipo de partida ';
+                $this->context->buildViolation("Ya existe una partida con ".$translate. " %nombre%")
                     ->setTranslationDomain('messages')
                     ->setParameter('%nombre%',  $value['valor'])
                     ->atPath($value['campo'])

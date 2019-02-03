@@ -114,6 +114,8 @@ class TarjetaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('tarjeta/_form.html.twig', array(
+                    'tarjeta' => $tarjeta,
+                    'eliminable'=>$this->esEliminable($tarjeta),
                     'form' => $form->createView(),
                     'form_id' => 'tarjeta_edit',
                     'action' => 'Actualizar'

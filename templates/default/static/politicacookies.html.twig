@@ -1,6 +1,14 @@
 {% extends is_granted('IS_AUTHENTICATED_FULLY') ? 'layout/autenticado.html.twig':  'layout/anonimo.html.twig'  %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        div.m-subheader {
+            display: none;
+        }
+    </style>
+{% endblock stylesheets %}
 {% block body %}
-<div class="m-portlet m-portlet--mobile  m--margin-top-30">
+<div class="m-portlet m-portlet--mobile  m--margin-top-30 m--margin-left-30 m--margin-right-30">
     <div class="m-portlet__head">
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">

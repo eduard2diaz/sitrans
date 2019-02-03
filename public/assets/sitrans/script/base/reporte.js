@@ -15,11 +15,11 @@ var reporte = function () {
                 buttons: {
                     cancel: {
                         label: "Cancelar",
-                        className: 'btn-metal',
+                        className: 'btn-metal btn-sm',
                     },
                     noclose: {
                         label: "Enviar",
-                        className: 'btn btn-primary',
+                        className: 'btn btn-primary btn-sm',
                         callback: function(){
                             if ($('div.bootbox form.daterange').valid()) {
                                 $('div.bootbox form.daterange').submit();
@@ -57,7 +57,7 @@ var reporte = function () {
                 '<select id="vehiculo" name="vehiculo">' +
                 '</select></div>' +
                 '</div>' +
-                '<div class="row">' +
+                '<div class="row m--margin-top-20">' +
                 '<div class="col-md-6"><label for="finicio">Fecha de inicio</label>' +
                 '<input type="text" class="form-control input-medium" id="finicio" name="finicio"/></div>' +
                 '<div class="col-md-6"><label for="ffin">Fecha de fin</label>' +
@@ -67,11 +67,11 @@ var reporte = function () {
                 buttons: {
                     cancel: {
                         label: "Cancelar",
-                        className: 'btn-metal',
+                        className: 'btn-metal btn-sm',
                     },
                     noclose: {
                         label: "Enviar",
-                        className: 'btn btn-primary',
+                        className: 'btn btn-primary btn-sm',
                         callback: function(){
                             if ($('div.bootbox form.daterange').valid()) {
                                 $('div.bootbox form.daterange').submit();
@@ -88,7 +88,6 @@ var reporte = function () {
         $('input#ffin').datepicker();
         $('select#vehiculo').select2({
                   dropdownParent: $("div.bootbox"),
-            //allowClear: true
         });
 
         $.ajax({
@@ -146,11 +145,11 @@ var reporte = function () {
                 buttons: {
                     cancel: {
                         label: "Cancelar",
-                        className: 'btn-metal',
+                        className: 'btn-metal btn-sm',
                     },
                     noclose: {
                         label: "Enviar",
-                        className: 'btn btn-primary',
+                        className: 'btn btn-primary btn-sm',
                         callback: function(){
                             if ($('div.bootbox form.portadores').valid()) {
                                 $('div.bootbox form.portadores').submit();
@@ -164,7 +163,6 @@ var reporte = function () {
         );
         $('select#categoria').select2({
                   dropdownParent: $("div.bootbox"),
-            //allowClear: true
         });
         $("div.bootbox form.portadores").validate({
             rules:{
@@ -187,11 +185,11 @@ var reporte = function () {
                 buttons: {
                     cancel: {
                         label: "Cancelar",
-                        className: 'btn-metal',
+                        className: 'btn-metal btn-sm',
                     },
                     noclose: {
                         label: "Enviar",
-                        className: 'btn btn-primary',
+                        className: 'btn btn-primary btn-sm',
                         callback: function(){
                             if ($('div.bootbox form.year').valid()) {
                                 $('div.bootbox form.year').submit();
@@ -238,11 +236,11 @@ var reporte = function () {
                 buttons: {
                     cancel: {
                         label: "Cancelar",
-                        className: 'btn-metal',
+                        className: 'btn-metal btn-sm',
                     },
                     noclose: {
                         label: "Enviar",
-                        className: 'btn btn-primary',
+                        className: 'btn btn-primary btn-sm',
                         callback: function(){
                             if ($('div.bootbox form.monthyear').valid()) {
                                 $('div.bootbox form.monthyear').submit();

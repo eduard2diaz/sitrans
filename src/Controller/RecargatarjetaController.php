@@ -84,10 +84,7 @@ class RecargatarjetaController extends Controller
 
         $this->denyAccessUnlessGranted('VIEW',$recargatarjeta);
         $tarjeta=$recargatarjeta->getTarjeta()->getId();
-        $mes=$recargatarjeta->getFecha()->format('m');
-        $anno=$recargatarjeta->getFecha()->format('Y');
-        $esEliminable=$this->get('tarjeta.service')->esPosibleEliminarRecarga($tarjeta,$recargatarjeta->getFecha());
-
+        $esEliminable=$recargatarjeta==$this->get('tarjeta.service')->ultimaOperacionTarjeta($tarjeta,$recargatarjeta->getFecha());
         return $this->render('recargatarjeta/_show.html.twig',['recarga'=>$recargatarjeta,'eliminable'=>$esEliminable]);
     }
 
@@ -96,7 +93,7 @@ class RecargatarjetaController extends Controller
      */
     public function delete(Request $request, Recargatarjeta $recargatarjeta): Response
     {
-        if (!$request->isXmlHttpRequest() || $this->get('tarjeta.service')->esPosibleEliminarRecarga($recargatarjeta->getTarjeta()->getId(),$recargatarjeta->getFecha())==false)
+        if (!$request->isXmlHttpRequest() || $recargatarjeta!=$this->get('tarjeta.service')->ultimaOperacionTarjeta($recargatarjeta->getTarjeta(),$recargatarjeta->getFecha()))
             throw $this->createAccessDeniedException();
 
         $this->denyAccessUnlessGranted('DELETE',$recargatarjeta);
@@ -105,4 +102,6 @@ class RecargatarjetaController extends Controller
         $em->flush();
         return new JsonResponse(array('mensaje' =>'La recarga fue eliminada satisfactoriamente'));
     }
+
+
 }

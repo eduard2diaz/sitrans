@@ -107,7 +107,9 @@ class CupetController extends Controller
                 $page = $this->renderView('cupet/_form.html.twig', array(
                     'form' => $form->createView(),
                     'form_id' => 'cupet_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($cupet),
+                    'cupet' => $cupet,
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }

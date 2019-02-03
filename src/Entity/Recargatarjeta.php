@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Validator\ExisteCierreCombustible as CierreCombustibleConstraint;
 use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
 
 /**
@@ -13,7 +12,6 @@ use App\Validator\EsUltimaOperacionTarjeta as UltimaOperacionConstraint;
  *
  * @ORM\Table(name="recargatarjeta", indexes={@ORM\Index(name="IDX_E2F3E177AE90B786", columns={"tarjeta"})})
  * @ORM\Entity
- * @CierreCombustibleConstraint(foreign="tarjeta",fecha="fecha")
  * @UltimaOperacionConstraint(foreign="tarjeta",fecha="fecha")
  */
 class Recargatarjeta

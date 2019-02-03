@@ -14,9 +14,9 @@ class TablaDistanciaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('origen', TextType::class,['attr'=>['class'=>'form-control']])
-            ->add('destino',TextType::class,['attr'=>['class'=>'form-control']])
-            ->add('kms',NumberType::class,['label'=>'Kilómetros','attr'=>['class'=>'form-control']])
+            ->add('origen', TextType::class,['attr'=>['class'=>'form-control', 'autocomplete'=>'off']])
+            ->add('destino',TextType::class,['attr'=>['class'=>'form-control', 'autocomplete'=>'off']])
+            ->add('kms',NumberType::class,['label'=>'Kilómetros','attr'=>['class'=>'form-control', 'autocomplete'=>'off']])
         ;
     }
 

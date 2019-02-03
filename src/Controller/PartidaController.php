@@ -106,9 +106,11 @@ class PartidaController extends Controller
                 ));
             } else {
                 $page = $this->renderView('partida/_form.html.twig', array(
+                    'partida' => $partida,
                     'form' => $form->createView(),
                     'form_id' => 'partida_edit',
-                    'action' => 'Actualizar'
+                    'action' => 'Actualizar',
+                    'eliminable'=>$this->esEliminable($partida)
                 ));
                 return new JsonResponse(array('form' => $page, 'error' => true,));
             }
