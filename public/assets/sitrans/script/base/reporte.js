@@ -726,6 +726,7 @@ var reporte = function () {
                     // Themes end
                     // Create chart instance
                     var chart = am4core.create("modal-body", am4charts.PieChart);
+                    chart.exporting.menu = new am4core.ExportMenu();
                     // Add data
                     chart.data=JSON.parse(este.data);
                     // Add and configure Series
@@ -838,6 +839,7 @@ var reporte = function () {
                                 "series": ["s1"]
                             }
                         }, "chartdiv", "XYChart");
+                        chart.exporting.menu = new am4core.ExportMenu();
                     },
                     error: function ()
                     {
@@ -951,7 +953,8 @@ var reporte = function () {
                                 "type": "XYCursor",
                                 "behavior": "zoomX"
                             }
-                        }, "chartdiv", "XYChart")
+                        }, "chartdiv", "XYChart");
+                        chart.exporting.menu = new am4core.ExportMenu();
                     },
                     error: function () {
                         base.Error();
@@ -1089,6 +1092,7 @@ var reporte = function () {
                             },
                             "chartdiv", "XYChart"
                         );
+                        chart.exporting.menu = new am4core.ExportMenu();
                     },
                     error: function ()
                     {

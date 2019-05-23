@@ -3,47 +3,34 @@
 <meta charset="UTF-8"/>
 <head>
     <title>Porciento de desviación</title>
-    <style>
-        h1 {
-            text-align: center;
-        }
-
-        th {
-            font-weight: bold !important;
-            width: 300px !important;
-            text-align: left;
-        }
-
-        thead tr {
-            background-color: rebeccapurple !important;
-        }
-    </style>
-
+    <link href="{{ absolute_url(asset('vendors/base/vendors.bundle.css','template')) }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ absolute_url(asset('demo/demo9/base/style.bundle.css','template')) }}" rel="stylesheet"
+          type="text/css"/>
 </head>
 <body>
-<h1>
-                Porciento de desviación
-            </h1>
-<hr/>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Porciento</th>
-                    </tr>
-                    </thead>
-                    {% for obj in data %}
-                        <tr>
-                            <td>{{ obj.matricula }}</td>
-                            <td>{{ obj.porciento }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tfoot>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Porciento</th>
-                    </tr>
-                    </tfoot>
-                </table>
+<h1 class="text-center  m--margin-bottom-40">
+    Porciento de desviación
+</h1>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Matrícula</th>
+        <th>Porciento</th>
+    </tr>
+    </thead>
+    {% for obj in data %}
+        <tr>
+            <td>{{ obj.matricula }}</td>
+            <td>{{ obj.porciento }}</td>
+        </tr>
+    {% endfor %}
+    <tfoot>
+    <tr>
+        <th>Matrícula</th>
+        <th>Porciento</th>
+    </tr>
+    </tfoot>
+</table>
 </body>
 </html>

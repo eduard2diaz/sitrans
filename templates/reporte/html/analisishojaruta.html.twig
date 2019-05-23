@@ -32,17 +32,17 @@
         {% set kilometraje=kilometraje+obj.kms %}
         {% set combustibleconsumido=combustibleconsumido+obj.litros %}
     {% endfor %}
-    <tr>
+    <!--<tr>
         <th rowspan="4">Resumen</th>
         <th colspan="2">Datos del mes</th>
         <td rowspan="2"><b>Kilometraje total recorrido</b></td>
-        <td rowspan="2">{{ combustibleconsumido }}<br/><b>Combustible total consumido</b></td>
+        <td rowspan="2">{# combustibleconsumido #}<br/><b>Combustible total consumido</b></td>
         <th colspan="2">Indice de consumo real</th>
     </tr>
     <tr>
-        <td>{{ kilometraje }} <br/><b>Kilometraje</b></td>
-        <td>{{ vehiculo.litrosentanque }} <br/><b>Combustible en tanque</b></td>
-        <td><b>Real</b> {{ vehiculo.indconsumo }}</td>
+        <td>{# kilometraje #} <br/><b>Kilometraje</b></td>
+        <td>{# vehiculo.litrosentanque #} <br/><b>Combustible en tanque</b></td>
+        <td><b>Real</b> {# vehiculo.indconsumo #}</td>
         <td><b>% real del plan</b></td>
     </tr>
     <tr>
@@ -55,7 +55,7 @@
         <th>Kilometraje</th>
         <th>Variación</th>
         <td colspan="3"></td>
-    </tr>
+    </tr>-->
 
     </tbody>
 </table></div>

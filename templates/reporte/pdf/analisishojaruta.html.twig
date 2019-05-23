@@ -3,27 +3,17 @@
 <meta charset="UTF-8"/>
 <head>
     <title>Análisis de hoja de ruta</title>
-    <style>
-        h1 {
-            text-align: center;
-        }
-
-        th {
-            font-weight: bold !important;
-            text-align: left;
-        }
-
-        thead tr {
-            background-color: rebeccapurple !important;
-        }
-    </style>
+    <link href="{{ absolute_url(asset('vendors/base/vendors.bundle.css','template')) }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ absolute_url(asset('demo/demo9/base/style.bundle.css','template')) }}" rel="stylesheet"
+          type="text/css"/>
 
 </head>
 <body>
-<h1>
+<h1  class="text-center m--margin-bottom-40">
     Análisis de hoja de ruta
 </h1>
-<hr/>
+
 <table class="table">
     <tbody>
     <tr>
@@ -48,17 +38,17 @@
         {% set kilometraje=kilometraje+obj.kms %}
         {% set combustibleconsumido=combustibleconsumido+obj.litros %}
     {% endfor %}
-    <tr>
+   <!-- <tr>
         <th rowspan="4">Resumen</th>
         <th colspan="2">Datos del mes</th>
         <td rowspan="2"><b>Kilometraje total recorrido</b></td>
-        <td rowspan="2">{{ combustibleconsumido }}<br/><b>Combustible total consumido</b></td>
+        <td rowspan="2">{# combustibleconsumido #}<br/><b>Combustible total consumido</b></td>
         <th colspan="2">Indice de consumo real</th>
     </tr>
     <tr>
-        <td>{{ kilometraje }} <br/><b>Kilometraje</b></td>
-        <td>{{ vehiculo.litrosentanque }} <br/><b>Combustible en tanque</b></td>
-        <td><b>Real</b> {{ vehiculo.indconsumo }}</td>
+        <td>{# kilometraje #} <br/><b>Kilometraje</b></td>
+        <td>{# vehiculo.litrosentanque #} <br/><b>Combustible en tanque</b></td>
+        <td><b>Real</b> {# vehiculo.indconsumo #}</td>
         <td><b>% real del plan</b></td>
     </tr>
     <tr>
@@ -72,7 +62,7 @@
         <th>Variación</th>
         <td colspan="3"></td>
     </tr>
-
+-->
     </tbody>
 </table>
 </body>
