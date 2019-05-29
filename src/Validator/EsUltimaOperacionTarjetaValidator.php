@@ -31,7 +31,7 @@ class EsUltimaOperacionTarjetaValidator extends ConstraintValidator
 
         $foreign = $pa->getValue($value, $constraint->foreign);
         $fecha = $pa->getValue($value, $constraint->fecha);
-
+        $id = $pa->getValue($value, 'id');
         if ($foreign instanceof  \App\Entity\Vehiculo)
             $foreign=$foreign->getResponsable()->getTarjetas()->first();
         elseif (!$foreign instanceof  Tarjeta)

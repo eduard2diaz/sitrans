@@ -42,10 +42,10 @@ class TarjetaService
         $em = $this->getEm()->getManager();
         $entities = ['CierreMesTarjeta','Recargatarjeta', 'AjusteTarjeta', 'Chip'];
         $ultimaOperacion=null;
-
         if(null!=$fecha) {
             $parameters = ['tarjeta' => $tarjeta, 'fecha' => $fecha];
-            $consulta = $em->createQuery("SELECT h FROM App:Hojaruta h join h.vehiculo v join v.responsable r join r.tarjetas t WHERE t.id= :tarjeta AND h.fechasalida>=:fecha ORDER BY h.fechasalida DESC");
+            $consulta = $em->createQuery("SELECT h FROM App:Hojaruta h join h.vehiculo v join v.responsable r join r.tarjetas t WHERE t.id= :tarjeta AND h.fechasalida>= :fecha ORDER BY h.fechasalida DESC");
+            $max=1;
         }else{
             $parameters = ['tarjeta' => $tarjeta];
             $consulta = $em->createQuery("SELECT h FROM App:Hojaruta h join h.vehiculo v join v.responsable r join r.tarjetas t WHERE t.id= :tarjeta ORDER BY h.fechasalida DESC");
@@ -53,6 +53,7 @@ class TarjetaService
         $consulta->setParameters($parameters);
         $consulta->setMaxResults(1);
         $operacion = $consulta->getResult();
+
         if(!empty($operacion)) {
             $operacion = $operacion[0];
             if (null != $operacion && $operacion->getFechasalida() >= $fecha) {
@@ -64,7 +65,7 @@ class TarjetaService
         foreach ($entities as $value) {
             if(null!=$fecha) {
                 $parameters = ['tarjeta' => $tarjeta, 'fecha' => $fecha];
-                $consulta = $em->createQuery("SELECT r FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta AND r.fecha>=:fecha ORDER BY r.fecha DESC");
+                $consulta = $em->createQuery("SELECT r FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta AND r.fecha> :fecha ORDER BY r.fecha DESC");
             }else{
                 $parameters = ['tarjeta' => $tarjeta];
                 $consulta = $em->createQuery("SELECT r FROM App:$value r join r.tarjeta t WHERE t.id= :tarjeta ORDER BY r.fecha DESC");

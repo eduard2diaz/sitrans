@@ -128,9 +128,8 @@ class RecargaKwController extends Controller
             throw new \Exception('Ha ocurrido un error');
 
         $area=$reloj->getArea()->getId();
-        $mes_anterior=$fecha->sub(new \DateInterval('P1M'));
-        $mes=$mes_anterior->format('m');
-        $anno=$mes_anterior->format('y');
+        $mes=$fecha->format('m');
+        $anno=$fecha->format('Y');
         return new JsonResponse(['restante'=>$this->get('reloj.service')->estadoKw($area,$anno,$mes)['cierreanterior']]);
     }
 

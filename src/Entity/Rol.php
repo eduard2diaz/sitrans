@@ -103,10 +103,10 @@ class Rol extends Role
                 $value= 'Jefe/a de Transporte';
             break;
             case 'ROLE_ELECTRICIDAD':
-                $value= 'Responsable de la red eléctrica';
+                $value= 'Contador';
             break;
             case 'ROLE_ADMIN':
-                $value= 'Administrador/a';
+                $value= 'Jefe UAC';
             break;
             case 'ROLE_SUPERADMIN':
                 $value= 'Super-administrador/a';

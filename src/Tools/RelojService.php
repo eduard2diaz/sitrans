@@ -8,6 +8,8 @@
 
 namespace App\Tools;
 
+use phpDocumentor\Reflection\Types\Integer;
+
 class RelojService
 {
     private $em;
@@ -82,15 +84,17 @@ class RelojService
      * (SE UTILIZA PARA EL CIERRE DE AREA)
      */
     public function estadoKw($area,$anno,$mes){
-        $firstday = new \DateTime("01-$mes-$anno");
+        $firstday = new \DateTime("$anno-$mes-01");
         $maxday=Util::maxDays($mes,$anno);
-        $lastday = new \DateTime("$maxday-$mes-$anno");
+        $lastday = new \DateTime("$anno-$mes-$maxday");
         $mes_anterior=Util::mesAnterior($mes,$anno);
         $consulta=$this->getEm()->getManager()->createQuery('SELECT ca.restante as kwrestante  from App:CierremesArea ca join ca.cierre c join ca.area a WHERE a.id= :id AND c.mes =:mes AND c.anno = :anno');
-        $consulta->setParameters(['id'=>$area,'mes'=>$mes_anterior['mes'],'anno'=>$mes_anterior['anno']]);
+        $consulta->setParameters(['id'=>$area,'mes'=>(Integer)$mes_anterior['mes'],'anno'=>$mes_anterior['anno']]);
         $consulta->setMaxResults(1);
         $cierreanterior=$consulta->getResult();
         $cierreanterior=$cierreanterior[0]['kwrestante'] ?? 0;
+
+
 
         $conn = $this->getEm()->getConnection();
         //PARA HACER CONSULTAS EN SQL EN CASO DE QUE NO EXISTAN LAS MISMAS PALABRAS RESERVADAS DE SQL EN DQL , PODEMOS UTILIZAR:

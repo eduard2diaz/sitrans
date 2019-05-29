@@ -36,7 +36,7 @@ class ResponsableVoter extends Voter
             case 'EDIT':
             case 'DELETE':
             case 'VIEW':
-                return $this->decisionManager->decide($token, array('ROLE_JEFETRANSPORTE')) && in_array($subject->getInstitucion()->getId(),$hijas);
+                return $this->decisionManager->decide($token, array('ROLE_CAJERO')) && in_array($subject->getInstitucion()->getId(),$hijas);
                 break;
         }
 

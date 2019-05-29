@@ -32,9 +32,6 @@
     {% if is_granted('ROLE_ELECTRICIDAD') %}
         {{ include('layout/recortes/topmenu/electricidad_topmenu.html.twig') }}
     {% endif %}
-    {% if is_granted('ROLE_CAJERO') %}
-        {{ include('layout/recortes/topmenu/cajero_topmenu.html.twig') }}
-    {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
         {{ include('layout/recortes/topmenu/reporte_topmenu.html.twig') }}
     {% endif %}

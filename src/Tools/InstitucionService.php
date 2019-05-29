@@ -158,7 +158,7 @@ class InstitucionService
             throw new \Exception('Usuario indicado no existe');
 
         $roles = $obj->getRoles();
-        if (!in_array('ROLE_ADMIN', $roles) && !in_array('ROLE_JEFETRANSPORTE', $roles))
+        if (!in_array('ROLE_ADMIN', $roles) && !in_array('ROLE_CAJERO', $roles))
             throw new \Exception('El usuario indicado no tiene permisos administrativos');
 
         elseif (null == $obj->getInstitucion())

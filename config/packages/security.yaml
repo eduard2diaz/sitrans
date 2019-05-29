@@ -48,14 +48,14 @@ security:
         - { path: ^/tabladistancia/\d+/edit,  roles: ROLE_SUPERADMIN }
         - { path: ^/tabladistancia/\d+/delete,  roles: ROLE_SUPERADMIN }
         #Rutas de administracion
-        - { path: ^/centrocosto/\d+/searchbycuenta, roles: ROLE_CAJERO }
+        - { path: ^/centrocosto/\d+/searchbycuenta, roles: ROLE_ELECTRICIDAD }
         - { path: ^/centrocosto, roles: ROLE_ADMIN }
         - { path: ^/cuenta, roles: ROLE_ADMIN }
         - { path: ^/partida, roles: ROLE_ADMIN }
         - { path: ^/reloj, roles: ROLE_ADMIN }
         - { path: ^/tipoactividad, roles: ROLE_ADMIN }
         - { path: ^/tipotarjeta, roles: ROLE_ADMIN }
-        - { path: ^/area/\d+/findbyinstitucion, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/area/\d+/findbyinstitucion, roles: ROLE_CAJERO }
         - { path: ^/area, roles: ROLE_ADMIN }
         - { path: ^/elemento/\d+/searchbypartida, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/elemento, roles: ROLE_ADMIN }
@@ -70,8 +70,6 @@ security:
         - { path: ^/tabladistancia$, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/chofer/new, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/chofer, roles: ROLE_JEFETRANSPORTE }
-        - { path: ^/responsable/new, roles: ROLE_JEFETRANSPORTE }
-        - { path: ^/responsable, roles:  ROLE_JEFETRANSPORTE }
         - { path: ^/vehiculo/new, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/vehiculo, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/mantenimiento, roles: ROLE_JEFETRANSPORTE }
@@ -79,23 +77,24 @@ security:
         - { path: ^/hojaruta, roles: ROLE_JEFETRANSPORTE }
         - { path: ^/pruebalitro, roles: ROLE_JEFETRANSPORTE }
         #Rutas de cajero
-        - { path: ^/tarjeta/\d+/findbyinstitucion, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/tarjeta/\d+/findbyinstitucion, roles: ROLE_CAJERO }
         - { path: ^/tarjeta, roles: ROLE_CAJERO }
         - { path: ^/chip, roles: ROLE_CAJERO }
         - { path: ^/recargatarjeta, roles: ROLE_CAJERO }
         - { path: ^/ajustetarjeta, roles: ROLE_CAJERO }
         - { path: ^/cierremescombustible, roles: ROLE_CAJERO }
         - { path: ^/cierremestarjeta, roles: ROLE_CAJERO }
-        - { path: ^/planportadores, roles: ROLE_CAJERO }
-        - { path: ^/planportadoresarea, roles: ROLE_CAJERO }
-        - { path: ^/planefectivo, roles: ROLE_CAJERO }
-        - { path: ^/planefectivocuenta, roles: ROLE_CAJERO }
-
+        - { path: ^/responsable/\d+/findbyinstitucion, roles: ROLE_JEFETRANSPORTE }
+        - { path: ^/responsable, roles:  ROLE_CAJERO }
         #Rutas de electricidad
         - { path: ^/recargakw, roles: ROLE_ELECTRICIDAD }
         - { path: ^/lecturareloj, roles: ROLE_ELECTRICIDAD }
         - { path: ^/cierremeskw, roles: ROLE_ELECTRICIDAD }
         - { path: ^/cierremesarea, roles: ROLE_ELECTRICIDAD }
+        - { path: ^/planportadores, roles: ROLE_ELECTRICIDAD }
+        - { path: ^/planportadoresarea, roles: ROLE_ELECTRICIDAD }
+        - { path: ^/planefectivo, roles: ROLE_ELECTRICIDAD }
+        - { path: ^/planefectivocuenta, roles: ROLE_ELECTRICIDAD }
         #Se protejen el resto de las ruta
         - { path: ^/*, roles: IS_AUTHENTICATED_FULLY }
 

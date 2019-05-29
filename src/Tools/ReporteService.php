@@ -11,6 +11,7 @@ namespace App\Tools;
 use App\Entity\Chip;
 use App\Entity\Hojaruta;
 use App\Tools\Util;
+use Proxies\__CG__\App\Entity\Vehiculo;
 
 class ReporteService
 {
@@ -162,7 +163,7 @@ class ReporteService
     private function porcientoDesviacionAuto($firstday, $lastday, $auto_id)
     {
         $kmconsumo = $this->kmRecorridosPeriodo($firstday, $lastday, $auto_id);
-
+        $vehiculo=$this->getEm()->getManager()->getRepository(Vehiculo::class)->find($auto_id);
         $conn = $this->getEm()->getConnection();
         $sql = 'SELECT SUM(c.litrosextraidos) as litrosextraidos FROM traza t join vehiculo v on(t.vehiculo=v.id), chip c WHERE v.id= :id AND t.entity = :entity AND t.identificador=c.id';
         $parameters = ['id' => $auto_id, 'entity' => Chip::class];
@@ -170,7 +171,12 @@ class ReporteService
         $stmt->execute($parameters);
         $data = $stmt->fetchAll();
 
-        return (1 - $kmconsumo['totalkms'] / $kmconsumo['totallitros'] / $data[0]['litrosextraidos']) * 100;
+        $consumo=$data[0]['litrosextraidos'];
+        if(0==$consumo)
+            $consumo=1;
+        //inicio
+       dump("consumo".$consumo."indi".$vehiculo->getIndconsumo()."kms".$kmconsumo['totalkms']);
+        return (1 - $kmconsumo['totalkms'] / $vehiculo->getIndconsumo() / $consumo) * 100;
     }
 
     /*

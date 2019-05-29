@@ -157,8 +157,6 @@ class CierremesAreaController extends Controller
         $anno=$cierre->getAnno();
         $mes=$cierre->getMes();
         $data=$this->get('reloj.service')->estadoKw($area->getId(),$anno,$mes);
-        dump($data);
-        dump(new JsonResponse($data));
         return new JsonResponse($data);
     }
 

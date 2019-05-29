@@ -179,6 +179,7 @@ class TarjetaController extends Controller
          */
         if(!$request->isXmlHttpRequest())
             throw $this->createAccessDeniedException();
+
         $id=$request->get('responsable');
         $repository=$this->getDoctrine()->getManager();
         $qb = $repository->createQueryBuilder('tarjeta');
