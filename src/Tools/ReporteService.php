@@ -181,7 +181,7 @@ class ReporteService
 
     /*
      * Devuelve el listado de los vehiculos pendientes a mantenimiento
-     * SE UTILIZA EN EL REPORTE "Pendientes a mantenimiento"
+     * SE UTILIZA EN EL REPORTE "Pendientes a mantenimientos"
      */
     public function pendienteMantenimiento()
     {
